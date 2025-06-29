@@ -193,60 +193,7 @@
       display: none;
     }
 
-    /* Modal styles */
-    .modal {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background-color: rgba(0, 0, 0, 0.8);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      z-index: 10001;
-    }
-
-    .modal-content {
-      background-color: #111;
-      padding: 30px;
-      border-radius: 10px;
-      border: 2px solid #FF0000;
-      max-width: 400px;
-      width: 90%;
-    }
-
-    .modal h3 {
-      color: #FF0000;
-      margin-bottom: 20px;
-      text-align: center;
-    }
-
-    .modal input {
-      width: 100%;
-      padding: 12px;
-      margin-bottom: 15px;
-      border: 1px solid #444;
-      border-radius: 5px;
-      background-color: #222;
-      color: #fff;
-      box-sizing: border-box;
-    }
-
-    .modal-buttons {
-      display: flex;
-      gap: 10px;
-    }
-
-    .btn-cancel {
-      background-color: #666;
-      color: #fff;
-      flex: 1;
-    }
-
-    .btn-cancel:hover:not(:disabled) {
-      background-color: #777;
-    }
+    /* Modal styles removidos - não mais necessários */
 
     @media (max-width: 480px) {
       .container {
@@ -258,8 +205,8 @@
         font-size: 1.8em;
       }
       
-      .modal-buttons {
-        flex-direction: column;
+      .link-register a:hover {
+        text-decoration: underline;
       }
     }
   </style>
@@ -270,20 +217,7 @@
     <div class="loading-spinner"></div>
   </div>
 
-  <!-- Modal de Cadastro -->
-  <div id="registerModal" class="modal hidden">
-    <div class="modal-content">
-      <h3>Criar Nova Conta</h3>
-      <form id="registerForm">
-        <input type="email" id="registerEmail" placeholder="Seu e-mail" required>
-        <input type="password" id="registerPassword" placeholder="Sua senha (mín. 6 caracteres)" required minlength="6">
-        <div class="modal-buttons">
-          <button type="button" class="btn btn-cancel" id="cancelRegister">Cancelar</button>
-          <button type="submit" class="btn btn-primary" style="flex: 1;">Criar Conta</button>
-        </div>
-      </form>
-    </div>
-  </div>
+
 
   <header>
     <h1>Booktor 📚</h1>
@@ -309,8 +243,9 @@
     </form>
 
     <div class="link-register">
-      Não tem uma conta?
-      <a href="#" id="registerLink">Cadastre-se</a>
+      <a href="registro.html" style="color: #FF0000; text-decoration: none;">
+        Não tem uma conta? Cadastre-se aqui
+      </a>
     </div>
 
     <hr class="divider">
@@ -370,11 +305,7 @@
 
     // Elementos do DOM
     const loadingScreen = document.getElementById('loadingScreen');
-    const registerModal = document.getElementById('registerModal');
     const loginForm = document.getElementById('loginForm');
-    const registerForm = document.getElementById('registerForm');
-    const registerLink = document.getElementById('registerLink');
-    const cancelRegister = document.getElementById('cancelRegister');
     const googleLogin = document.getElementById('googleLogin');
     const anonLogin = document.getElementById('anonLogin');
 
@@ -406,18 +337,6 @@
         loadingScreen.classList.add('hidden');
         // Reabilita todos os botões
         document.querySelectorAll('.btn').forEach(btn => btn.disabled = false);
-      }
-    }
-
-    // Função para mostrar/esconder modal
-    function toggleModal(show) {
-      if (show) {
-        registerModal.classList.remove('hidden');
-      } else {
-        registerModal.classList.add('hidden');
-        // Limpa os campos
-        document.getElementById('registerEmail').value = '';
-        document.getElementById('registerPassword').value = '';
       }
     }
 
@@ -589,103 +508,6 @@
         showToast(errorMsg);
       } finally {
         toggleLoading(false);
-      }
-    });
-
-    // Mostrar modal de cadastro
-    registerLink.addEventListener("click", (e) => {
-      e.preventDefault();
-      toggleModal(true);
-    });
-
-    // Cancelar cadastro
-    cancelRegister.addEventListener("click", () => {
-      toggleModal(false);
-    });
-
-    // Fechar modal clicando fora
-    registerModal.addEventListener("click", (e) => {
-      if (e.target === registerModal) {
-        toggleModal(false);
-      }
-    });
-
-    // Cadastro de nova conta
-    registerForm.addEventListener("submit", async (e) => {
-      e.preventDefault();
-      const email = document.getElementById("registerEmail").value.trim();
-      const password = document.getElementById("registerPassword").value;
-      
-      if (!email || !password) {
-        showToast("Por favor, preencha todos os campos");
-        return;
-      }
-
-      if (password.length < 6) {
-        showToast("A senha deve ter pelo menos 6 caracteres");
-        return;
-      }
-
-      toggleLoading(true);
-      
-      try {
-        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-        console.log("Conta criada com sucesso:", userCredential.user);
-        showToast("Conta criada com sucesso!", true);
-        toggleModal(false);
-        
-        setTimeout(() => {
-          window.location.href = "inicio.html";
-        }, 1500);
-      } catch (error) {
-        console.error("Erro ao criar conta:", error);
-        let errorMsg = "Erro ao criar conta";
-        
-        switch (error.code) {
-          case 'auth/email-already-in-use':
-            errorMsg = "Este e-mail já está em uso";
-            break;
-          case 'auth/invalid-email':
-            errorMsg = "E-mail inválido";
-            break;
-          case 'auth/weak-password':
-            errorMsg = "Senha muito fraca. Use pelo menos 6 caracteres";
-            break;
-          case 'auth/network-request-failed':
-            errorMsg = "Erro de conexão. Verifique sua internet";
-            break;
-          default:
-            errorMsg = `Erro: ${error.message}`;
-        }
-        
-        showToast(errorMsg);
-      } finally {
-        toggleLoading(false);
-      }
-    });
-
-    // Verifica se já está logado
-    onAuthStateChanged(auth, (user) => {
-      if (user) {
-        console.log("Usuário já logado:", user);
-        // Usuário já está logado, redireciona
-        window.location.href = "inicio.html";
-      } else {
-        console.log("Usuário não logado");
-      }
-    });
-
-    // Previne cache para garantir verificação de auth
-    window.addEventListener('pageshow', (event) => {
-      if (event.persisted) {
-        window.location.reload();
-      }
-    });
-
-    // Adiciona suporte para Enter no modal
-    registerModal.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape') {
-        toggleModal(false);
       }
     });
 
