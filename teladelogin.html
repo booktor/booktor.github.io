@@ -193,7 +193,66 @@
       display: none;
     }
 
-    /* Modal styles removidos - não mais necessários */
+    /* Modal styles */
+    .modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.8);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 10001;
+    }
+
+    .modal-content {
+      background-color: #111;
+      padding: 30px;
+      border-radius: 10px;
+      border: 2px solid #FF0000;
+      max-width: 400px;
+      width: 90%;
+    }
+
+    .modal h3 {
+      color: #FF0000;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    .modal input {
+      width: 100%;
+      padding: 12px;
+      margin-bottom: 15px;
+      border: 1px solid #444;
+      border-radius: 5px;
+      background-color: #222;
+      color: #fff;
+      box-sizing: border-box;
+    }
+
+    .modal input:focus {
+      outline: none;
+      border-color: #FF0000;
+      box-shadow: 0 0 5px #FF0000;
+    }
+
+    .modal-buttons {
+      display: flex;
+      gap: 10px;
+    }
+
+    .btn-cancel {
+      background-color: #666;
+      color: #fff;
+      flex: 1;
+    }
+
+    .btn-cancel:hover:not(:disabled) {
+      background-color: #777;
+    }
 
     @media (max-width: 480px) {
       .container {
@@ -205,8 +264,8 @@
         font-size: 1.8em;
       }
       
-      .link-register a:hover {
-        text-decoration: underline;
+      .modal-buttons {
+        flex-direction: column;
       }
     }
   </style>
@@ -217,7 +276,20 @@
     <div class="loading-spinner"></div>
   </div>
 
-
+  <!-- Modal de Cadastro -->
+  <div id="registerModal" class="modal hidden">
+    <div class="modal-content">
+      <h3>Criar Nova Conta</h3>
+      <form id="registerForm">
+        <input type="email" id="registerEmail" placeholder="Seu e-mail" required>
+        <input type="password" id="registerPassword" placeholder="Sua senha (mín. 6 caracteres)" required minlength="6">
+        <div class="modal-buttons">
+          <button type="button" class="btn btn-cancel" id="cancelRegister">Cancelar</button>
+          <button type="submit" class="btn btn-primary" style="flex: 1;">Criar Conta</button>
+        </div>
+      </form>
+    </div>
+  </div>
 
   <header>
     <h1>Booktor 📚</h1>
@@ -243,9 +315,8 @@
     </form>
 
     <div class="link-register">
-      <a href="registro.html" style="color: #FF0000; text-decoration: none;">
-        Não tem uma conta? Cadastre-se aqui
-      </a>
+      Não tem uma conta?
+      <a href="#" id="registerLink">Cadastre-se</a>
     </div>
 
     <hr class="divider">
@@ -281,7 +352,7 @@
       onAuthStateChanged
     } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
-    // Configuração corrigida do Firebase
+    // Configuração do Firebase
     const firebaseConfig = {
       apiKey: "AIzaSyDtXjxHE-vn2_QwfyG1i08hefGiemJEWb4",
       authDomain: "project-889454389797.firebaseapp.com",
@@ -295,7 +366,7 @@
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
     
-    // Configuração do Google Provider com scopes específicos
+    // Configuração do Google Provider
     const provider = new GoogleAuthProvider();
     provider.addScope('email');
     provider.addScope('profile');
@@ -305,7 +376,11 @@
 
     // Elementos do DOM
     const loadingScreen = document.getElementById('loadingScreen');
+    const registerModal = document.getElementById('registerModal');
     const loginForm = document.getElementById('loginForm');
+    const registerForm = document.getElementById('registerForm');
+    const registerLink = document.getElementById('registerLink');
+    const cancelRegister = document.getElementById('cancelRegister');
     const googleLogin = document.getElementById('googleLogin');
     const anonLogin = document.getElementById('anonLogin');
 
@@ -337,6 +412,22 @@
         loadingScreen.classList.add('hidden');
         // Reabilita todos os botões
         document.querySelectorAll('.btn').forEach(btn => btn.disabled = false);
+      }
+    }
+
+    // Função para mostrar/esconder modal
+    function toggleModal(show) {
+      if (show) {
+        registerModal.classList.remove('hidden');
+        // Foca no primeiro campo
+        setTimeout(() => {
+          document.getElementById('registerEmail').focus();
+        }, 100);
+      } else {
+        registerModal.classList.add('hidden');
+        // Limpa os campos
+        document.getElementById('registerEmail').value = '';
+        document.getElementById('registerPassword').value = '';
       }
     }
 
@@ -400,18 +491,18 @@
       }
     });
 
-    // Login com Google melhorado
+    // Login com Google
     googleLogin.addEventListener("click", async () => {
       toggleLoading(true);
       
       try {
         let result;
         
-        // Em dispositivos móveis ou quando popup pode ser bloqueado, use redirect
+        // Em dispositivos móveis, usa redirect
         if (isMobile()) {
           console.log("Usando redirect para dispositivo móvel");
           await signInWithRedirect(auth, provider);
-          return; // O redirect vai lidar com o resto
+          return;
         } else {
           console.log("Tentando popup para desktop");
           result = await signInWithPopup(auth, provider);
@@ -436,7 +527,6 @@
             break;
           case 'auth/popup-blocked':
             errorMsg = "Pop-up bloqueado. Tentando método alternativo...";
-            // Tenta com redirect como fallback
             try {
               await signInWithRedirect(auth, provider);
               return;
@@ -464,7 +554,7 @@
       }
     });
 
-    // Verifica resultado do redirect quando a página carrega
+    // Verifica resultado do redirect
     window.addEventListener('load', async () => {
       try {
         const result = await getRedirectResult(auth);
@@ -511,7 +601,104 @@
       }
     });
 
-    // Adiciona logs para debug
+    // Mostrar modal de cadastro
+    registerLink.addEventListener("click", (e) => {
+      e.preventDefault();
+      toggleModal(true);
+    });
+
+    // CORRIGIDO: Cancelar cadastro - fecha o modal
+    cancelRegister.addEventListener("click", (e) => {
+      e.preventDefault();
+      toggleModal(false);
+    });
+
+    // Fechar modal clicando fora
+    registerModal.addEventListener("click", (e) => {
+      if (e.target === registerModal) {
+        toggleModal(false);
+      }
+    });
+
+    // CORRIGIDO: Fechar modal com Escape
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && !registerModal.classList.contains('hidden')) {
+        toggleModal(false);
+      }
+    });
+
+    // Cadastro de nova conta
+    registerForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const email = document.getElementById("registerEmail").value.trim();
+      const password = document.getElementById("registerPassword").value;
+      
+      if (!email || !password) {
+        showToast("Por favor, preencha todos os campos");
+        return;
+      }
+
+      if (password.length < 6) {
+        showToast("A senha deve ter pelo menos 6 caracteres");
+        return;
+      }
+
+      toggleLoading(true);
+      
+      try {
+        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+        console.log("Conta criada com sucesso:", userCredential.user);
+        showToast("Conta criada com sucesso!", true);
+        toggleModal(false);
+        
+        setTimeout(() => {
+          window.location.href = "inicio.html";
+        }, 1500);
+      } catch (error) {
+        console.error("Erro ao criar conta:", error);
+        let errorMsg = "Erro ao criar conta";
+        
+        switch (error.code) {
+          case 'auth/email-already-in-use':
+            errorMsg = "Este e-mail já está em uso";
+            break;
+          case 'auth/invalid-email':
+            errorMsg = "E-mail inválido";
+            break;
+          case 'auth/weak-password':
+            errorMsg = "Senha muito fraca. Use pelo menos 6 caracteres";
+            break;
+          case 'auth/network-request-failed':
+            errorMsg = "Erro de conexão. Verifique sua internet";
+            break;
+          default:
+            errorMsg = `Erro: ${error.message}`;
+        }
+        
+        showToast(errorMsg);
+      } finally {
+        toggleLoading(false);
+      }
+    });
+
+    // Verifica se já está logado
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        console.log("Usuário já logado:", user);
+        window.location.href = "inicio.html";
+      } else {
+        console.log("Usuário não logado");
+      }
+    });
+
+    // Previne cache para garantir verificação de auth
+    window.addEventListener('pageshow', (event) => {
+      if (event.persisted) {
+        window.location.reload();
+      }
+    });
+
+    // Logs para debug
     console.log("Firebase inicializado com sucesso");
     console.log("Configuração:", firebaseConfig);
   </script>
