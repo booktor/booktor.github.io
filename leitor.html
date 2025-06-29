@@ -201,6 +201,28 @@
       color: var(--vermelho);
     }
 
+    .pdf-selector {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      background-color: rgba(0,0,0,0.7);
+      color: var(--branco);
+      border: 1px solid var(--vermelho);
+      padding: 8px 12px;
+      border-radius: 6px;
+      font-size: 12px;
+      z-index: 100;
+    }
+
+    .pdf-selector select {
+      background-color: var(--preto);
+      color: var(--branco);
+      border: 1px solid var(--vermelho);
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-size: 12px;
+    }
+
     .footer {
       background: linear-gradient(135deg, #111, #1a1a1a);
       border-top: 2px solid var(--vermelho);
@@ -354,8 +376,19 @@
   <main class="main-content">
     <div class="pdf-container">
       <div class="pdf-viewer" id="pdfViewer">
+        <div class="pdf-selector">
+          <label for="pdfSelect">eBook:</label>
+          <select id="pdfSelect" onchange="changePDF()">
+            <option value="https://drive.google.com/file/d/1tBkpRyBzmEJtrloHdoioK4p_9OqM_hTt/preview">Seu eBook Principal</option>
+            <option value="https://drive.google.com/file/d/SEU_ID_AQUI/preview">Manual do Usuário</option>
+            <option value="https://drive.google.com/file/d/SEU_ID_AQUI/preview">Guia Completo</option>
+            <option value="https://drive.google.com/file/d/SEU_ID_AQUI/preview">Romance Clássico</option>
+            <option value="https://drive.google.com/file/d/SEU_ID_AQUI/preview">Aventura Épica</option>
+          </select>
+        </div>
+        
         <button class="fullscreen-btn" onclick="toggleFullscreen()" title="Tela cheia">⛶</button>
-        <embed id="pdfEmbed" class="pdf-embed" src="seuebook.pdf" type="application/pdf">
+        <embed id="pdfEmbed" class="pdf-embed" src="https://drive.google.com/file/d/1tBkpRyBzmEJtrloHdoioK4p_9OqM_hTt/preview" type="application/pdf">
         
         <div class="loading" id="loading">
           <div class="spinner"></div>
@@ -393,6 +426,16 @@
     const zoomLevel = document.getElementById('zoomLevel');
     const backToTop = document.getElementById('backToTop');
     const pdfViewer = document.getElementById('pdfViewer');
+    const pdfSelect = document.getElementById('pdfSelect');
+
+    // Lista de PDFs disponíveis
+    const availablePDFs = {
+      'https://drive.google.com/file/d/1tBkpRyBzmEJtrloHdoioK4p_9OqM_hTt/preview': 'Seu eBook Principal',
+      'https://drive.google.com/file/d/SEU_ID_AQUI/preview': 'Manual do Usuário',
+      'https://drive.google.com/file/d/SEU_ID_AQUI/preview': 'Guia Completo',
+      'https://drive.google.com/file/d/SEU_ID_AQUI/preview': 'Romance Clássico',
+      'https://drive.google.com/file/d/SEU_ID_AQUI/preview': 'Aventura Épica'
+    };
 
     // Controles de Zoom
     function zoomIn() {
@@ -427,6 +470,25 @@
         pdfEmbed.style.width = '100%';
         pdfEmbed.style.height = '100%';
       }
+    }
+
+    // Trocar PDF
+    function changePDF() {
+      const selectedPDF = pdfSelect.value;
+      loading.style.display = 'block';
+      errorMessage.style.display = 'none';
+      pdfEmbed.src = selectedPDF;
+      
+      // Atualizar título da página
+      document.title = `Booktor - ${availablePDFs[selectedPDF]}`;
+      
+      // Resetar zoom ao trocar PDF
+      currentZoom = 100;
+      updateZoom();
+      
+      setTimeout(() => {
+        loading.style.display = 'none';
+      }, 2000);
     }
 
     // Modo escuro
@@ -539,8 +601,10 @@
       const urlParams = new URLSearchParams(window.location.search);
       const pdfFile = urlParams.get('pdf');
       
-      if (pdfFile) {
+      if (pdfFile && availablePDFs[pdfFile]) {
         pdfEmbed.src = pdfFile;
+        pdfSelect.value = pdfFile;
+        document.title = `Booktor - ${availablePDFs[pdfFile]}`;
       }
     });
   </script>
