@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Booktor - Início</title>
+  <link rel="icon" href="https://cdn-icons-png.flaticon.com/512/29/29302.png" />
+  <style>
+    :root {
+      --vermelho: #FF0000;
+      --preto: #000000;
+      --branco: #FFFFFF;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background-color: var(--preto);
+      color: var(--branco);
+      font-family: Arial, sans-serif;
+    }
+
+    header {
+      position: sticky;
+      top: 0;
+      background-color: var(--vermelho);
+      padding: 15px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: 0 2px 10px #000;
+      z-index: 999;
+    }
+
+    header h1 {
+      font-size: 1.8em;
+    }
+
+    .header-buttons {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+
+    #btnCatalogo {
+      background-color: var(--preto);
+      color: var(--branco);
+      border: 2px solid var(--branco);
+      padding: 10px 15px;
+      border-radius: 8px;
+      font-size: 0.95em;
+      display: flex;
+      align-items: center;
+      cursor: pointer;
+      text-decoration: none;
+    }
+
+    #btnCatalogo img {
+      width: 20px;
+      height: 20px;
+      margin-right: 8px;
+    }
+
+    .user-info {
+      background-color: var(--preto);
+      color: var(--branco);
+      border: 2px solid var(--branco);
+      padding: 8px 12px;
+      border-radius: 8px;
+      font-size: 0.9em;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .user-info img {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+    }
+
+    #btnLogout {
+      background-color: #333;
+      color: var(--branco);
+      border: 1px solid var(--vermelho);
+      padding: 8px 12px;
+      border-radius: 6px;
+      font-size: 0.85em;
+      cursor: pointer;
+    }
+
+    #btnLogout:hover {
+      background-color: var(--vermelho);
+    }
+
+    .fade-slide {
+      opacity: 0;
+      transform: translateY(30px);
+      animation: aparecer 1s ease forwards;
+    }
+
+    @keyframes aparecer {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    #apresentacao.fade-slide { animation-delay: 0.3s; }
+    #agradecimento.fade-slide { animation-delay: 0.6s; }
+    #apoie.fade-slide { animation-delay: 0.9s; }
+
+    main {
+      padding: 30px 20px;
+      text-align: center;
+    }
+
+    footer {
+      background-color: #111;
+      border-top: 2px solid var(--vermelho);
+      text-align: center;
+      padding: 20px;
+      font-size: 0.95em;
+      color: var(--branco);
+    }
+
+    #voltarTopo {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background-color: var(--vermelho);
+      color: var(--branco);
+      border: none;
+      padding: 12px;
+      border-radius: 50%;
+      font-size: 18px;
+      cursor: pointer;
+      box-shadow: 0 0 10px #000;
+      z-index: 9999;
+    }
+
+    .loading {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: var(--preto);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 10000;
+    }
+
+    .loading-spinner {
+      border: 4px solid #333;
+      border-top: 4px solid var(--vermelho);
+      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    .toast {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background-color: var(--vermelho);
+      color: var(--branco);
+      padding: 15px 25px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px #000;
+      z-index: 9999;
+      opacity: 0.95;
+    }
+
+    .toast.success {
+      background-color: #0f0;
+      color: #000;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    @media (max-width: 768px) {
+      .header-buttons {
+        flex-direction: column;
+        gap: 5px;
+      }
+      
+      .user-info {
+        font-size: 0.8em;
+        padding: 6px 10px;
+      }
+      
+      #btnCatalogo {
+        font-size: 0.85em;
+        padding: 8px 12px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Loading Screen -->
+  <div id="loadingScreen" class="loading">
+    <div class="loading-spinner"></div>
+  </div>
+
+  <header>
+    <h1>📖 Booktor</h1>
+    <div class="header-buttons">
+      <a href="catalogo.html" id="btnCatalogo">
+        <img src="https://cdn-icons-png.flaticon.com/512/29/29302.png" alt="Livro">
+        Ler eBooks
+      </a>
+      
+      <div id="userInfo" class="user-info hidden">
+        <img id="userAvatar" src="https://cdn-icons-png.flaticon.com/512/3177/3177440.png" alt="Avatar">
+        <span id="userName">Usuário</span>
+      </div>
+      
+      <button id="btnLogout" class="hidden">Sair</button>
+    </div>
+  </header>
+
+  <main>
+    <section id="apresentacao" class="fade-slide" style="margin-bottom: 50px;">
+      <h2 style="color: var(--vermelho); font-size: 1.6em; margin-bottom: 15px;">
+        <span id="saudacao">Olá! Eu sou o criador do Booktor 👋</span>
+      </h2>
+      <p style="font-size: 1.1em; line-height: 1.6; max-width: 600px; margin: auto;">
+        Meu nome é <strong>Alírio Neto</strong> e sou apaixonado por escrita, tecnologia e projetos que ajudam as pessoas.<br>
+        Criei o <strong>Booktor</strong> para compartilhar gratuitamente todos os meus eBooks com o mundo, sem barreiras, sem anúncios e sem enrolação.
+      </p>
+    </section>
+
+    <section id="agradecimento" class="fade-slide" style="margin-bottom: 50px;">
+      <h2 style="color: var(--vermelho); font-size: 1.6em; margin-bottom: 15px;">
+        Obrigado por estar aqui ❤️
+      </h2>
+      <p style="font-size: 1.1em; line-height: 1.6; max-width: 600px; margin: auto;">
+        Cada eBook publicado aqui foi feito com muito carinho, esforço e verdade.<br>
+        Ao acessar o Booktor, você não só lê meus textos — você apoia um sonho e ajuda esse projeto a continuar vivo.
+      </p>
+    </section>
+
+    <section id="apoie" class="fade-slide" style="margin-bottom: 60px;">
+      <div style="
+        background-color: #111;
+        border: 2px solid var(--vermelho);
+        border-radius: 12px;
+        padding: 25px;
+        max-width: 500px;
+        margin: 0 auto;
+        box-shadow: 0 0 10px var(--vermelho);
+      ">
+        <h2 style="color: var(--vermelho); font-size: 1.4em; margin-bottom: 15px;">
+          Apoie este projeto
+        </h2>
+        <p style="font-size: 1em; line-height: 1.5; margin-bottom: 20px;">
+          Se você gostou dos eBooks e quer me ajudar a continuar produzindo conteúdo gratuito, qualquer valor já ajuda muito. Obrigado de coração ❤️
+        </p>
+        <div style="background-color: #000; padding: 15px; border-radius: 8px; word-break: break-word; font-size: 1em; border: 1px solid #444;">
+          <strong>Chave PIX:</strong><br>
+          alirioneto@email.com
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p>📚 <strong>Booktor</strong> — Todos os eBooks são gratuitos</p>
+    <p>Desenvolvido com ❤️ por <strong>Alírio Neto</strong></p>
+  </footer>
+
+  <button id="voltarTopo" title="Voltar ao topo">⬆️</button>
+
+  <!-- Firebase SDKs -->
+  <script type="module">
+    // Importa os módulos do Firebase
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import {
+      getAuth,
+      onAuthStateChanged,
+      signOut
+    } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+    // Configuração do Firebase
+    const firebaseConfig = {
+      apiKey: "AIzaSyDtXjxHE-vn2_QwfyG1i08hefGiemJEWb4",
+      authDomain: "booktorlogin.firebaseapp.com",
+      projectId: "booktorlogin",
+      storageBucket: "booktorlogin.firebasestorage.app",
+      messagingSenderId: "889454389797",
+      appId: "1:889454389797:web:63259e79a6a18c03ba2dcc"
+    };
+
+    // Inicializa o Firebase
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+
+    // Elementos do DOM
+    const loadingScreen = document.getElementById('loadingScreen');
+    const userInfo = document.getElementById('userInfo');
+    const userName = document.getElementById('userName');
+    const userAvatar = document.getElementById('userAvatar');
+    const btnLogout = document.getElementById('btnLogout');
+    const saudacao = document.getElementById('saudacao');
+
+    // Função para mostrar toast
+    function showToast(msg, isSuccess = false) {
+      const toast = document.createElement("div");
+      toast.innerText = msg;
+      toast.className = `toast ${isSuccess ? 'success' : ''}`;
+      document.body.appendChild(toast);
+
+      setTimeout(() => {
+        toast.remove();
+      }, 4000);
+    }
+
+    // Função para obter saudação baseada no horário
+    function getSaudacao() {
+      const hora = new Date().getHours();
+      if (hora < 12) return "Bom dia";
+      if (hora < 18) return "Boa tarde";
+      return "Boa noite";
+    }
+
+    // Função para atualizar interface do usuário
+    function updateUserInterface(user) {
+      if (user) {
+        // Usuário logado
+        let displayName = 'Usuário';
+        let photoURL = 'https://cdn-icons-png.flaticon.com/512/3177/3177440.png';
+
+        if (user.isAnonymous) {
+          displayName = 'Visitante';
+          photoURL = 'https://cdn-icons-png.flaticon.com/512/1077/1077114.png';
+        } else if (user.displayName) {
+          displayName = user.displayName;
+        } else if (user.email) {
+          displayName = user.email.split('@')[0];
+        }
+
+        if (user.photoURL) {
+          photoURL = user.photoURL;
+        }
+
+        userName.textContent = displayName;
+        userAvatar.src = photoURL;
+        userInfo.classList.remove('hidden');
+        btnLogout.classList.remove('hidden');
+        
+        // Personaliza a saudação
+        saudacao.textContent = `${getSaudacao()}, ${displayName}! 👋`;
+      } else {
+        // Usuário não logado
+        userInfo.classList.add('hidden');
+        btnLogout.classList.add('hidden');
+        saudacao.textContent = "Olá! Eu sou o criador do Booktor 👋";
+      }
+    }
+
+    // Função para fazer logout
+    async function handleLogout() {
+      try {
+        await signOut(auth);
+        showToast("Logout realizado com sucesso!", true);
+        setTimeout(() => {
+          window.location.href = "teladelogin.html";
+        }, 1500);
+      } catch (error) {
+        showToast("Erro ao fazer logout: " + error.message);
+      }
+    }
+
+    // Event listeners
+    btnLogout.addEventListener('click', handleLogout);
+
+    // Verificação de autenticação
+    onAuthStateChanged(auth, (user) => {
+      // Remove loading screen
+      loadingScreen.classList.add('hidden');
+      
+      if (user) {
+        // Usuário logado
+        console.log("Usuário logado:", user);
+        updateUserInterface(user);
+      } else {
+        // Usuário não logado - redireciona para login
+        console.log("Usuário não logado");
+        window.location.href = "teladelogin.html";
+      }
+    });
+
+    // Botão voltar ao topo
+    const btnTopo = document.getElementById('voltarTopo');
+
+    btnTopo.addEventListener('click', () => {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+
+    // Mostra o botão apenas quando rolar a página
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > 300) {
+        btnTopo.style.display = 'block';
+      } else {
+        btnTopo.style.display = 'none';
+      }
+    });
+
+    // Inicialmente escondido
+    btnTopo.style.display = 'none';
+
+    // Previne o cache do navegador para garantir verificação de auth
+    window.addEventListener('pageshow', (event) => {
+      if (event.persisted) {
+        window.location.reload();
+      }
+    });
+  </script>
+</body>
+</html>

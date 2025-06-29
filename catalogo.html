@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Booktor - Catálogo de eBooks</title>
+  <link rel="icon" href="https://cdn-icons-png.flaticon.com/512/29/29302.png" />
+  <style>
+    :root {
+      --vermelho: #FF0000;
+      --vermelho-hover: #cc0000;
+      --preto: #000000;
+      --branco: #FFFFFF;
+      --cinza-escuro: #121212;
+      --cinza-medio: #1a1a1a;
+      --cinza-claro: #333;
+      --sombra: rgba(0, 0, 0, 0.3);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: linear-gradient(135deg, var(--preto) 0%, var(--cinza-escuro) 100%);
+      color: var(--branco);
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      line-height: 1.6;
+    }
+
+    a {
+      color: var(--vermelho);
+      text-decoration: none;
+      transition: color 0.3s ease;
+    }
+
+    a:hover {
+      color: var(--vermelho-hover);
+      text-decoration: underline;
+    }
+
+    .header {
+      position: sticky;
+      top: 0;
+      background: linear-gradient(135deg, var(--vermelho) 0%, var(--vermelho-hover) 100%);
+      padding: 15px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 4px 15px var(--sombra);
+      z-index: 1000;
+      backdrop-filter: blur(10px);
+    }
+
+    .header h1 {
+      color: var(--branco);
+      font-size: 1.8em;
+      margin: 0;
+      font-weight: 700;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    }
+
+    .btn-inicio {
+      background-color: var(--preto);
+      color: var(--branco);
+      border: 2px solid var(--branco);
+      padding: 10px 16px;
+      border-radius: 8px;
+      font-size: 1em;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .btn-inicio:hover {
+      background-color: var(--cinza-claro);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px var(--sombra);
+    }
+
+    .main-content {
+      flex: 1;
+      padding: 40px 20px;
+      max-width: 1200px;
+      margin: auto;
+      width: 100%;
+    }
+
+    .page-title {
+      text-align: center;
+      margin-bottom: 40px;
+      color: var(--branco);
+      font-size: 2.5em;
+      font-weight: 300;
+      position: relative;
+    }
+
+    .page-title::after {
+      content: '';
+      display: block;
+      width: 80px;
+      height: 3px;
+      background: linear-gradient(90deg, var(--vermelho), var(--vermelho-hover));
+      margin: 15px auto;
+      border-radius: 2px;
+    }
+
+    .catalogo-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 30px;
+      margin-bottom: 40px;
+    }
+
+    .ebook-card {
+      background: linear-gradient(145deg, var(--cinza-escuro), var(--cinza-medio));
+      border: 2px solid transparent;
+      border-radius: 16px;
+      padding: 25px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      cursor: pointer;
+      transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      position: relative;
+      overflow: hidden;
+      min-height: 200px;
+      box-shadow: 0 8px 25px rgba(255, 0, 0, 0.1);
+    }
+
+    .ebook-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(135deg, var(--vermelho), var(--vermelho-hover));
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      z-index: -1;
+    }
+
+    .ebook-card:hover {
+      transform: translateY(-8px) scale(1.02);
+      border-color: var(--vermelho);
+      box-shadow: 0 15px 40px rgba(255, 0, 0, 0.3);
+    }
+
+    .ebook-card:hover::before {
+      opacity: 0.05;
+    }
+
+    .ebook-title {
+      color: var(--vermelho);
+      margin-bottom: 15px;
+      font-size: 1.3em;
+      font-weight: 600;
+      line-height: 1.3;
+    }
+
+    .ebook-description {
+      flex-grow: 1;
+      color: var(--branco);
+      margin-bottom: 20px;
+      opacity: 0.9;
+      font-size: 0.95em;
+    }
+
+    .btn-ler {
+      background: linear-gradient(135deg, var(--vermelho), var(--vermelho-hover));
+      color: var(--branco);
+      border: none;
+      border-radius: 8px;
+      padding: 12px 20px;
+      font-weight: 600;
+      font-size: 1em;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .btn-ler::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+      transition: left 0.5s;
+    }
+
+    .btn-ler:hover::before {
+      left: 100%;
+    }
+
+    .btn-ler:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(255, 0, 0, 0.4);
+    }
+
+    .footer {
+      background: linear-gradient(135deg, #0a0a0a, #111);
+      border-top: 2px solid var(--vermelho);
+      text-align: center;
+      padding: 30px 20px;
+      font-size: 0.95em;
+      color: var(--branco);
+    }
+
+    .footer p {
+      margin-bottom: 8px;
+    }
+
+    .footer strong {
+      color: var(--vermelho);
+    }
+
+    .btn-topo {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      background: linear-gradient(135deg, var(--vermelho), var(--vermelho-hover));
+      color: var(--branco);
+      border: none;
+      padding: 15px;
+      border-radius: 50%;
+      font-size: 20px;
+      cursor: pointer;
+      box-shadow: 0 4px 15px var(--sombra);
+      z-index: 9999;
+      display: none;
+      transition: all 0.3s ease;
+      width: 55px;
+      height: 55px;
+    }
+
+    .btn-topo:hover {
+      transform: translateY(-3px) scale(1.1);
+      box-shadow: 0 8px 25px rgba(255, 0, 0, 0.4);
+    }
+
+    .btn-topo.show {
+      display: block;
+      animation: fadeInUp 0.3s ease;
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* Responsividade */
+    @media (max-width: 768px) {
+      .header {
+        padding: 12px 15px;
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+
+      .header h1 {
+        font-size: 1.5em;
+      }
+
+      .btn-inicio {
+        padding: 8px 12px;
+        font-size: 0.9em;
+      }
+
+      .main-content {
+        padding: 30px 15px;
+      }
+
+      .page-title {
+        font-size: 2em;
+        margin-bottom: 30px;
+      }
+
+      .catalogo-grid {
+        grid-template-columns: 1fr;
+        gap: 20px;
+      }
+
+      .ebook-card {
+        padding: 20px;
+      }
+
+      .btn-topo {
+        bottom: 20px;
+        right: 20px;
+        width: 50px;
+        height: 50px;
+        font-size: 18px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .header h1 {
+        font-size: 1.3em;
+      }
+
+      .page-title {
+        font-size: 1.8em;
+      }
+
+      .catalogo-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Estados de loading e animações */
+    .ebook-card {
+      animation: slideInUp 0.6s ease forwards;
+      opacity: 0;
+      transform: translateY(30px);
+    }
+
+    .ebook-card:nth-child(1) { animation-delay: 0.1s; }
+    .ebook-card:nth-child(2) { animation-delay: 0.2s; }
+    .ebook-card:nth-child(3) { animation-delay: 0.3s; }
+    .ebook-card:nth-child(4) { animation-delay: 0.4s; }
+
+    @keyframes slideInUp {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* Acessibilidade */
+    .ebook-card:focus {
+      outline: 3px solid var(--vermelho);
+      outline-offset: 2px;
+    }
+
+    .btn-ler:focus,
+    .btn-inicio:focus,
+    .btn-topo:focus {
+      outline: 2px solid var(--branco);
+      outline-offset: 2px;
+    }
+  </style>
+</head>
+<body>
+  <header class="header">
+    <h1>📚 Catálogo de eBooks</h1>
+    <button class="btn-inicio" onclick="window.location.href='inicio.html'" aria-label="Voltar para a página inicial">
+      Início
+    </button>
+  </header>
+
+  <main class="main-content">
+    <h2 class="page-title">Descubra Novos Mundos</h2>
+    
+    <section class="catalogo-grid" role="main" aria-label="Catálogo de eBooks disponíveis">
+      <!-- Card 1 -->
+      <article class="ebook-card" onclick="window.location.href='lerpdf1.html'" tabindex="0" role="button" aria-label="Ler Título do eBook 1">
+        <h3 class="ebook-title">Título do eBook 1</h3>
+        <p class="ebook-description">
+          Uma breve descrição envolvente do conteúdo do eBook que desperta a curiosidade e atrai leitores interessados em descobrir novos conhecimentos.
+        </p>
+        <button class="btn-ler" aria-label="Ler eBook 1 agora">
+          Ler Agora
+        </button>
+      </article>
+
+      <!-- Card 2 -->
+      <article class="ebook-card" onclick="window.location.href='lerpdf2.html'" tabindex="0" role="button" aria-label="Ler Título do eBook 2">
+        <h3 class="ebook-title">Título do eBook 2</h3>
+        <p class="ebook-description">
+          Outra descrição cativante que captura a essência do conteúdo e incentiva o leitor a explorar as páginas deste fascinante eBook.
+        </p>
+        <button class="btn-ler" aria-label="Ler eBook 2 agora">
+          Ler Agora
+        </button>
+      </article>
+
+      <!-- Card 3 - Exemplo adicional -->
+      <article class="ebook-card" onclick="window.location.href='lerpdf3.html'" tabindex="0" role="button" aria-label="Ler Título do eBook 3">
+        <h3 class="ebook-title">Título do eBook 3</h3>
+        <p class="ebook-description">
+          Uma terceira opção incrível que amplia o catálogo com conteúdo de qualidade, oferecendo ainda mais variedade para os leitores.
+        </p>
+        <button class="btn-ler" aria-label="Ler eBook 3 agora">
+          Ler Agora
+        </button>
+      </article>
+
+      <!-- Card 4 - Exemplo adicional -->
+      <article class="ebook-card" onclick="window.location.href='lerpdf4.html'" tabindex="0" role="button" aria-label="Ler Título do eBook 4">
+        <h3 class="ebook-title">Título do eBook 4</h3>
+        <p class="ebook-description">
+          Mais uma excelente adição ao catálogo, com conteúdo exclusivo e informações valiosas para enriquecer sua experiência de leitura.
+        </p>
+        <button class="btn-ler" aria-label="Ler eBook 4 agora">
+          Ler Agora
+        </button>
+      </article>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <p>📚 <strong>Booktor</strong> — Todos os eBooks são gratuitos</p>
+    <p>Desenvolvido com ❤️ por <strong>Alírio Neto</strong></p>
+    <p style="margin-top: 10px; opacity: 0.8; font-size: 0.85em;">
+      © 2025 Booktor. Compartilhando conhecimento livremente.
+    </p>
+  </footer>
+
+  <button class="btn-topo" id="voltarTopo" title="Voltar ao topo" aria-label="Voltar ao topo da página">
+    ⬆️
+  </button>
+
+  <script>
+    // Scroll to top functionality
+    const btnTopo = document.getElementById('voltarTopo');
+
+    btnTopo.addEventListener('click', () => {
+      window.scrollTo({ 
+        top: 0, 
+        behavior: 'smooth' 
+      });
+    });
+
+    // Show/hide button based on scroll position
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > 300) {
+        btnTopo.classList.add('show');
+      } else {
+        btnTopo.classList.remove('show');
+      }
+    });
+
+    // Keyboard navigation for cards
+    document.querySelectorAll('.ebook-card').forEach(card => {
+      card.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          card.click();
+        }
+      });
+    });
+
+    // Smooth loading animation
+    window.addEventListener('load', () => {
+      document.body.style.opacity = '1';
+    });
+
+    // Add loading state
+    document.body.style.opacity = '0';
+    document.body.style.transition = 'opacity 0.3s ease';
+  </script>
+</body>
+</html>

@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Booktor - Login</title>
+  <link rel="icon" href="https://cdn-icons-png.flaticon.com/512/29/29302.png" />
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: #000;
+      color: #fff;
+      font-family: Arial, sans-serif;
+    }
+
+    header {
+      background-color: #FF0000;
+      padding: 20px;
+      text-align: center;
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: 2.2em;
+      color: #fff;
+    }
+
+    .container {
+      padding: 20px;
+      max-width: 400px;
+      margin: 40px auto;
+      background-color: #111;
+      border-radius: 10px;
+      box-shadow: 0 0 10px #FF0000;
+    }
+
+    h2 {
+      text-align: center;
+      color: #FF0000;
+    }
+
+    .form-group {
+      margin-bottom: 15px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 5px;
+      color: #fff;
+    }
+
+    input[type="email"], input[type="password"] {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #444;
+      border-radius: 5px;
+      background-color: #222;
+      color: #fff;
+      font-size: 16px;
+    }
+
+    input[type="email"]:focus, input[type="password"]:focus {
+      outline: none;
+      border-color: #FF0000;
+      box-shadow: 0 0 5px #FF0000;
+    }
+
+    .btn {
+      width: 100%;
+      padding: 12px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 16px;
+      margin-bottom: 10px;
+      transition: all 0.3s;
+    }
+
+    .btn-primary {
+      background-color: #FF0000;
+      color: #fff;
+    }
+
+    .btn-primary:hover {
+      background-color: #cc0000;
+    }
+
+    .btn-google {
+      background-color: #fff;
+      color: #333;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    .btn-google:hover {
+      background-color: #f0f0f0;
+    }
+
+    .btn-guest {
+      background-color: #333;
+      color: #fff;
+      border: 1px solid #FF0000;
+    }
+
+    .btn-guest:hover {
+      background-color: #444;
+    }
+
+    .link-register {
+      text-align: center;
+      margin: 15px 0;
+    }
+
+    .link-register a {
+      color: #FF0000;
+      text-decoration: none;
+    }
+
+    .link-register a:hover {
+      text-decoration: underline;
+    }
+
+    .divider {
+      margin: 30px 0;
+      border: none;
+      height: 1px;
+      background-color: #444;
+    }
+
+    .toast {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      padding: 15px 25px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px #000;
+      z-index: 9999;
+      opacity: 0.95;
+      color: #fff;
+    }
+
+    .toast.success {
+      background-color: #28a745;
+    }
+
+    .toast.error {
+      background-color: #FF0000;
+    }
+
+    .loading {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.8);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 10000;
+    }
+
+    .loading-spinner {
+      border: 4px solid #333;
+      border-top: 4px solid #FF0000;
+      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    /* Modal styles */
+    .modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.8);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 10001;
+    }
+
+    .modal-content {
+      background-color: #111;
+      padding: 30px;
+      border-radius: 10px;
+      border: 2px solid #FF0000;
+      max-width: 400px;
+      width: 90%;
+    }
+
+    .modal h3 {
+      color: #FF0000;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    .modal input {
+      width: 100%;
+      padding: 12px;
+      margin-bottom: 15px;
+      border: 1px solid #444;
+      border-radius: 5px;
+      background-color: #222;
+      color: #fff;
+    }
+
+    .modal-buttons {
+      display: flex;
+      gap: 10px;
+    }
+
+    .btn-cancel {
+      background-color: #666;
+      color: #fff;
+    }
+
+    @media (max-width: 480px) {
+      .container {
+        margin: 20px;
+        padding: 15px;
+      }
+      
+      header h1 {
+        font-size: 1.8em;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Loading Screen -->
+  <div id="loadingScreen" class="loading hidden">
+    <div class="loading-spinner"></div>
+  </div>
+
+  <!-- Modal de Cadastro -->
+  <div id="registerModal" class="modal hidden">
+    <div class="modal-content">
+      <h3>Criar Nova Conta</h3>
+      <form id="registerForm">
+        <input type="email" id="registerEmail" placeholder="Seu e-mail" required>
+        <input type="password" id="registerPassword" placeholder="Sua senha (mín. 6 caracteres)" required minlength="6">
+        <div class="modal-buttons">
+          <button type="button" class="btn btn-cancel" id="cancelRegister">Cancelar</button>
+          <button type="submit" class="btn btn-primary">Criar Conta</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <header>
+    <h1>Booktor 📚</h1>
+  </header>
+
+  <div class="container">
+    <h2>Entrar no Booktor</h2>
+
+    <form id="loginForm">
+      <div class="form-group">
+        <label for="email">E-mail:</label>
+        <input type="email" id="email" required />
+      </div>
+
+      <div class="form-group">
+        <label for="password">Senha:</label>
+        <input type="password" id="password" required />
+      </div>
+
+      <button type="submit" class="btn btn-primary">
+        Entrar com E-mail
+      </button>
+    </form>
+
+    <div class="link-register">
+      Não tem uma conta?
+      <a href="#" id="registerLink">Cadastre-se</a>
+    </div>
+
+    <hr class="divider">
+
+    <button id="googleLogin" class="btn btn-google">
+      <svg width="18" height="18" viewBox="0 0 24 24">
+        <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+        <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+        <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+        <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+      </svg>
+      Entrar com Google
+    </button>
+
+    <button id="anonLogin" class="btn btn-guest">
+      Entrar como Visitante
+    </button>
+  </div>
+
+  <!-- Firebase SDKs -->
+  <script type="module">
+    // Importa os módulos do Firebase
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import {
+      getAuth,
+      signInWithEmailAndPassword,
+      signInAnonymously,
+      signInWithPopup,
+      GoogleAuthProvider,
+      createUserWithEmailAndPassword,
+      onAuthStateChanged
+    } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+    // Configuração do Firebase
+    const firebaseConfig = {
+      apiKey: "AIzaSyDtXjxHE-vn2_QwfyG1i08hefGiemJEWb4",
+      authDomain: "booktorlogin.firebaseapp.com",
+      projectId: "booktorlogin",
+      storageBucket: "booktorlogin.firebasestorage.app",
+      messagingSenderId: "889454389797",
+      appId: "1:889454389797:web:63259e79a6a18c03ba2dcc"
+    };
+
+    // Inicializa o Firebase
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const provider = new GoogleAuthProvider();
+
+    // Elementos do DOM
+    const loadingScreen = document.getElementById('loadingScreen');
+    const registerModal = document.getElementById('registerModal');
+    const loginForm = document.getElementById('loginForm');
+    const registerForm = document.getElementById('registerForm');
+    const registerLink = document.getElementById('registerLink');
+    const cancelRegister = document.getElementById('cancelRegister');
+    const googleLogin = document.getElementById('googleLogin');
+    const anonLogin = document.getElementById('anonLogin');
+
+    // Função para mostrar toast
+    function showToast(msg, isSuccess = false) {
+      const toast = document.createElement("div");
+      toast.innerText = msg;
+      toast.className = `toast ${isSuccess ? 'success' : 'error'}`;
+      document.body.appendChild(toast);
+
+      setTimeout(() => {
+        toast.remove();
+      }, 4000);
+    }
+
+    // Função para mostrar/esconder loading
+    function toggleLoading(show) {
+      if (show) {
+        loadingScreen.classList.remove('hidden');
+      } else {
+        loadingScreen.classList.add('hidden');
+      }
+    }
+
+    // Função para mostrar/esconder modal
+    function toggleModal(show) {
+      if (show) {
+        registerModal.classList.remove('hidden');
+      } else {
+        registerModal.classList.add('hidden');
+        // Limpa os campos
+        document.getElementById('registerEmail').value = '';
+        document.getElementById('registerPassword').value = '';
+      }
+    }
+
+    // Login com email e senha
+    loginForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const email = document.getElementById("email").value;
+      const password = document.getElementById("password").value;
+      
+      toggleLoading(true);
+      
+      try {
+        await signInWithEmailAndPassword(auth, email, password);
+        showToast("Login realizado com sucesso!", true);
+        setTimeout(() => {
+          window.location.href = "inicio.html";
+        }, 1500);
+      } catch (error) {
+        let errorMsg = "Erro ao fazer login";
+        
+        switch (error.code) {
+          case 'auth/user-not-found':
+            errorMsg = "Usuário não encontrado";
+            break;
+          case 'auth/wrong-password':
+            errorMsg = "Senha incorreta";
+            break;
+          case 'auth/invalid-email':
+            errorMsg = "E-mail inválido";
+            break;
+          case 'auth/too-many-requests':
+            errorMsg = "Muitas tentativas. Tente novamente mais tarde";
+            break;
+          default:
+            errorMsg = error.message;
+        }
+        
+        showToast(errorMsg);
+      } finally {
+        toggleLoading(false);
+      }
+    });
+
+    // Login com Google
+    googleLogin.addEventListener("click", async () => {
+      toggleLoading(true);
+      
+      try {
+        await signInWithPopup(auth, provider);
+        showToast("Login com Google realizado!", true);
+        setTimeout(() => {
+          window.location.href = "inicio.html";
+        }, 1500);
+      } catch (error) {
+        let errorMsg = "Erro ao fazer login com Google";
+        
+        if (error.code === 'auth/popup-closed-by-user') {
+          errorMsg = "Login cancelado pelo usuário";
+        } else if (error.code === 'auth/popup-blocked') {
+          errorMsg = "Pop-up bloqueado. Permita pop-ups e tente novamente";
+        }
+        
+        showToast(errorMsg);
+      } finally {
+        toggleLoading(false);
+      }
+    });
+
+    // Login anônimo
+    anonLogin.addEventListener("click", async () => {
+      toggleLoading(true);
+      
+      try {
+        await signInAnonymously(auth);
+        showToast("Entrando como visitante!", true);
+        setTimeout(() => {
+          window.location.href = "inicio.html";
+        }, 1500);
+      } catch (error) {
+        showToast("Erro ao entrar como visitante: " + error.message);
+      } finally {
+        toggleLoading(false);
+      }
+    });
+
+    // Mostrar modal de cadastro
+    registerLink.addEventListener("click", (e) => {
+      e.preventDefault();
+      toggleModal(true);
+    });
+
+    // Cancelar cadastro
+    cancelRegister.addEventListener("click", () => {
+      toggleModal(false);
+    });
+
+    // Fechar modal clicando fora
+    registerModal.addEventListener("click", (e) => {
+      if (e.target === registerModal) {
+        toggleModal(false);
+      }
+    });
+
+    // Cadastro de nova conta
+    registerForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const email = document.getElementById("registerEmail").value;
+      const password = document.getElementById("registerPassword").value;
+      
+      toggleLoading(true);
+      
+      try {
+        await createUserWithEmailAndPassword(auth, email, password);
+        showToast("Conta criada com sucesso!", true);
+        toggleModal(false);
+        setTimeout(() => {
+          window.location.href = "inicio.html";
+        }, 1500);
+      } catch (error) {
+        let errorMsg = "Erro ao criar conta";
+        
+        switch (error.code) {
+          case 'auth/email-already-in-use':
+            errorMsg = "Este e-mail já está em uso";
+            break;
+          case 'auth/invalid-email':
+            errorMsg = "E-mail inválido";
+            break;
+          case 'auth/weak-password':
+            errorMsg = "Senha muito fraca. Use pelo menos 6 caracteres";
+            break;
+          default:
+            errorMsg = error.message;
+        }
+        
+        showToast(errorMsg);
+      } finally {
+        toggleLoading(false);
+      }
+    });
+
+    // Verifica se já está logado
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        // Usuário já está logado, redireciona
+        window.location.href = "inicio.html";
+      }
+    });
+
+    // Previne cache para garantir verificação de auth
+    window.addEventListener('pageshow', (event) => {
+      if (event.persisted) {
+        window.location.reload();
+      }
+    });
+
+    // Adiciona suporte para Enter no modal
+    registerModal.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        toggleModal(false);
+      }
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Booktor - Leitor de eBook</title>
+  <link rel="icon" href="https://cdn-icons-png.flaticon.com/512/29/29302.png" />
+  <style>
+    :root {
+      --vermelho: #FF0000;
+      --preto: #000000;
+      --branco: #FFFFFF;
+      --cinza-escuro: #1a1a1a;
+      --cinza-medio: #333;
+      --cinza-claro: #666;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body, html {
+      height: 100%;
+      background-color: var(--preto);
+      color: var(--branco);
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    a {
+      color: var(--vermelho);
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    .header {
+      position: sticky;
+      top: 0;
+      background: linear-gradient(135deg, var(--vermelho), #cc0000);
+      color: var(--branco);
+      padding: 15px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+      z-index: 1000;
+    }
+
+    .btn {
+      background-color: var(--preto);
+      color: var(--branco);
+      border: 2px solid var(--branco);
+      padding: 12px 18px;
+      border-radius: 8px;
+      font-size: 1em;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-weight: 500;
+    }
+
+    .btn:hover {
+      background-color: var(--cinza-medio);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+    }
+
+    .controls {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .reader-controls {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background-color: rgba(0,0,0,0.3);
+      padding: 8px 15px;
+      border-radius: 8px;
+    }
+
+    .control-btn {
+      background-color: transparent;
+      color: var(--branco);
+      border: 1px solid var(--branco);
+      padding: 8px 12px;
+      border-radius: 4px;
+      font-size: 14px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      min-width: 35px;
+    }
+
+    .control-btn:hover {
+      background-color: var(--branco);
+      color: var(--preto);
+    }
+
+    .control-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .zoom-level {
+      color: var(--branco);
+      font-size: 14px;
+      min-width: 50px;
+      text-align: center;
+      font-weight: 500;
+    }
+
+    .main-content {
+      flex: 1;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background-color: var(--cinza-escuro);
+    }
+
+    .pdf-container {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+    }
+
+    .pdf-viewer {
+      width: 95%;
+      max-width: 1200px;
+      height: 85vh;
+      background-color: var(--branco);
+      border: 3px solid var(--vermelho);
+      border-radius: 12px;
+      box-shadow: 0 8px 32px rgba(255,0,0,0.3);
+      overflow: hidden;
+      position: relative;
+    }
+
+    .pdf-embed {
+      width: 100%;
+      height: 100%;
+      border: none;
+      display: block;
+    }
+
+    .loading {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      text-align: center;
+      background-color: rgba(0,0,0,0.8);
+      padding: 30px;
+      border-radius: 12px;
+      color: var(--branco);
+    }
+
+    .spinner {
+      border: 3px solid var(--cinza-medio);
+      border-top: 3px solid var(--vermelho);
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      animation: spin 1s linear infinite;
+      margin: 0 auto 15px;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    .error-message {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background-color: rgba(51, 0, 0, 0.95);
+      border: 2px solid var(--vermelho);
+      color: var(--branco);
+      padding: 30px;
+      border-radius: 12px;
+      text-align: center;
+      max-width: 400px;
+      display: none;
+    }
+
+    .error-icon {
+      font-size: 48px;
+      margin-bottom: 15px;
+      color: var(--vermelho);
+    }
+
+    .footer {
+      background: linear-gradient(135deg, #111, #1a1a1a);
+      border-top: 2px solid var(--vermelho);
+      text-align: center;
+      padding: 20px;
+      font-size: 0.95em;
+      color: var(--branco);
+    }
+
+    .back-to-top {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: linear-gradient(135deg, var(--vermelho), #cc0000);
+      color: var(--branco);
+      border: none;
+      padding: 15px;
+      border-radius: 50%;
+      font-size: 20px;
+      cursor: pointer;
+      box-shadow: 0 4px 16px rgba(255,0,0,0.3);
+      display: none;
+      z-index: 9999;
+      transition: all 0.3s ease;
+    }
+
+    .back-to-top:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 6px 20px rgba(255,0,0,0.4);
+    }
+
+    .fullscreen-btn {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background-color: rgba(0,0,0,0.7);
+      color: var(--branco);
+      border: 1px solid var(--vermelho);
+      padding: 8px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 12px;
+      transition: all 0.2s ease;
+      z-index: 100;
+    }
+
+    .fullscreen-btn:hover {
+      background-color: var(--vermelho);
+    }
+
+    /* Responsividade */
+    @media (max-width: 768px) {
+      .header {
+        padding: 12px 15px;
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+
+      .controls {
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+
+      .reader-controls {
+        padding: 6px 10px;
+        gap: 8px;
+      }
+
+      .control-btn {
+        padding: 6px 10px;
+        font-size: 12px;
+        min-width: 30px;
+      }
+
+      .pdf-viewer {
+        width: 98%;
+        height: 80vh;
+        border-width: 2px;
+      }
+
+      .main-content {
+        padding: 10px 0;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .header h1 {
+        font-size: 1.2em;
+      }
+
+      .btn {
+        padding: 10px 14px;
+        font-size: 0.9em;
+      }
+
+      .pdf-viewer {
+        height: 75vh;
+        border-radius: 8px;
+      }
+
+      .reader-controls {
+        padding: 4px 8px;
+        gap: 6px;
+      }
+
+      .zoom-level {
+        font-size: 12px;
+        min-width: 40px;
+      }
+    }
+
+    /* Modo escuro para o PDF */
+    .dark-mode .pdf-embed {
+      filter: invert(1) hue-rotate(180deg);
+    }
+
+    .dark-mode-toggle {
+      background-color: transparent;
+      color: var(--branco);
+      border: 1px solid var(--branco);
+      padding: 8px 12px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 14px;
+      transition: all 0.2s ease;
+    }
+
+    .dark-mode-toggle:hover {
+      background-color: var(--branco);
+      color: var(--preto);
+    }
+  </style>
+</head>
+<body>
+  <header class="header">
+    <button class="btn" onclick="goBack()">
+      ← Voltar
+    </button>
+    <h1>📖 Leitor de eBook</h1>
+    <div class="controls">
+      <div class="reader-controls">
+        <button class="control-btn" onclick="zoomOut()" title="Diminuir zoom">−</button>
+        <span class="zoom-level" id="zoomLevel">100%</span>
+        <button class="control-btn" onclick="zoomIn()" title="Aumentar zoom">+</button>
+        <button class="control-btn" onclick="resetZoom()" title="Zoom original">⚬</button>
+        <button class="dark-mode-toggle" onclick="toggleDarkMode()" title="Modo escuro">🌙</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="main-content">
+    <div class="pdf-container">
+      <div class="pdf-viewer" id="pdfViewer">
+        <button class="fullscreen-btn" onclick="toggleFullscreen()" title="Tela cheia">⛶</button>
+        <embed id="pdfEmbed" class="pdf-embed" src="seuebook.pdf" type="application/pdf">
+        
+        <div class="loading" id="loading">
+          <div class="spinner"></div>
+          <p>Carregando eBook...</p>
+        </div>
+
+        <div class="error-message" id="errorMessage">
+          <div class="error-icon">⚠️</div>
+          <h3>Erro ao carregar o eBook</h3>
+          <p>Verifique se o arquivo existe e tente novamente.</p>
+          <button class="btn" onclick="location.reload()" style="margin-top: 15px;">
+            Recarregar página
+          </button>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <p>📚 <strong>Booktor</strong> — Todos os eBooks são gratuitos</p>
+    <p>Desenvolvido com ❤️ por <strong>Alírio Neto</strong></p>
+  </footer>
+
+  <button class="back-to-top" id="backToTop" title="Voltar ao topo">⬆️</button>
+
+  <script>
+    let currentZoom = 100;
+    let isDarkMode = false;
+    let isFullscreen = false;
+
+    // Elementos do DOM
+    const pdfEmbed = document.getElementById('pdfEmbed');
+    const loading = document.getElementById('loading');
+    const errorMessage = document.getElementById('errorMessage');
+    const zoomLevel = document.getElementById('zoomLevel');
+    const backToTop = document.getElementById('backToTop');
+    const pdfViewer = document.getElementById('pdfViewer');
+
+    // Controles de Zoom
+    function zoomIn() {
+      if (currentZoom < 300) {
+        currentZoom += 25;
+        updateZoom();
+      }
+    }
+
+    function zoomOut() {
+      if (currentZoom > 25) {
+        currentZoom -= 25;
+        updateZoom();
+      }
+    }
+
+    function resetZoom() {
+      currentZoom = 100;
+      updateZoom();
+    }
+
+    function updateZoom() {
+      zoomLevel.textContent = currentZoom + '%';
+      pdfEmbed.style.transform = `scale(${currentZoom / 100})`;
+      pdfEmbed.style.transformOrigin = 'top left';
+      
+      // Ajustar container para zoom
+      if (currentZoom !== 100) {
+        pdfEmbed.style.width = `${100 / (currentZoom / 100)}%`;
+        pdfEmbed.style.height = `${100 / (currentZoom / 100)}%`;
+      } else {
+        pdfEmbed.style.width = '100%';
+        pdfEmbed.style.height = '100%';
+      }
+    }
+
+    // Modo escuro
+    function toggleDarkMode() {
+      isDarkMode = !isDarkMode;
+      if (isDarkMode) {
+        document.body.classList.add('dark-mode');
+      } else {
+        document.body.classList.remove('dark-mode');
+      }
+    }
+
+    // Tela cheia
+    function toggleFullscreen() {
+      if (!isFullscreen) {
+        if (pdfViewer.requestFullscreen) {
+          pdfViewer.requestFullscreen();
+        } else if (pdfViewer.webkitRequestFullscreen) {
+          pdfViewer.webkitRequestFullscreen();
+        } else if (pdfViewer.msRequestFullscreen) {
+          pdfViewer.msRequestFullscreen();
+        }
+        isFullscreen = true;
+      } else {
+        if (document.exitFullscreen) {
+          document.exitFullscreen();
+        } else if (document.webkitExitFullscreen) {
+          document.webkitExitFullscreen();
+        } else if (document.msExitFullscreen) {
+          document.msExitFullscreen();
+        }
+        isFullscreen = false;
+      }
+    }
+
+    // Voltar
+    function goBack() {
+      if (document.referrer) {
+        window.history.back();
+      } else {
+        window.location.href = 'catalogo.html';
+      }
+    }
+
+    // Carregamento do PDF
+    function checkPDFLoad() {
+      setTimeout(() => {
+        loading.style.display = 'none';
+      }, 2000);
+    }
+
+    // Tratar erro de carregamento
+    pdfEmbed.addEventListener('error', () => {
+      loading.style.display = 'none';
+      errorMessage.style.display = 'block';
+    });
+
+    // Botão voltar ao topo
+    backToTop.addEventListener('click', () => {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > 300) {
+        backToTop.style.display = 'block';
+      } else {
+        backToTop.style.display = 'none';
+      }
+    });
+
+    // Atalhos de teclado
+    document.addEventListener('keydown', (e) => {
+      if (e.ctrlKey || e.metaKey) {
+        if (e.key === '=' || e.key === '+') {
+          e.preventDefault();
+          zoomIn();
+        } else if (e.key === '-' || e.key === '_') {
+          e.preventDefault();
+          zoomOut();
+        } else if (e.key === '0') {
+          e.preventDefault();
+          resetZoom();
+        }
+      }
+      
+      // Esc para sair do fullscreen
+      if (e.key === 'Escape' && isFullscreen) {
+        toggleFullscreen();
+      }
+      
+      // F11 para fullscreen
+      if (e.key === 'F11') {
+        e.preventDefault();
+        toggleFullscreen();
+      }
+    });
+
+    // Detectar mudança de fullscreen
+    document.addEventListener('fullscreenchange', () => {
+      isFullscreen = !!document.fullscreenElement;
+    });
+
+    // Inicializar
+    window.addEventListener('load', () => {
+      checkPDFLoad();
+    });
+
+    // Parâmetros da URL para PDF específico
+    window.addEventListener('DOMContentLoaded', () => {
+      const urlParams = new URLSearchParams(window.location.search);
+      const pdfFile = urlParams.get('pdf');
+      
+      if (pdfFile) {
+        pdfEmbed.src = pdfFile;
+      }
+    });
+  </script>
+</body>
+</html>
