@@ -3,13 +3,16 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Booktor - Início</title>
+  <title>Booktor - Sistema de Usuário</title>
   <link rel="icon" href="https://cdn-icons-png.flaticon.com/512/29/29302.png" />
   <style>
     :root {
       --vermelho: #FF0000;
       --preto: #000000;
       --branco: #FFFFFF;
+      --cinza-escuro: #111;
+      --cinza-medio: #333;
+      --cinza-claro: #444;
     }
 
     * {
@@ -22,6 +25,7 @@
       background-color: var(--preto);
       color: var(--branco);
       font-family: Arial, sans-serif;
+      overflow-x: hidden;
     }
 
     header {
@@ -38,6 +42,7 @@
 
     header h1 {
       font-size: 1.8em;
+      cursor: pointer;
     }
 
     .header-buttons {
@@ -46,7 +51,7 @@
       align-items: center;
     }
 
-    #btnCatalogo {
+    .nav-btn {
       background-color: var(--preto);
       color: var(--branco);
       border: 2px solid var(--branco);
@@ -57,9 +62,15 @@
       align-items: center;
       cursor: pointer;
       text-decoration: none;
+      transition: all 0.3s ease;
     }
 
-    #btnCatalogo img {
+    .nav-btn:hover {
+      background-color: var(--cinza-medio);
+      transform: translateY(-2px);
+    }
+
+    .nav-btn img {
       width: 20px;
       height: 20px;
       margin-right: 8px;
@@ -75,72 +86,401 @@
       display: flex;
       align-items: center;
       gap: 8px;
+      cursor: pointer;
     }
 
     .user-info img {
-      width: 24px;
-      height: 24px;
+      width: 32px;
+      height: 32px;
       border-radius: 50%;
+      object-fit: cover;
     }
 
     #btnLogout {
-      background-color: #333;
+      background-color: var(--cinza-medio);
       color: var(--branco);
       border: 1px solid var(--vermelho);
       padding: 8px 12px;
       border-radius: 6px;
       font-size: 0.85em;
       cursor: pointer;
+      transition: background-color 0.3s ease;
     }
 
     #btnLogout:hover {
       background-color: var(--vermelho);
     }
 
-    .fade-slide {
-      opacity: 0;
-      transform: translateY(30px);
-      animation: aparecer 1s ease forwards;
+    .main-container {
+      display: flex;
+      min-height: calc(100vh - 80px);
     }
 
-    @keyframes aparecer {
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-
-    #apresentacao.fade-slide { animation-delay: 0.3s; }
-    #agradecimento.fade-slide { animation-delay: 0.6s; }
-    #apoie.fade-slide { animation-delay: 0.9s; }
-
-    main {
-      padding: 30px 20px;
-      text-align: center;
-    }
-
-    footer {
-      background-color: #111;
-      border-top: 2px solid var(--vermelho);
-      text-align: center;
+    .sidebar {
+      width: 280px;
+      background-color: var(--cinza-escuro);
       padding: 20px;
-      font-size: 0.95em;
-      color: var(--branco);
+      border-right: 2px solid var(--vermelho);
+      position: fixed;
+      height: calc(100vh - 80px);
+      overflow-y: auto;
+      left: -280px;
+      transition: left 0.3s ease;
+      z-index: 998;
     }
 
-    #voltarTopo {
+    .sidebar.open {
+      left: 0;
+    }
+
+    .sidebar-toggle {
       position: fixed;
-      bottom: 20px;
-      right: 20px;
+      top: 100px;
+      left: 20px;
       background-color: var(--vermelho);
       color: var(--branco);
       border: none;
       padding: 12px;
       border-radius: 50%;
-      font-size: 18px;
       cursor: pointer;
-      box-shadow: 0 0 10px #000;
-      z-index: 9999;
+      z-index: 999;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.5);
+    }
+
+    .content-area {
+      flex: 1;
+      margin-left: 0;
+      transition: margin-left 0.3s ease;
+      padding: 20px;
+    }
+
+    .content-area.with-sidebar {
+      margin-left: 280px;
+    }
+
+    .section {
+      background-color: var(--cinza-escuro);
+      border: 2px solid var(--vermelho);
+      border-radius: 12px;
+      padding: 25px;
+      margin-bottom: 30px;
+      box-shadow: 0 0 10px rgba(255, 0, 0, 0.3);
+    }
+
+    .section h2 {
+      color: var(--vermelho);
+      font-size: 1.6em;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .tab-buttons {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+
+    .tab-btn {
+      background-color: var(--cinza-medio);
+      color: var(--branco);
+      border: 2px solid var(--cinza-claro);
+      padding: 10px 20px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-size: 0.9em;
+    }
+
+    .tab-btn.active {
+      background-color: var(--vermelho);
+      border-color: var(--vermelho);
+    }
+
+    .tab-btn:hover {
+      background-color: var(--vermelho);
+      border-color: var(--vermelho);
+    }
+
+    .tab-content {
+      display: none;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    .search-container {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    .search-input {
+      flex: 1;
+      background-color: var(--preto);
+      color: var(--branco);
+      border: 2px solid var(--cinza-claro);
+      padding: 12px;
+      border-radius: 8px;
+      font-size: 1em;
+    }
+
+    .search-input:focus {
+      outline: none;
+      border-color: var(--vermelho);
+    }
+
+    .btn {
+      background-color: var(--vermelho);
+      color: var(--branco);
+      border: none;
+      padding: 12px 20px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 0.9em;
+      transition: all 0.3s ease;
+    }
+
+    .btn:hover {
+      background-color: #cc0000;
+      transform: translateY(-2px);
+    }
+
+    .btn:disabled {
+      background-color: var(--cinza-medio);
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .user-card {
+      background-color: var(--preto);
+      border: 2px solid var(--cinza-claro);
+      border-radius: 10px;
+      padding: 15px;
+      margin-bottom: 15px;
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      transition: all 0.3s ease;
+    }
+
+    .user-card:hover {
+      border-color: var(--vermelho);
+      transform: translateY(-2px);
+    }
+
+    .user-card img {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+
+    .user-info-card {
+      flex: 1;
+    }
+
+    .user-info-card h3 {
+      color: var(--vermelho);
+      margin-bottom: 5px;
+    }
+
+    .user-info-card p {
+      color: #ccc;
+      font-size: 0.9em;
+    }
+
+    .user-actions {
+      display: flex;
+      gap: 10px;
+    }
+
+    .btn-small {
+      background-color: var(--vermelho);
+      color: var(--branco);
+      border: none;
+      padding: 8px 15px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.8em;
+      transition: all 0.3s ease;
+    }
+
+    .btn-small:hover {
+      background-color: #cc0000;
+    }
+
+    .btn-small.secondary {
+      background-color: var(--cinza-medio);
+    }
+
+    .btn-small.secondary:hover {
+      background-color: var(--cinza-claro);
+    }
+
+    .comment-form {
+      background-color: var(--preto);
+      border: 2px solid var(--cinza-claro);
+      border-radius: 10px;
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+
+    .form-group {
+      margin-bottom: 15px;
+    }
+
+    .form-group label {
+      display: block;
+      color: var(--vermelho);
+      margin-bottom: 5px;
+      font-weight: bold;
+    }
+
+    .form-input {
+      width: 100%;
+      background-color: var(--cinza-escuro);
+      color: var(--branco);
+      border: 2px solid var(--cinza-claro);
+      padding: 12px;
+      border-radius: 8px;
+      font-size: 1em;
+      resize: vertical;
+    }
+
+    .form-input:focus {
+      outline: none;
+      border-color: var(--vermelho);
+    }
+
+    .comment-item {
+      background-color: var(--preto);
+      border: 2px solid var(--cinza-claro);
+      border-radius: 10px;
+      padding: 15px;
+      margin-bottom: 15px;
+    }
+
+    .comment-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+
+    .comment-header img {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+
+    .comment-author {
+      color: var(--vermelho);
+      font-weight: bold;
+    }
+
+    .comment-date {
+      color: #888;
+      font-size: 0.8em;
+    }
+
+    .comment-content {
+      line-height: 1.6;
+      margin-bottom: 10px;
+    }
+
+    .comment-actions {
+      display: flex;
+      gap: 10px;
+    }
+
+    .chat-container {
+      height: 400px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .chat-messages {
+      flex: 1;
+      background-color: var(--preto);
+      border: 2px solid var(--cinza-claro);
+      border-radius: 10px;
+      padding: 15px;
+      overflow-y: auto;
+      margin-bottom: 15px;
+      max-height: 300px;
+    }
+
+    .chat-message {
+      margin-bottom: 15px;
+      padding: 10px;
+      border-radius: 8px;
+      background-color: var(--cinza-escuro);
+    }
+
+    .chat-message.own {
+      background-color: var(--vermelho);
+      margin-left: 20%;
+    }
+
+    .chat-message.other {
+      background-color: var(--cinza-medio);
+      margin-right: 20%;
+    }
+
+    .message-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 5px;
+    }
+
+    .message-header img {
+      width: 25px;
+      height: 25px;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+
+    .message-author {
+      font-weight: bold;
+      font-size: 0.9em;
+    }
+
+    .message-time {
+      color: #ccc;
+      font-size: 0.7em;
+    }
+
+    .chat-input-container {
+      display: flex;
+      gap: 10px;
+    }
+
+    .profile-section {
+      text-align: center;
+    }
+
+    .profile-avatar {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 4px solid var(--vermelho);
+      margin: 0 auto 20px;
+      display: block;
+    }
+
+    .profile-info {
+      background-color: var(--preto);
+      border: 2px solid var(--cinza-claro);
+      border-radius: 10px;
+      padding: 20px;
+      margin-bottom: 20px;
     }
 
     .loading {
@@ -157,7 +497,7 @@
     }
 
     .loading-spinner {
-      border: 4px solid #333;
+      border: 4px solid var(--cinza-medio);
       border-top: 4px solid var(--vermelho);
       border-radius: 50%;
       width: 50px;
@@ -173,24 +513,54 @@
     .toast {
       position: fixed;
       bottom: 20px;
-      left: 50%;
-      transform: translateX(-50%);
+      right: 20px;
       background-color: var(--vermelho);
       color: var(--branco);
       padding: 15px 25px;
       border-radius: 8px;
-      box-shadow: 0 0 10px #000;
+      box-shadow: 0 0 10px rgba(0,0,0,0.5);
       z-index: 9999;
       opacity: 0.95;
+      max-width: 300px;
     }
 
     .toast.success {
-      background-color: #0f0;
-      color: #000;
+      background-color: #4CAF50;
+    }
+
+    .toast.error {
+      background-color: #f44336;
     }
 
     .hidden {
-      display: none;
+      display: none !important;
+    }
+
+    .fade-in {
+      opacity: 0;
+      animation: fadeIn 0.5s ease forwards;
+    }
+
+    @keyframes fadeIn {
+      to { opacity: 1; }
+    }
+
+    .online-indicator {
+      width: 12px;
+      height: 12px;
+      background-color: #4CAF50;
+      border-radius: 50%;
+      display: inline-block;
+      margin-left: 5px;
+    }
+
+    .offline-indicator {
+      width: 12px;
+      height: 12px;
+      background-color: #888;
+      border-radius: 50%;
+      display: inline-block;
+      margin-left: 5px;
     }
 
     @media (max-width: 768px) {
@@ -199,14 +569,30 @@
         gap: 5px;
       }
       
-      .user-info {
-        font-size: 0.8em;
-        padding: 6px 10px;
+      .sidebar {
+        width: 100%;
+        left: -100%;
       }
       
-      #btnCatalogo {
-        font-size: 0.85em;
-        padding: 8px 12px;
+      .content-area.with-sidebar {
+        margin-left: 0;
+      }
+      
+      .tab-buttons {
+        flex-direction: column;
+      }
+      
+      .search-container {
+        flex-direction: column;
+      }
+      
+      .user-card {
+        flex-direction: column;
+        text-align: center;
+      }
+      
+      .user-actions {
+        justify-content: center;
       }
     }
   </style>
@@ -218,9 +604,9 @@
   </div>
 
   <header>
-    <h1>📖 Booktor</h1>
+    <h1 onclick="location.reload()">📖 Booktor</h1>
     <div class="header-buttons">
-      <a href="catalogo.html" id="btnCatalogo">
+      <a href="#" class="nav-btn" id="btnCatalogo">
         <img src="https://cdn-icons-png.flaticon.com/512/29/29302.png" alt="Livro">
         Ler eBooks
       </a>
@@ -234,95 +620,201 @@
     </div>
   </header>
 
-  <main>
-    <section id="apresentacao" class="fade-slide" style="margin-bottom: 50px;">
-      <h2 style="color: var(--vermelho); font-size: 1.6em; margin-bottom: 15px;">
-        <span id="saudacao">Olá! Eu sou o criador do Booktor 👋</span>
-      </h2>
-      <p style="font-size: 1.1em; line-height: 1.6; max-width: 600px; margin: auto;">
-        Meu nome é <strong>Alírio Neto</strong> e sou apaixonado por escrita, tecnologia e projetos que ajudam as pessoas.<br>
-        Criei o <strong>Booktor</strong> para compartilhar gratuitamente todos os meus eBooks com o mundo, sem barreiras, sem anúncios e sem enrolação.
-      </p>
-    </section>
+  <button class="sidebar-toggle" id="sidebarToggle">☰</button>
 
-    <section id="agradecimento" class="fade-slide" style="margin-bottom: 50px;">
-      <h2 style="color: var(--vermelho); font-size: 1.6em; margin-bottom: 15px;">
-        Obrigado por estar aqui ❤️
-      </h2>
-      <p style="font-size: 1.1em; line-height: 1.6; max-width: 600px; margin: auto;">
-        Cada eBook publicado aqui foi feito com muito carinho, esforço e verdade.<br>
-        Ao acessar o Booktor, você não só lê meus textos — você apoia um sonho e ajuda esse projeto a continuar vivo.
-      </p>
-    </section>
-
-    <section id="apoie" class="fade-slide" style="margin-bottom: 60px;">
-      <div style="
-        background-color: #111;
-        border: 2px solid var(--vermelho);
-        border-radius: 12px;
-        padding: 25px;
-        max-width: 500px;
-        margin: 0 auto;
-        box-shadow: 0 0 10px var(--vermelho);
-      ">
-        <h2 style="color: var(--vermelho); font-size: 1.4em; margin-bottom: 15px;">
-          Apoie este projeto
-        </h2>
-        <p style="font-size: 1em; line-height: 1.5; margin-bottom: 20px;">
-          Se você gostou dos eBooks e quer me ajudar a continuar produzindo conteúdo gratuito, qualquer valor já ajuda muito. Obrigado de coração ❤️
-        </p>
-        <div style="background-color: #000; padding: 15px; border-radius: 8px; word-break: break-word; font-size: 1em; border: 1px solid #444;">
-          <strong>Chave PIX:</strong><br>
-          alirioneto@email.com
+  <div class="main-container">
+    <nav class="sidebar" id="sidebar">
+      <div class="section">
+        <h2>🚀 Navegação</h2>
+        <div class="tab-buttons" style="flex-direction: column;">
+          <button class="tab-btn active" data-tab="home">🏠 Início</button>
+          <button class="tab-btn" data-tab="profile">👤 Meu Perfil</button>
+          <button class="tab-btn" data-tab="users">👥 Usuários</button>
+          <button class="tab-btn" data-tab="comments">💬 Comentários</button>
+          <button class="tab-btn" data-tab="chat">📱 Chat</button>
         </div>
       </div>
-    </section>
-  </main>
+    </nav>
 
-  <footer>
-    <p>📚 <strong>Booktor</strong> — Todos os eBooks são gratuitos</p>
-    <p>Desenvolvido com ❤️ por <strong>Alírio Neto</strong></p>
-  </footer>
+    <main class="content-area" id="contentArea">
+      <!-- Home Tab -->
+      <div id="homeTab" class="tab-content active">
+        <div class="section fade-in">
+          <h2>🏠 Bem-vindo ao Booktor</h2>
+          <p style="font-size: 1.1em; line-height: 1.6; margin-bottom: 20px;">
+            <span id="saudacao">Olá! Bem-vindo ao sistema de usuários do Booktor 👋</span>
+          </p>
+          <p style="font-size: 1em; line-height: 1.6; color: #ccc;">
+            Aqui você pode gerenciar seu perfil, conversar com outros usuários, deixar comentários e muito mais. 
+            Use o menu lateral para navegar entre as diferentes funcionalidades.
+          </p>
+        </div>
 
-  <button id="voltarTopo" title="Voltar ao topo">⬆️</button>
+        <div class="section fade-in">
+          <h2>📊 Estatísticas</h2>
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px;">
+            <div style="background-color: var(--preto); padding: 20px; border-radius: 10px; text-align: center;">
+              <h3 style="color: var(--vermelho); font-size: 2em;" id="totalUsers">0</h3>
+              <p>Usuários Registrados</p>
+            </div>
+            <div style="background-color: var(--preto); padding: 20px; border-radius: 10px; text-align: center;">
+              <h3 style="color: var(--vermelho); font-size: 2em;" id="totalComments">0</h3>
+              <p>Comentários</p>
+            </div>
+            <div style="background-color: var(--preto); padding: 20px; border-radius: 10px; text-align: center;">
+              <h3 style="color: var(--vermelho); font-size: 2em;" id="onlineUsers">0</h3>
+              <p>Usuários Online</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Profile Tab -->
+      <div id="profileTab" class="tab-content">
+        <div class="section fade-in">
+          <h2>👤 Meu Perfil</h2>
+          <div class="profile-section">
+            <img id="profileAvatar" class="profile-avatar" src="https://cdn-icons-png.flaticon.com/512/3177/3177440.png" alt="Avatar">
+            
+            <div class="profile-info">
+              <div class="form-group">
+                <label for="profileName">Nome de Exibição:</label>
+                <input type="text" id="profileName" class="form-input" placeholder="Seu nome">
+              </div>
+              
+              <div class="form-group">
+                <label for="profileBio">Biografia:</label>
+                <textarea id="profileBio" class="form-input" rows="3" placeholder="Conte um pouco sobre você..."></textarea>
+              </div>
+              
+              <div class="form-group">
+                <label for="profilePhoto">Foto do Perfil (URL):</label>
+                <input type="url" id="profilePhoto" class="form-input" placeholder="https://exemplo.com/foto.jpg">
+              </div>
+              
+              <button class="btn" id="saveProfile">💾 Salvar Perfil</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Users Tab -->
+      <div id="usersTab" class="tab-content">
+        <div class="section fade-in">
+          <h2>👥 Buscar Usuários</h2>
+          
+          <div class="search-container">
+            <input type="text" id="userSearch" class="search-input" placeholder="Buscar usuários por nome...">
+            <button class="btn" id="searchUsers">🔍 Buscar</button>
+          </div>
+          
+          <div id="usersResults"></div>
+        </div>
+      </div>
+
+      <!-- Comments Tab -->
+      <div id="commentsTab" class="tab-content">
+        <div class="section fade-in">
+          <h2>💬 Sistema de Comentários</h2>
+          
+          <div class="comment-form">
+            <div class="form-group">
+              <label for="commentTitle">Título:</label>
+              <input type="text" id="commentTitle" class="form-input" placeholder="Título do seu comentário">
+            </div>
+            
+            <div class="form-group">
+              <label for="commentContent">Comentário:</label>
+              <textarea id="commentContent" class="form-input" rows="4" placeholder="Escreva seu comentário aqui..."></textarea>
+            </div>
+            
+            <button class="btn" id="submitComment">📝 Publicar Comentário</button>
+          </div>
+          
+          <div id="commentsContainer"></div>
+        </div>
+      </div>
+
+      <!-- Chat Tab -->
+      <div id="chatTab" class="tab-content">
+        <div class="section fade-in">
+          <h2>📱 Chat Global</h2>
+          
+          <div class="chat-container">
+            <div class="chat-messages" id="chatMessages"></div>
+            
+            <div class="chat-input-container">
+              <input type="text" id="chatInput" class="search-input" placeholder="Digite sua mensagem..." maxlength="500">
+              <button class="btn" id="sendMessage">📤 Enviar</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
 
   <!-- Firebase SDKs -->
   <script type="module">
-    // Importa os módulos do Firebase
+    // Import Firebase modules
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
     import {
       getAuth,
       onAuthStateChanged,
-      signOut
+      signOut,
+      updateProfile
     } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+    import {
+      getDatabase,
+      ref,
+      push,
+      set,
+      get,
+      onValue,
+      serverTimestamp,
+      query,
+      orderByChild,
+      limitToLast,
+      off
+    } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 
-    // Configuração do Firebase
+    // Firebase configuration
     const firebaseConfig = {
-      apiKey: "AIzaSyDtXjxHE-vn2_QwfyG1i08hefGiemJEWb4",
-      authDomain: "booktorlogin.firebaseapp.com",
-      projectId: "booktorlogin",
-      storageBucket: "booktorlogin.firebasestorage.app",
-      messagingSenderId: "889454389797",
-      appId: "1:889454389797:web:63259e79a6a18c03ba2dcc"
+      apiKey: "AIzaSyBauGgt1pm-sBas75N40ufWRsGD6c4BsgM",
+      authDomain: "sistema-de-login-blog.firebaseapp.com",
+      databaseURL: "https://sistema-de-login-blog-default-rtdb.firebaseio.com",
+      projectId: "sistema-de-login-blog",
+      storageBucket: "sistema-de-login-blog.firebasestorage.app",
+      messagingSenderId: "416120877008",
+      appId: "1:416120877008:web:a5b0a26bec246d577a93d5"
     };
 
-    // Inicializa o Firebase
+    // Initialize Firebase
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
+    const database = getDatabase(app);
 
-    // Elementos do DOM
+    // DOM elements
     const loadingScreen = document.getElementById('loadingScreen');
     const userInfo = document.getElementById('userInfo');
     const userName = document.getElementById('userName');
     const userAvatar = document.getElementById('userAvatar');
     const btnLogout = document.getElementById('btnLogout');
     const saudacao = document.getElementById('saudacao');
+    const sidebarToggle = document.getElementById('sidebarToggle');
+    const sidebar = document.getElementById('sidebar');
+    const contentArea = document.getElementById('contentArea');
 
-    // Função para mostrar toast
-    function showToast(msg, isSuccess = false) {
+    // Global variables
+    let currentUser = null;
+    let chatListener = null;
+    let commentsListener = null;
+    let usersListener = null;
+
+    // Utility functions
+    function showToast(msg, type = 'info') {
       const toast = document.createElement("div");
       toast.innerText = msg;
-      toast.className = `toast ${isSuccess ? 'success' : ''}`;
+      toast.className = `toast ${type}`;
       document.body.appendChild(toast);
 
       setTimeout(() => {
@@ -330,7 +822,6 @@
       }, 4000);
     }
 
-    // Função para obter saudação baseada no horário
     function getSaudacao() {
       const hora = new Date().getHours();
       if (hora < 12) return "Bom dia";
@@ -338,17 +829,25 @@
       return "Boa noite";
     }
 
-    // Função para atualizar interface do usuário
+    function formatDate(timestamp) {
+      if (!timestamp) return 'Agora';
+      const date = new Date(timestamp);
+      return date.toLocaleString('pt-BR');
+    }
+
+    function sanitizeInput(str) {
+      const div = document.createElement('div');
+      div.textContent = str;
+      return div.innerHTML;
+    }
+
+    // User interface functions
     function updateUserInterface(user) {
       if (user) {
-        // Usuário logado
         let displayName = 'Usuário';
         let photoURL = 'https://cdn-icons-png.flaticon.com/512/3177/3177440.png';
 
-        if (user.isAnonymous) {
-          displayName = 'Visitante';
-          photoURL = 'https://cdn-icons-png.flaticon.com/512/1077/1077114.png';
-        } else if (user.displayName) {
+        if (user.displayName) {
           displayName = user.displayName;
         } else if (user.email) {
           displayName = user.email.split('@')[0];
@@ -363,68 +862,523 @@
         userInfo.classList.remove('hidden');
         btnLogout.classList.remove('hidden');
         
-        // Personaliza a saudação
         saudacao.textContent = `${getSaudacao()}, ${displayName}! 👋`;
+        
+        // Update profile form
+        document.getElementById('profileName').value = displayName;
+        document.getElementById('profileAvatar').src = photoURL;
+        document.getElementById('profilePhoto').value = photoURL;
+        
+        // Load user profile data
+        loadUserProfile(user.uid);
+        
+        // Set user as online
+        setUserOnlineStatus(user.uid, true);
       } else {
-        // Usuário não logado
         userInfo.classList.add('hidden');
         btnLogout.classList.add('hidden');
-        saudacao.textContent = "Olá! Eu sou o criador do Booktor 👋";
+        saudacao.textContent = "Bem-vindo ao Booktor 👋";
       }
     }
 
-    // Função para fazer logout
+    // Authentication functions
     async function handleLogout() {
       try {
+        if (currentUser) {
+          await setUserOnlineStatus(currentUser.uid, false);
+        }
+        
+        // Clean up listeners
+        if (chatListener) off(ref(database, 'chat'));
+        if (commentsListener) off(ref(database, 'comments'));
+        if (usersListener) off(ref(database, 'users'));
+        
         await signOut(auth);
-        showToast("Logout realizado com sucesso!", true);
+        showToast("Logout realizado com sucesso!", 'success');
         setTimeout(() => {
           window.location.href = "teladelogin.html";
         }, 1500);
       } catch (error) {
-        showToast("Erro ao fazer logout: " + error.message);
+        showToast("Erro ao fazer logout: " + error.message, 'error');
       }
     }
 
+    // User profile functions
+    async function loadUserProfile(uid) {
+      try {
+        const userRef = ref(database, `users/${uid}`);
+        const snapshot = await get(userRef);
+        
+        if (snapshot.exists()) {
+          const userData = snapshot.val();
+          document.getElementById('profileBio').value = userData.bio || '';
+        }
+      } catch (error) {
+        console.error('Erro ao carregar perfil:', error);
+      }
+    }
+
+    async function saveUserProfile() {
+      if (!currentUser) return;
+      
+      try {
+        const name = document.getElementById('profileName').value.trim();
+        const bio = document.getElementById('profileBio').value.trim();
+        const photoURL = document.getElementById('profilePhoto').value.trim();
+        
+        if (!name) {
+          showToast('Nome é obrigatório!', 'error');
+          return;
+        }
+        
+        // Update Firebase Auth profile
+        await updateProfile(currentUser, {
+          displayName: name,
+          photoURL: photoURL || null
+        });
+        
+        // Update Realtime Database
+        const userRef = ref(database, `users/${currentUser.uid}`);
+        await set(userRef, {
+          uid: currentUser.uid,
+          displayName: name,
+          email: currentUser.email,
+          photoURL: photoURL || null,
+          bio: bio,
+          lastSeen: serverTimestamp(),
+          online: true
+        });
+        
+        showToast('Perfil salvo com sucesso!', 'success');
+        updateUserInterface(currentUser);
+        
+      } catch (error) {
+        showToast('Erro ao salvar perfil: ' + error.message, 'error');
+      }
+    }
+
+    async function setUserOnlineStatus(uid, isOnline) {
+      try {
+        const userRef = ref(database, `users/${uid}`);
+        await set(userRef, {
+          uid: uid,
+          displayName: currentUser?.displayName || 'Usuário',
+          email: currentUser?.email || '',
+          photoURL: currentUser?.photoURL || null,
+          online: isOnline,
+          lastSeen: serverTimestamp()
+        });
+      } catch (error) {
+        console.error('Erro ao atualizar status:', error);
+      }
+    }
+
+    // Users search functions
+    async function searchUsers() {
+      const searchTerm = document.getElementById('userSearch').value.trim().toLowerCase();
+      const resultsContainer = document.getElementById('usersResults');
+      
+      if (!searchTerm) {
+        loadAllUsers();
+        return;
+      }
+      
+      try {
+        const usersRef = ref(database, 'users');
+        const snapshot = await get(usersRef);
+        
+        if (snapshot.exists()) {
+          const users = snapshot.val();
+          const filteredUsers = Object.values(users).filter(user => 
+            user.displayName?.toLowerCase().includes(searchTerm) ||
+            user.email?.toLowerCase().includes(searchTerm)
+          );
+          
+          displayUsers(filteredUsers);
+        } else {
+          resultsContainer.innerHTML = '<p style="text-align: center; color: #888;">Nenhum usuário encontrado.</p>';
+        }
+      } catch (error) {
+        showToast('Erro ao buscar usuários: ' + error.message, 'error');
+      }
+    }
+
+    async function loadAllUsers() {
+      const resultsContainer = document.getElementById('usersResults');
+      
+      try {
+        const usersRef = ref(database, 'users');
+        const snapshot = await get(usersRef);
+        
+        if (snapshot.exists()) {
+          const users = Object.values(snapshot.val());
+          displayUsers(users);
+        } else {
+          resultsContainer.innerHTML = '<p style="text-align: center; color: #888;">Nenhum usuário encontrado.</p>';
+        }
+      } catch (error) {
+        showToast('Erro ao carregar usuários: ' + error.message, 'error');
+      }
+    }
+
+    function displayUsers(users) {
+      const resultsContainer = document.getElementById('usersResults');
+      
+      if (!users || users.length === 0) {
+        resultsContainer.innerHTML = '<p style="text-align: center; color: #888;">Nenhum usuário encontrado.</p>';
+        return;
+      }
+      
+      resultsContainer.innerHTML = users.map(user => `
+        <div class="user-card">
+          <img src="${user.photoURL || 'https://cdn-icons-png.flaticon.com/512/3177/3177440.png'}" alt="Avatar">
+          <div class="user-info-card">
+            <h3>${sanitizeInput(user.displayName || 'Usuário')}</h3>
+            <p>${sanitizeInput(user.email || '')}</p>
+            <p>${sanitizeInput(user.bio || 'Sem biografia')}</p>
+            <div style="margin-top: 5px;">
+              ${user.online ? '<span class="online-indicator"></span> Online' : '<span class="offline-indicator"></span> Offline'}
+              ${user.lastSeen ? ` - Visto por último: ${formatDate(user.lastSeen)}` : ''}
+            </div>
+          </div>
+          <div class="user-actions">
+            <button class="btn-small" onclick="startChat('${user.uid}', '${sanitizeInput(user.displayName || 'Usuário')}')">💬 Chat</button>
+            <button class="btn-small secondary" onclick="viewProfile('${user.uid}')">👤 Perfil</button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    // Comments system functions
+    async function submitComment() {
+      if (!currentUser) {
+        showToast('Você precisa estar logado para comentar!', 'error');
+        return;
+      }
+      
+      const title = document.getElementById('commentTitle').value.trim();
+      const content = document.getElementById('commentContent').value.trim();
+      
+      if (!title || !content) {
+        showToast('Título e conteúdo são obrigatórios!', 'error');
+        return;
+      }
+      
+      try {
+        const commentsRef = ref(database, 'comments');
+        const newCommentRef = push(commentsRef);
+        
+        await set(newCommentRef, {
+          id: newCommentRef.key,
+          title: title,
+          content: content,
+          authorId: currentUser.uid,
+          authorName: currentUser.displayName || 'Usuário',
+          authorPhoto: currentUser.photoURL || null,
+          timestamp: serverTimestamp(),
+          likes: 0,
+          replies: {}
+        });
+        
+        document.getElementById('commentTitle').value = '';
+        document.getElementById('commentContent').value = '';
+        
+        showToast('Comentário publicado com sucesso!', 'success');
+        
+      } catch (error) {
+        showToast('Erro ao publicar comentário: ' + error.message, 'error');
+      }
+    }
+
+    function loadComments() {
+      const commentsRef = ref(database, 'comments');
+      const commentsQuery = query(commentsRef, orderByChild('timestamp'), limitToLast(20));
+      
+      commentsListener = onValue(commentsQuery, (snapshot) => {
+        const commentsContainer = document.getElementById('commentsContainer');
+        
+        if (snapshot.exists()) {
+          const comments = Object.values(snapshot.val()).reverse();
+          
+          commentsContainer.innerHTML = comments.map(comment => `
+            <div class="comment-item">
+              <div class="comment-header">
+                <img src="${comment.authorPhoto || 'https://cdn-icons-png.flaticon.com/512/3177/3177440.png'}" alt="Avatar">
+                <div>
+                  <div class="comment-author">${sanitizeInput(comment.authorName)}</div>
+                  <div class="comment-date">${formatDate(comment.timestamp)}</div>
+                </div>
+              </div>
+              <h4 style="color: var(--vermelho); margin-bottom: 10px;">${sanitizeInput(comment.title)}</h4>
+              <div class="comment-content">${sanitizeInput(comment.content)}</div>
+              <div class="comment-actions">
+                <button class="btn-small" onclick="likeComment('${comment.id}')">👍 ${comment.likes || 0}</button>
+                <button class="btn-small secondary" onclick="replyToComment('${comment.id}')">💬 Responder</button>
+              </div>
+            </div>
+          `).join('');
+        } else {
+          commentsContainer.innerHTML = '<p style="text-align: center; color: #888;">Nenhum comentário ainda. Seja o primeiro!</p>';
+        }
+        
+        updateStats();
+      });
+    }
+
+    // Chat system functions
+    function loadChat() {
+      const chatRef = ref(database, 'chat');
+      const chatQuery = query(chatRef, orderByChild('timestamp'), limitToLast(50));
+      
+      chatListener = onValue(chatQuery, (snapshot) => {
+        const chatMessages = document.getElementById('chatMessages');
+        
+        if (snapshot.exists()) {
+          const messages = Object.values(snapshot.val());
+          
+          chatMessages.innerHTML = messages.map(message => {
+            const isOwn = message.authorId === currentUser?.uid;
+            return `
+              <div class="chat-message ${isOwn ? 'own' : 'other'}">
+                <div class="message-header">
+                  <img src="${message.authorPhoto || 'https://cdn-icons-png.flaticon.com/512/3177/3177440.png'}" alt="Avatar">
+                  <span class="message-author">${sanitizeInput(message.authorName)}</span>
+                  <span class="message-time">${formatDate(message.timestamp)}</span>
+                </div>
+                <div>${sanitizeInput(message.content)}</div>
+              </div>
+            `;
+          }).join('');
+          
+          chatMessages.scrollTop = chatMessages.scrollHeight;
+        } else {
+          chatMessages.innerHTML = '<p style="text-align: center; color: #888;">Nenhuma mensagem ainda. Inicie a conversa!</p>';
+        }
+      });
+    }
+
+    async function sendMessage() {
+      if (!currentUser) {
+        showToast('Você precisa estar logado para enviar mensagens!', 'error');
+        return;
+      }
+      
+      const messageInput = document.getElementById('chatInput');
+      const content = messageInput.value.trim();
+      
+      if (!content) {
+        showToast('Digite uma mensagem!', 'error');
+        return;
+      }
+      
+      try {
+        const chatRef = ref(database, 'chat');
+        const newMessageRef = push(chatRef);
+        
+        await set(newMessageRef, {
+          id: newMessageRef.key,
+          content: content,
+          authorId: currentUser.uid,
+          authorName: currentUser.displayName || 'Usuário',
+          authorPhoto: currentUser.photoURL || null,
+          timestamp: serverTimestamp()
+        });
+        
+        messageInput.value = '';
+        
+      } catch (error) {
+        showToast('Erro ao enviar mensagem: ' + error.message, 'error');
+      }
+    }
+
+    // Statistics functions
+    async function updateStats() {
+      try {
+        // Count total users
+        const usersRef = ref(database, 'users');
+        const usersSnapshot = await get(usersRef);
+        const totalUsers = usersSnapshot.exists() ? Object.keys(usersSnapshot.val()).length : 0;
+        document.getElementById('totalUsers').textContent = totalUsers;
+        
+        // Count online users
+        const onlineUsers = usersSnapshot.exists() ? 
+          Object.values(usersSnapshot.val()).filter(user => user.online).length : 0;
+        document.getElementById('onlineUsers').textContent = onlineUsers;
+        
+        // Count total comments
+        const commentsRef = ref(database, 'comments');
+        const commentsSnapshot = await get(commentsRef);
+        const totalComments = commentsSnapshot.exists() ? Object.keys(commentsSnapshot.val()).length : 0;
+        document.getElementById('totalComments').textContent = totalComments;
+        
+      } catch (error) {
+        console.error('Erro ao atualizar estatísticas:', error);
+      }
+    }
+
+    // Tab system functions
+    function switchTab(tabName) {
+      // Hide all tabs
+      document.querySelectorAll('.tab-content').forEach(tab => {
+        tab.classList.remove('active');
+      });
+      
+      // Remove active class from all buttons
+      document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.classList.remove('active');
+      });
+      
+      // Show selected tab
+      document.getElementById(tabName + 'Tab').classList.add('active');
+      
+      // Add active class to clicked button
+      document.querySelector(`[data-tab="${tabName}"]`).classList.add('active');
+      
+      // Load tab-specific content
+      switch(tabName) {
+        case 'users':
+          loadAllUsers();
+          break;
+        case 'comments':
+          loadComments();
+          break;
+        case 'chat':
+          loadChat();
+          break;
+        case 'home':
+          updateStats();
+          break;
+      }
+      
+      // Close sidebar on mobile
+      if (window.innerWidth <= 768) {
+        sidebar.classList.remove('open');
+      }
+    }
+
+    // Utility functions for user interactions
+    window.startChat = function(userId, userName) {
+      switchTab('chat');
+      document.getElementById('chatInput').placeholder = `Conversando no chat global...`;
+      showToast(`Chat iniciado com ${userName}!`, 'success');
+    };
+
+    window.viewProfile = function(userId) {
+      showToast('Funcionalidade de visualizar perfil em desenvolvimento!', 'info');
+    };
+
+    window.likeComment = async function(commentId) {
+      if (!currentUser) {
+        showToast('Você precisa estar logado para curtir!', 'error');
+        return;
+      }
+      
+      try {
+        const commentRef = ref(database, `comments/${commentId}`);
+        const snapshot = await get(commentRef);
+        
+        if (snapshot.exists()) {
+          const comment = snapshot.val();
+          const newLikes = (comment.likes || 0) + 1;
+          
+          await set(commentRef, {
+            ...comment,
+            likes: newLikes
+          });
+          
+          showToast('Comentário curtido!', 'success');
+        }
+      } catch (error) {
+        showToast('Erro ao curtir comentário: ' + error.message, 'error');
+      }
+    };
+
+    window.replyToComment = function(commentId) {
+      showToast('Sistema de respostas em desenvolvimento!', 'info');
+    };
+
     // Event listeners
     btnLogout.addEventListener('click', handleLogout);
+    
+    document.getElementById('saveProfile').addEventListener('click', saveUserProfile);
+    document.getElementById('searchUsers').addEventListener('click', searchUsers);
+    document.getElementById('submitComment').addEventListener('click', submitComment);
+    document.getElementById('sendMessage').addEventListener('click', sendMessage);
+    
+    // Enter key handlers
+    document.getElementById('userSearch').addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') searchUsers();
+    });
+    
+    document.getElementById('chatInput').addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') sendMessage();
+    });
+    
+    // Tab system
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const tabName = btn.getAttribute('data-tab');
+        switchTab(tabName);
+      });
+    });
+    
+    // Sidebar toggle
+    sidebarToggle.addEventListener('click', () => {
+      sidebar.classList.toggle('open');
+      if (sidebar.classList.contains('open')) {
+        contentArea.classList.add('with-sidebar');
+      } else {
+        contentArea.classList.remove('with-sidebar');
+      }
+    });
+    
+    // Close sidebar when clicking outside
+    document.addEventListener('click', (e) => {
+      if (!sidebar.contains(e.target) && !sidebarToggle.contains(e.target)) {
+        sidebar.classList.remove('open');
+        contentArea.classList.remove('with-sidebar');
+      }
+    });
 
-    // Verificação de autenticação
+    // Auth state observer
     onAuthStateChanged(auth, (user) => {
-      // Remove loading screen
       loadingScreen.classList.add('hidden');
       
       if (user) {
-        // Usuário logado
+        currentUser = user;
         console.log("Usuário logado:", user);
         updateUserInterface(user);
+        updateStats();
+        
+        // Auto-load initial content
+        loadComments();
+        loadChat();
+        
       } else {
-        // Usuário não logado - redireciona para login
         console.log("Usuário não logado");
         window.location.href = "teladelogin.html";
       }
     });
 
-    // Botão voltar ao topo
-    const btnTopo = document.getElementById('voltarTopo');
-
-    btnTopo.addEventListener('click', () => {
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    });
-
-    // Mostra o botão apenas quando rolar a página
-    window.addEventListener('scroll', () => {
-      if (window.scrollY > 300) {
-        btnTopo.style.display = 'block';
-      } else {
-        btnTopo.style.display = 'none';
+    // Cleanup on page unload
+    window.addEventListener('beforeunload', () => {
+      if (currentUser) {
+        setUserOnlineStatus(currentUser.uid, false);
       }
     });
 
-    // Inicialmente escondido
-    btnTopo.style.display = 'none';
+    // Handle page visibility changes
+    document.addEventListener('visibilitychange', () => {
+      if (currentUser) {
+        if (document.hidden) {
+          setUserOnlineStatus(currentUser.uid, false);
+        } else {
+          setUserOnlineStatus(currentUser.uid, true);
+        }
+      }
+    });
 
-    // Previne o cache do navegador para garantir verificação de auth
+    // Prevent back/forward cache issues
     window.addEventListener('pageshow', (event) => {
       if (event.persisted) {
         window.location.reload();
@@ -432,4 +1386,4 @@
     });
   </script>
 </body>
-</html>
+  </html>
