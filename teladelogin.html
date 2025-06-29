@@ -38,6 +38,7 @@
     h2 {
       text-align: center;
       color: #FF0000;
+      margin-bottom: 20px;
     }
 
     .form-group {
@@ -109,17 +110,29 @@
       background-color: #444;
     }
 
-    .link-register {
+    .btn-toggle {
+      background-color: transparent;
+      color: #FF0000;
+      border: 1px solid #FF0000;
+      margin-bottom: 20px;
+    }
+
+    .btn-toggle:hover {
+      background-color: #FF0000;
+      color: #fff;
+    }
+
+    .link-center {
       text-align: center;
       margin: 15px 0;
     }
 
-    .link-register a {
+    .link-center a {
       color: #FF0000;
       text-decoration: none;
     }
 
-    .link-register a:hover {
+    .link-center a:hover {
       text-decoration: underline;
     }
 
@@ -182,53 +195,8 @@
       display: none;
     }
 
-    /* Modal styles */
-    .modal {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background-color: rgba(0, 0, 0, 0.8);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      z-index: 10001;
-    }
-
-    .modal-content {
-      background-color: #111;
-      padding: 30px;
-      border-radius: 10px;
-      border: 2px solid #FF0000;
-      max-width: 400px;
-      width: 90%;
-    }
-
-    .modal h3 {
-      color: #FF0000;
-      margin-bottom: 20px;
-      text-align: center;
-    }
-
-    .modal input {
-      width: 100%;
-      padding: 12px;
-      margin-bottom: 15px;
-      border: 1px solid #444;
-      border-radius: 5px;
-      background-color: #222;
-      color: #fff;
-    }
-
-    .modal-buttons {
-      display: flex;
-      gap: 10px;
-    }
-
-    .btn-cancel {
-      background-color: #666;
-      color: #fff;
+    .form-section {
+      margin-bottom: 30px;
     }
 
     @media (max-width: 480px) {
@@ -249,47 +217,54 @@
     <div class="loading-spinner"></div>
   </div>
 
-  <!-- Modal de Cadastro -->
-  <div id="registerModal" class="modal hidden">
-    <div class="modal-content">
-      <h3>Criar Nova Conta</h3>
-      <form id="registerForm">
-        <input type="email" id="registerEmail" placeholder="Seu e-mail" required>
-        <input type="password" id="registerPassword" placeholder="Sua senha (mín. 6 caracteres)" required minlength="6">
-        <div class="modal-buttons">
-          <button type="button" class="btn btn-cancel" id="cancelRegister">Cancelar</button>
-          <button type="submit" class="btn btn-primary">Criar Conta</button>
-        </div>
-      </form>
-    </div>
-  </div>
-
   <header>
     <h1>Booktor 📚</h1>
   </header>
 
   <div class="container">
-    <h2>Entrar no Booktor</h2>
+    <!-- Botão para alternar entre Login e Cadastro -->
+    <button id="toggleMode" class="btn btn-toggle">Criar Nova Conta</button>
 
-    <form id="loginForm">
-      <div class="form-group">
-        <label for="email">E-mail:</label>
-        <input type="email" id="email" required />
-      </div>
+    <!-- Seção de Login -->
+    <div id="loginSection" class="form-section">
+      <h2>Entrar no Booktor</h2>
 
-      <div class="form-group">
-        <label for="password">Senha:</label>
-        <input type="password" id="password" required />
-      </div>
+      <form id="loginForm">
+        <div class="form-group">
+          <label for="loginEmail">E-mail:</label>
+          <input type="email" id="loginEmail" required />
+        </div>
 
-      <button type="submit" class="btn btn-primary">
-        Entrar com E-mail
-      </button>
-    </form>
+        <div class="form-group">
+          <label for="loginPassword">Senha:</label>
+          <input type="password" id="loginPassword" required />
+        </div>
 
-    <div class="link-register">
-      Não tem uma conta?
-      <a href="#" id="registerLink">Cadastre-se</a>
+        <button type="submit" class="btn btn-primary">
+          Entrar com E-mail
+        </button>
+      </form>
+    </div>
+
+    <!-- Seção de Cadastro -->
+    <div id="registerSection" class="form-section hidden">
+      <h2>Criar Nova Conta</h2>
+
+      <form id="registerForm">
+        <div class="form-group">
+          <label for="registerEmail">E-mail:</label>
+          <input type="email" id="registerEmail" required />
+        </div>
+
+        <div class="form-group">
+          <label for="registerPassword">Senha:</label>
+          <input type="password" id="registerPassword" placeholder="Mínimo 6 caracteres" required minlength="6" />
+        </div>
+
+        <button type="submit" class="btn btn-primary">
+          Criar Conta
+        </button>
+      </form>
     </div>
 
     <hr class="divider">
@@ -340,13 +315,15 @@
 
     // Elementos do DOM
     const loadingScreen = document.getElementById('loadingScreen');
-    const registerModal = document.getElementById('registerModal');
+    const toggleMode = document.getElementById('toggleMode');
+    const loginSection = document.getElementById('loginSection');
+    const registerSection = document.getElementById('registerSection');
     const loginForm = document.getElementById('loginForm');
     const registerForm = document.getElementById('registerForm');
-    const registerLink = document.getElementById('registerLink');
-    const cancelRegister = document.getElementById('cancelRegister');
     const googleLogin = document.getElementById('googleLogin');
     const anonLogin = document.getElementById('anonLogin');
+
+    let isLoginMode = true;
 
     // Função para mostrar toast
     function showToast(msg, isSuccess = false) {
@@ -369,23 +346,35 @@
       }
     }
 
-    // Função para mostrar/esconder modal
-    function toggleModal(show) {
-      if (show) {
-        registerModal.classList.remove('hidden');
-      } else {
-        registerModal.classList.add('hidden');
-        // Limpa os campos
+    // Função para alternar entre login e cadastro
+    function toggleLoginMode() {
+      isLoginMode = !isLoginMode;
+      
+      if (isLoginMode) {
+        loginSection.classList.remove('hidden');
+        registerSection.classList.add('hidden');
+        toggleMode.textContent = 'Criar Nova Conta';
+        // Limpa campos de cadastro
         document.getElementById('registerEmail').value = '';
         document.getElementById('registerPassword').value = '';
+      } else {
+        loginSection.classList.add('hidden');
+        registerSection.classList.remove('hidden');
+        toggleMode.textContent = 'Já tenho uma conta';
+        // Limpa campos de login
+        document.getElementById('loginEmail').value = '';
+        document.getElementById('loginPassword').value = '';
       }
     }
+
+    // Event listener para o botão de alternar modo
+    toggleMode.addEventListener('click', toggleLoginMode);
 
     // Login com email e senha
     loginForm.addEventListener("submit", async (e) => {
       e.preventDefault();
-      const email = document.getElementById("email").value;
-      const password = document.getElementById("password").value;
+      const email = document.getElementById("loginEmail").value;
+      const password = document.getElementById("loginPassword").value;
       
       toggleLoading(true);
       
@@ -410,6 +399,43 @@
             break;
           case 'auth/too-many-requests':
             errorMsg = "Muitas tentativas. Tente novamente mais tarde";
+            break;
+          default:
+            errorMsg = error.message;
+        }
+        
+        showToast(errorMsg);
+      } finally {
+        toggleLoading(false);
+      }
+    });
+
+    // Cadastro de nova conta
+    registerForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const email = document.getElementById("registerEmail").value;
+      const password = document.getElementById("registerPassword").value;
+      
+      toggleLoading(true);
+      
+      try {
+        await createUserWithEmailAndPassword(auth, email, password);
+        showToast("Conta criada com sucesso!", true);
+        setTimeout(() => {
+          window.location.href = "inicio.html";
+        }, 1500);
+      } catch (error) {
+        let errorMsg = "Erro ao criar conta";
+        
+        switch (error.code) {
+          case 'auth/email-already-in-use':
+            errorMsg = "Este e-mail já está em uso";
+            break;
+          case 'auth/invalid-email':
+            errorMsg = "E-mail inválido";
+            break;
+          case 'auth/weak-password':
+            errorMsg = "Senha muito fraca. Use pelo menos 6 caracteres";
             break;
           default:
             errorMsg = error.message;
@@ -463,62 +489,6 @@
       }
     });
 
-    // Mostrar modal de cadastro
-    registerLink.addEventListener("click", (e) => {
-      e.preventDefault();
-      toggleModal(true);
-    });
-
-    // Cancelar cadastro
-    cancelRegister.addEventListener("click", () => {
-      toggleModal(false);
-    });
-
-    // Fechar modal clicando fora
-    registerModal.addEventListener("click", (e) => {
-      if (e.target === registerModal) {
-        toggleModal(false);
-      }
-    });
-
-    // Cadastro de nova conta
-    registerForm.addEventListener("submit", async (e) => {
-      e.preventDefault();
-      const email = document.getElementById("registerEmail").value;
-      const password = document.getElementById("registerPassword").value;
-      
-      toggleLoading(true);
-      
-      try {
-        await createUserWithEmailAndPassword(auth, email, password);
-        showToast("Conta criada com sucesso!", true);
-        toggleModal(false);
-        setTimeout(() => {
-          window.location.href = "inicio.html";
-        }, 1500);
-      } catch (error) {
-        let errorMsg = "Erro ao criar conta";
-        
-        switch (error.code) {
-          case 'auth/email-already-in-use':
-            errorMsg = "Este e-mail já está em uso";
-            break;
-          case 'auth/invalid-email':
-            errorMsg = "E-mail inválido";
-            break;
-          case 'auth/weak-password':
-            errorMsg = "Senha muito fraca. Use pelo menos 6 caracteres";
-            break;
-          default:
-            errorMsg = error.message;
-        }
-        
-        showToast(errorMsg);
-      } finally {
-        toggleLoading(false);
-      }
-    });
-
     // Verifica se já está logado
     onAuthStateChanged(auth, (user) => {
       if (user) {
@@ -531,13 +501,6 @@
     window.addEventListener('pageshow', (event) => {
       if (event.persisted) {
         window.location.reload();
-      }
-    });
-
-    // Adiciona suporte para Enter no modal
-    registerModal.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape') {
-        toggleModal(false);
       }
     });
   </script>
