@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Booktor - Sua Biblioteca Digital</title>
-  <link rel="icon" href="https://cdn-icons-png.flaticon.com/512/29/29302.png">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Booktor - Plataforma de eBooks</title>
+  <link rel="icon" href="https://cdn-icons-png.flaticon.com/512/29/29302.png" />
   <style>
     :root {
       --vermelho: #FF0000;
@@ -15,6 +15,8 @@
       --cinza-medio: #1a1a1a;
       --cinza-claro: #333;
       --sombra: rgba(0, 0, 0, 0.3);
+      --gradiente-primario: linear-gradient(135deg, var(--vermelho) 0%, var(--vermelho-hover) 100%);
+      --gradiente-fundo: linear-gradient(135deg, var(--preto) 0%, var(--cinza-escuro) 100%);
     }
 
     * {
@@ -24,14 +26,17 @@
     }
 
     body {
-      background: linear-gradient(135deg, var(--preto) 0%, var(--cinza-escuro) 100%);
+      background: var(--gradiente-fundo);
       color: var(--branco);
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       min-height: 100vh;
+      display: flex;
+      flex-direction: column;
       line-height: 1.6;
       overflow-x: hidden;
     }
 
+    /* Particles Background */
     .particles {
       position: fixed;
       top: 0;
@@ -48,28 +53,36 @@
       height: 2px;
       background: var(--vermelho);
       border-radius: 50%;
-      animation: float 6s ease-in-out infinite;
+      animation: float 8s ease-in-out infinite;
+      opacity: 0.6;
     }
 
     @keyframes float {
-      0%, 100% { transform: translateY(0px) rotate(0deg); opacity: 0.7; }
-      50% { transform: translateY(-20px) rotate(180deg); opacity: 0.3; }
+      0%, 100% { transform: translateY(0px) rotate(0deg); opacity: 0.6; }
+      50% { transform: translateY(-30px) rotate(180deg); opacity: 0.3; }
     }
 
+    /* Header */
     .header {
       position: sticky;
       top: 0;
-      background: linear-gradient(135deg, var(--vermelho) 0%, var(--vermelho-hover) 100%);
+      background: var(--gradiente-primario);
       padding: 15px 20px;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      box-shadow: 0 4px 15px var(--sombra);
+      box-shadow: 0 4px 20px var(--sombra);
       z-index: 1000;
-      backdrop-filter: blur(10px);
+      backdrop-filter: blur(15px);
     }
 
-    .header h1 {
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .logo h1 {
       color: var(--branco);
       font-size: 1.8em;
       margin: 0;
@@ -77,41 +90,32 @@
       text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
     }
 
-    .user-section {
+    .user-info {
       display: flex;
       align-items: center;
       gap: 15px;
     }
 
-    .user-info {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      background: rgba(0, 0, 0, 0.3);
-      padding: 8px 15px;
-      border-radius: 25px;
-      backdrop-filter: blur(10px);
-    }
-
     .user-avatar {
-      width: 35px;
-      height: 35px;
+      width: 40px;
+      height: 40px;
       border-radius: 50%;
       border: 2px solid var(--branco);
       object-fit: cover;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
     }
 
     .user-name {
-      color: var(--branco);
       font-weight: 600;
-      font-size: 0.9em;
+      font-size: 1em;
+      text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
     }
 
-    .btn {
-      background: var(--preto);
+    .btn-logout {
+      background-color: var(--preto);
       color: var(--branco);
       border: 2px solid var(--branco);
-      padding: 10px 16px;
+      padding: 8px 16px;
       border-radius: 8px;
       font-size: 0.9em;
       font-weight: 600;
@@ -119,86 +123,149 @@
       transition: all 0.3s ease;
       text-transform: uppercase;
       letter-spacing: 0.5px;
-      text-decoration: none;
-      display: inline-block;
-    }
-
-    .btn:hover {
-      background: var(--cinza-claro);
-      transform: translateY(-2px);
-      box-shadow: 0 4px 8px var(--sombra);
-      color: var(--branco);
-    }
-
-    .btn-logout {
-      background: transparent;
-      border: 2px solid var(--branco);
-      padding: 8px 12px;
-      font-size: 0.8em;
     }
 
     .btn-logout:hover {
-      background: rgba(255, 255, 255, 0.2);
+      background-color: var(--cinza-claro);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px var(--sombra);
     }
 
-    .hero {
+    /* Main Content */
+    .main-content {
+      flex: 1;
+      padding: 60px 20px;
+      max-width: 1200px;
+      margin: auto;
+      width: 100%;
       position: relative;
-      padding: 100px 20px;
-      text-align: center;
-      background: linear-gradient(135deg, rgba(255, 0, 0, 0.1) 0%, rgba(0, 0, 0, 0.8) 100%);
       z-index: 10;
     }
 
-    .hero h2 {
+    .hero-section {
+      text-align: center;
+      margin-bottom: 80px;
+      animation: fadeInUp 1s ease-out;
+    }
+
+    .hero-title {
       font-size: 3.5em;
+      font-weight: 300;
       margin-bottom: 20px;
-      background: linear-gradient(45deg, var(--vermelho), #ff6666);
+      background: var(--gradiente-primario);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
-      animation: glow 3s ease-in-out infinite alternate;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
     }
 
-    @keyframes glow {
-      from { filter: drop-shadow(0 0 10px rgba(255, 0, 0, 0.5)); }
-      to { filter: drop-shadow(0 0 20px rgba(255, 0, 0, 0.8)); }
-    }
-
-    .hero p {
+    .hero-subtitle {
       font-size: 1.3em;
-      margin-bottom: 40px;
       color: #ccc;
+      margin-bottom: 40px;
+      font-weight: 300;
+      opacity: 0.9;
+    }
+
+    .hero-description {
+      font-size: 1.1em;
+      color: #aaa;
       max-width: 600px;
-      margin-left: auto;
-      margin-right: auto;
+      margin: 0 auto 50px;
+      line-height: 1.8;
     }
 
-    .cta-buttons {
-      display: flex;
-      gap: 20px;
-      justify-content: center;
-      flex-wrap: wrap;
+    /* Features Grid */
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+      gap: 40px;
+      margin-bottom: 60px;
     }
 
-    .btn-primary {
-      background: linear-gradient(135deg, var(--vermelho), var(--vermelho-hover));
+    .feature-card {
+      background: linear-gradient(145deg, var(--cinza-escuro), var(--cinza-medio));
+      border: 2px solid transparent;
+      border-radius: 20px;
+      padding: 40px 30px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 10px 30px rgba(255, 0, 0, 0.1);
+      animation: slideInUp 0.8s ease-out forwards;
+      opacity: 0;
+      transform: translateY(30px);
+    }
+
+    .feature-card:nth-child(1) { animation-delay: 0.2s; }
+    .feature-card:nth-child(2) { animation-delay: 0.4s; }
+    .feature-card:nth-child(3) { animation-delay: 0.6s; }
+    .feature-card:nth-child(4) { animation-delay: 0.8s; }
+
+    .feature-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: var(--gradiente-primario);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      z-index: -1;
+    }
+
+    .feature-card:hover {
+      transform: translateY(-10px) scale(1.03);
+      border-color: var(--vermelho);
+      box-shadow: 0 20px 50px rgba(255, 0, 0, 0.3);
+    }
+
+    .feature-card:hover::before {
+      opacity: 0.08;
+    }
+
+    .feature-icon {
+      font-size: 3.5em;
+      margin-bottom: 20px;
+      display: block;
+      filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
+    }
+
+    .feature-title {
+      color: var(--vermelho);
+      font-size: 1.5em;
+      font-weight: 600;
+      margin-bottom: 15px;
+    }
+
+    .feature-description {
+      color: #ccc;
+      font-size: 1em;
+      line-height: 1.6;
+      margin-bottom: 25px;
+    }
+
+    .btn-feature {
+      background: var(--gradiente-primario);
       color: var(--branco);
       border: none;
+      border-radius: 12px;
       padding: 15px 30px;
-      border-radius: 50px;
-      font-size: 1.1em;
       font-weight: 600;
+      font-size: 1em;
       cursor: pointer;
       transition: all 0.3s ease;
       text-transform: uppercase;
       letter-spacing: 1px;
       position: relative;
       overflow: hidden;
-      text-decoration: none;
-      display: inline-block;
+      width: 100%;
     }
 
-    .btn-primary::before {
+    .btn-feature::before {
       content: '';
       position: absolute;
       top: 0;
@@ -209,162 +276,51 @@
       transition: left 0.5s;
     }
 
-    .btn-primary:hover::before {
+    .btn-feature:hover::before {
       left: 100%;
     }
 
-    .btn-primary:hover {
-      transform: translateY(-3px) scale(1.05);
-      box-shadow: 0 10px 30px rgba(255, 0, 0, 0.4);
-      color: var(--branco);
+    .btn-feature:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 25px rgba(255, 0, 0, 0.4);
     }
 
-    .btn-secondary {
-      background: transparent;
+    /* Quick Actions */
+    .quick-actions {
+      display: flex;
+      justify-content: center;
+      gap: 30px;
+      margin-top: 50px;
+      flex-wrap: wrap;
+    }
+
+    .quick-btn {
+      background: linear-gradient(135deg, var(--cinza-escuro), var(--cinza-medio));
       color: var(--branco);
       border: 2px solid var(--vermelho);
       padding: 15px 30px;
-      border-radius: 50px;
+      border-radius: 12px;
       font-size: 1.1em;
       font-weight: 600;
       cursor: pointer;
       transition: all 0.3s ease;
-      text-transform: uppercase;
-      letter-spacing: 1px;
       text-decoration: none;
-      display: inline-block;
-    }
-
-    .btn-secondary:hover {
-      background: var(--vermelho);
-      transform: translateY(-3px);
-      box-shadow: 0 10px 30px rgba(255, 0, 0, 0.3);
-      color: var(--branco);
-    }
-
-    .features {
-      padding: 80px 20px;
-      max-width: 1200px;
-      margin: auto;
-      z-index: 10;
-      position: relative;
-    }
-
-    .features h3 {
-      text-align: center;
-      font-size: 2.5em;
-      margin-bottom: 50px;
-      color: var(--branco);
-      position: relative;
-    }
-
-    .features h3::after {
-      content: '';
-      display: block;
-      width: 80px;
-      height: 3px;
-      background: linear-gradient(90deg, var(--vermelho), var(--vermelho-hover));
-      margin: 15px auto;
-      border-radius: 2px;
-    }
-
-    .features-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-      gap: 40px;
-    }
-
-    .feature-card {
-      background: linear-gradient(145deg, var(--cinza-escuro), var(--cinza-medio));
-      border: 2px solid transparent;
-      border-radius: 20px;
-      padding: 40px 30px;
-      text-align: center;
-      transition: all 0.4s ease;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .feature-card::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: linear-gradient(135deg, var(--vermelho), var(--vermelho-hover));
-      opacity: 0;
-      transition: opacity 0.3s ease;
-      z-index: -1;
-    }
-
-    .feature-card:hover {
-      transform: translateY(-10px);
-      border-color: var(--vermelho);
-      box-shadow: 0 20px 40px rgba(255, 0, 0, 0.3);
-    }
-
-    .feature-card:hover::before {
-      opacity: 0.05;
-    }
-
-    .feature-icon {
-      font-size: 3em;
-      margin-bottom: 20px;
-      color: var(--vermelho);
-    }
-
-    .feature-card h4 {
-      font-size: 1.5em;
-      margin-bottom: 15px;
-      color: var(--branco);
-    }
-
-    .feature-card p {
-      color: #ccc;
-      line-height: 1.6;
-    }
-
-    .stats {
-      background: linear-gradient(135deg, var(--cinza-medio), var(--preto));
-      padding: 60px 20px;
-      text-align: center;
-      border-top: 2px solid var(--vermelho);
-      border-bottom: 2px solid var(--vermelho);
-    }
-
-    .stats-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 40px;
-      max-width: 800px;
-      margin: auto;
-    }
-
-    .stat-item {
-      padding: 20px;
-    }
-
-    .stat-number {
-      font-size: 3em;
-      font-weight: bold;
-      color: var(--vermelho);
-      margin-bottom: 10px;
-      animation: countUp 2s ease-out;
-    }
-
-    .stat-label {
-      font-size: 1.1em;
-      color: var(--branco);
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
       text-transform: uppercase;
-      letter-spacing: 1px;
+      letter-spacing: 0.5px;
     }
 
-    @keyframes countUp {
-      from { opacity: 0; transform: translateY(20px); }
-      to { opacity: 1; transform: translateY(0); }
+    .quick-btn:hover {
+      background: var(--gradiente-primario);
+      transform: translateY(-3px);
+      box-shadow: 0 8px 25px rgba(255, 0, 0, 0.4);
+      color: var(--branco);
+      text-decoration: none;
     }
 
+    /* Footer */
     .footer {
       background: linear-gradient(135deg, #0a0a0a, #111);
       border-top: 2px solid var(--vermelho);
@@ -372,38 +328,19 @@
       padding: 40px 20px;
       font-size: 0.95em;
       color: var(--branco);
+      position: relative;
+      z-index: 10;
     }
 
     .footer p {
-      margin-bottom: 10px;
+      margin-bottom: 8px;
     }
 
     .footer strong {
       color: var(--vermelho);
     }
 
-    .login-prompt {
-      background: linear-gradient(135deg, var(--cinza-escuro), var(--cinza-medio));
-      border: 2px solid var(--vermelho);
-      border-radius: 15px;
-      padding: 30px;
-      text-align: center;
-      margin: 40px auto;
-      max-width: 500px;
-      box-shadow: 0 10px 30px var(--sombra);
-    }
-
-    .login-prompt h3 {
-      color: var(--vermelho);
-      margin-bottom: 15px;
-      font-size: 1.5em;
-    }
-
-    .login-prompt p {
-      color: #ccc;
-      margin-bottom: 25px;
-    }
-
+    /* Loading State */
     .loading {
       position: fixed;
       top: 0;
@@ -415,22 +352,22 @@
       align-items: center;
       justify-content: center;
       z-index: 9999;
-      opacity: 1;
-      visibility: visible;
+      opacity: 0;
+      visibility: hidden;
       transition: all 0.3s ease;
     }
 
-    .loading.hide {
-      opacity: 0;
-      visibility: hidden;
+    .loading.show {
+      opacity: 1;
+      visibility: visible;
     }
 
     .loading-spinner {
       border: 4px solid var(--cinza-medio);
       border-top: 4px solid var(--vermelho);
       border-radius: 50%;
-      width: 50px;
-      height: 50px;
+      width: 60px;
+      height: 60px;
       animation: spin 1s linear infinite;
     }
 
@@ -439,92 +376,185 @@
       100% { transform: rotate(360deg); }
     }
 
-    .hidden {
-      display: none !important;
+    /* Toast Messages */
+    .toast {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      background: var(--vermelho);
+      color: var(--branco);
+      padding: 15px 25px;
+      border-radius: 12px;
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+      z-index: 10000;
+      transform: translateX(400px);
+      transition: transform 0.3s ease;
+      max-width: 350px;
+      font-weight: 500;
     }
 
+    .toast.show {
+      transform: translateX(0);
+    }
+
+    .toast.success {
+      background: #4CAF50;
+    }
+
+    .toast.error {
+      background: #f44336;
+    }
+
+    /* Animations */
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes slideInUp {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* Responsive Design */
     @media (max-width: 768px) {
       .header {
         padding: 12px 15px;
         flex-wrap: wrap;
-        gap: 10px;
+        gap: 15px;
       }
 
       .header h1 {
         font-size: 1.5em;
       }
 
-      .user-section {
-        order: 3;
-        width: 100%;
-        justify-content: center;
-        margin-top: 10px;
+      .user-info {
+        gap: 10px;
       }
 
-      .hero {
-        padding: 60px 15px;
+      .user-avatar {
+        width: 35px;
+        height: 35px;
       }
 
-      .hero h2 {
+      .user-name {
+        font-size: 0.9em;
+      }
+
+      .btn-logout {
+        padding: 6px 12px;
+        font-size: 0.8em;
+      }
+
+      .main-content {
+        padding: 40px 15px;
+      }
+
+      .hero-title {
         font-size: 2.5em;
       }
 
-      .hero p {
+      .hero-subtitle {
         font-size: 1.1em;
-      }
-
-      .cta-buttons {
-        flex-direction: column;
-        align-items: center;
-      }
-
-      .btn-primary,
-      .btn-secondary {
-        width: 100%;
-        max-width: 300px;
-      }
-
-      .features {
-        padding: 60px 15px;
-      }
-
-      .features h3 {
-        font-size: 2em;
       }
 
       .features-grid {
         grid-template-columns: 1fr;
-        gap: 30px;
+        gap: 25px;
       }
 
-      .stats-grid {
-        grid-template-columns: repeat(2, 1fr);
+      .feature-card {
+        padding: 30px 20px;
+      }
+
+      .quick-actions {
+        flex-direction: column;
+        align-items: center;
         gap: 20px;
       }
 
-      .stat-number {
-        font-size: 2.5em;
+      .quick-btn {
+        width: 100%;
+        max-width: 300px;
+        justify-content: center;
       }
     }
 
     @media (max-width: 480px) {
-      .hero h2 {
+      .hero-title {
         font-size: 2em;
       }
 
-      .stats-grid {
+      .feature-icon {
+        font-size: 3em;
+      }
+
+      .feature-title {
+        font-size: 1.3em;
+      }
+
+      .features-grid {
         grid-template-columns: 1fr;
       }
+    }
 
-      .user-info {
-        flex-direction: column;
-        gap: 5px;
-        padding: 10px;
-      }
+    /* Accessibility */
+    .feature-card:focus,
+    .quick-btn:focus,
+    .btn-logout:focus {
+      outline: 3px solid var(--vermelho);
+      outline-offset: 2px;
+    }
 
-      .user-name {
-        font-size: 0.8em;
-      }
+    /* Hidden class */
+    .hidden {
+      display: none !important;
+    }
+
+    /* Login prompt */
+    .login-prompt {
+      text-align: center;
+      padding: 100px 20px;
+      animation: fadeInUp 1s ease-out;
+    }
+
+    .login-prompt h2 {
+      font-size: 2.5em;
+      margin-bottom: 20px;
+      color: var(--vermelho);
+    }
+
+    .login-prompt p {
+      font-size: 1.2em;
+      margin-bottom: 30px;
+      color: #ccc;
+    }
+
+    .btn-login {
+      background: var(--gradiente-primario);
+      color: var(--branco);
+      border: none;
+      padding: 15px 40px;
+      border-radius: 12px;
+      font-size: 1.2em;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .btn-login:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 25px rgba(255, 0, 0, 0.4);
     }
   </style>
 </head>
@@ -535,93 +565,119 @@
     <div class="loading-spinner"></div>
   </div>
 
+  <!-- Header -->
   <header class="header">
-    <h1>📚 Booktor</h1>
-    
-    <div class="user-section" id="userSection">
-      <!-- Conteúdo dinâmico baseado no estado de login -->
+    <div class="logo">
+      <h1>📚 Booktor</h1>
+    </div>
+    <div class="user-info" id="userInfo" style="display: none;">
+      <img src="" alt="Avatar do usuário" class="user-avatar" id="userAvatar">
+      <span class="user-name" id="userName">Usuário</span>
+      <button class="btn-logout" id="logoutBtn" aria-label="Fazer logout">
+        Sair
+      </button>
     </div>
   </header>
 
-  <section class="hero">
-    <h2>Sua Biblioteca Digital</h2>
-    <p>Descubra histórias incríveis, mergulhe em novos mundos e explore o conhecimento através dos nossos eBooks gratuitos.</p>
-    
-    <div id="heroContent">
-      <!-- Conteúdo dinâmico baseado no estado de login -->
+  <!-- Main Content -->
+  <main class="main-content">
+    <!-- Login Prompt (shown when user is not logged in) -->
+    <div class="login-prompt" id="loginPrompt">
+      <h2>Bem-vindo ao Booktor!</h2>
+      <p>Faça login para acessar nossa plataforma de eBooks e recursos exclusivos.</p>
+      <button class="btn-login" onclick="window.location.href='teladelogin.html'">
+        Fazer Login
+      </button>
     </div>
-  </section>
 
-  <section class="features">
-    <h3>Por que escolher o Booktor?</h3>
-    <div class="features-grid">
-      <div class="feature-card">
-        <div class="feature-icon">📖</div>
-        <h4>Totalmente Gratuito</h4>
-        <p>Todos os nossos eBooks são completamente gratuitos. Acesso ilimitado ao conhecimento sem custo algum.</p>
-      </div>
-      
-      <div class="feature-card">
-        <div class="feature-icon">🌟</div>
-        <h4>Histórias Originais</h4>
-        <p>Conteúdo exclusivo e original, incluindo histórias pessoais e ficções criativas do autor.</p>
-      </div>
-      
-      <div class="feature-card">
-        <div class="feature-icon">📱</div>
-        <h4>Leitura Responsiva</h4>
-        <p>Leia em qualquer dispositivo - desktop, tablet ou smartphone. Interface adaptável e amigável.</p>
-      </div>
-      
-      <div class="feature-card">
-        <div class="feature-icon">🔒</div>
-        <h4>Conta Segura</h4>
-        <p>Sistema de autenticação seguro com Firebase. Seus dados e progresso de leitura sempre protegidos.</p>
-      </div>
-      
-      <div class="feature-card">
-        <div class="feature-icon">⚡</div>
-        <h4>Acesso Instantâneo</h4>
-        <p>Comece a ler imediatamente após o login. Sem downloads, sem espera, só conhecimento puro.</p>
-      </div>
-      
-      <div class="feature-card">
-        <div class="feature-icon">❤️</div>
-        <h4>Feito com Amor</h4>
-        <p>Cada história é cuidadosamente escrita e cada funcionalidade pensada para sua melhor experiência.</p>
-      </div>
+    <!-- Authenticated Content (shown when user is logged in) -->
+    <div class="authenticated-content" id="authenticatedContent" style="display: none;">
+      <!-- Hero Section -->
+      <section class="hero-section">
+        <h1 class="hero-title">Descubra Novos Mundos</h1>
+        <p class="hero-subtitle">Sua plataforma completa de eBooks e comunidade literária</p>
+        <p class="hero-description">
+          Explore uma vasta coleção de eBooks gratuitos, conecte-se com outros leitores 
+          e compartilhe suas experiências literárias em nossa comunidade global.
+        </p>
+      </section>
+
+      <!-- Features Grid -->
+      <section class="features-grid">
+        <!-- Catálogo de eBooks -->
+        <article class="feature-card" onclick="window.location.href='catalogo.html'" tabindex="0" role="button" aria-label="Acessar catálogo de eBooks">
+          <span class="feature-icon">📖</span>
+          <h3 class="feature-title">Catálogo de eBooks</h3>
+          <p class="feature-description">
+            Explore nossa coleção exclusiva de eBooks gratuitos, com histórias originais 
+            e envolventes que vão transportar você para novos universos.
+          </p>
+          <button class="btn-feature">
+            Explorar Catálogo
+          </button>
+        </article>
+
+        <!-- Chat Global -->
+        <article class="feature-card" onclick="window.location.href='#'" tabindex="0" role="button" aria-label="Acessar chat global">
+          <span class="feature-icon">💬</span>
+          <h3 class="feature-title">Chat Global</h3>
+          <p class="feature-description">
+            Conecte-se com leitores de todo o mundo! Discuta livros, compartilhe 
+            recomendações e faça novos amigos na nossa comunidade literária.
+          </p>
+          <button class="btn-feature">
+            Entrar no Chat
+          </button>
+        </article>
+
+        <!-- Sistema de Comentários -->
+        <article class="feature-card" onclick="window.location.href='#1'" tabindex="0" role="button" aria-label="Acessar sistema de comentários">
+          <span class="feature-icon">💭</span>
+          <h3 class="feature-title">Comentários</h3>
+          <p class="feature-description">
+            Deixe suas impressões sobre os livros, interaja com outros leitores 
+            e descubra novas perspectivas através dos comentários da comunidade.
+          </p>
+          <button class="btn-feature">
+            Ver Comentários
+          </button>
+        </article>
+
+        <!-- Perfil do Usuário -->
+        <article class="feature-card" onclick="showUserProfile()" tabindex="0" role="button" aria-label="Ver perfil do usuário">
+          <span class="feature-icon">👤</span>
+          <h3 class="feature-title">Meu Perfil</h3>
+          <p class="feature-description">
+            Gerencie suas informações pessoais, visualize seu histórico de leitura 
+            e personalize sua experiência na plataforma.
+          </p>
+          <button class="btn-feature">
+            Ver Perfil
+          </button>
+        </article>
+      </section>
+
+      <!-- Quick Actions -->
+      <section class="quick-actions">
+        <a href="catalogo.html" class="quick-btn">
+          📚 Começar a Ler
+        </a>
+        <a href="#" class="quick-btn">
+          🌐 Chat Global
+        </a>
+        <a href="#1" class="quick-btn">
+          💬 Comentários
+        </a>
+      </section>
     </div>
-  </section>
+  </main>
 
-  <section class="stats">
-    <div class="stats-grid">
-      <div class="stat-item">
-        <div class="stat-number" data-target="3">0</div>
-        <div class="stat-label">eBooks Disponíveis</div>
-      </div>
-      
-      <div class="stat-item">
-        <div class="stat-number" data-target="100">0</div>
-        <div class="stat-label">% Gratuito</div>
-      </div>
-      
-      <div class="stat-item">
-        <div class="stat-number" data-target="24">0</div>
-        <div class="stat-label">Horas de Leitura</div>
-      </div>
-      
-      <div class="stat-item">
-        <div class="stat-number" data-target="1">0</div>
-        <div class="stat-label">Autor Dedicado</div>
-      </div>
-    </div>
-  </section>
-
+  <!-- Footer -->
   <footer class="footer">
-    <p>📚 <strong>Booktor</strong> — Compartilhando conhecimento livremente</p>
+    <p>📚 <strong>Booktor</strong> — Conectando leitores ao redor do mundo</p>
     <p>Desenvolvido com ❤️ por <strong>Alírio Neto</strong></p>
-    <p style="margin-top: 15px; opacity: 0.8; font-size: 0.85em;">
-      © 2025 Booktor. Uma plataforma dedicada ao amor pela leitura.
+    <p style="margin-top: 10px; opacity: 0.8; font-size: 0.85em;">
+      © 2025 Booktor. Compartilhando conhecimento e experiências literárias.
     </p>
   </footer>
 
@@ -635,11 +691,12 @@
     import {
       getDatabase,
       ref,
-      update,
+      set,
       serverTimestamp,
       onDisconnect
     } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 
+    // Firebase Configuration
     const firebaseConfig = {
       apiKey: "AIzaSyBauGgt1pm-sBas75N40ufWRsGD6c4BsgM",
       authDomain: "sistema-de-login-blog.firebaseapp.com",
@@ -650,204 +707,195 @@
       appId: "1:416120877008:web:a5b0a26bec246d577a93d5"
     };
 
+    // Initialize Firebase
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
     const database = getDatabase(app);
 
+    // DOM Elements
     const loading = document.getElementById('loading');
-    const userSection = document.getElementById('userSection');
-    const heroContent = document.getElementById('heroContent');
+    const loginPrompt = document.getElementById('loginPrompt');
+    const authenticatedContent = document.getElementById('authenticatedContent');
+    const userInfo = document.getElementById('userInfo');
+    const userName = document.getElementById('userName');
+    const userAvatar = document.getElementById('userAvatar');
+    const logoutBtn = document.getElementById('logoutBtn');
+
+    // Utility Functions
+    function showLoading() {
+      loading.classList.add('show');
+    }
 
     function hideLoading() {
-      loading.classList.add('hide');
+      loading.classList.remove('show');
+    }
+
+    function showToast(message, type = 'info') {
+      const toast = document.createElement('div');
+      toast.className = `toast ${type}`;
+      toast.textContent = message;
+      document.body.appendChild(toast);
+      
+      setTimeout(() => toast.classList.add('show'), 100);
+      
+      setTimeout(() => {
+        toast.classList.remove('show');
+        setTimeout(() => toast.remove(), 300);
+      }, 4000);
     }
 
     function createParticles() {
       const particlesContainer = document.getElementById('particles');
-      for (let i = 0; i < 30; i++) {
+      const particleCount = window.innerWidth < 768 ? 30 : 60;
+      
+      for (let i = 0; i < particleCount; i++) {
         const particle = document.createElement('div');
         particle.className = 'particle';
         particle.style.left = Math.random() * 100 + '%';
         particle.style.top = Math.random() * 100 + '%';
-        particle.style.animationDelay = Math.random() * 6 + 's';
-        particle.style.animationDuration = (Math.random() * 3 + 3) + 's';
+        particle.style.animationDelay = Math.random() * 8 + 's';
+        particle.style.animationDuration = (Math.random() * 4 + 4) + 's';
         particlesContainer.appendChild(particle);
       }
     }
 
-    function animateNumbers() {
-      const statNumbers = document.querySelectorAll('.stat-number');
-      
-      statNumbers.forEach(stat => {
-        const target = parseInt(stat.getAttribute('data-target'));
-        const duration = 2000;
-        const step = target / (duration / 16);
-        let current = 0;
-        
-        const timer = setInterval(() => {
-          current += step;
-          if (current >= target) {
-            current = target;
-            clearInterval(timer);
-          }
-          stat.textContent = Math.floor(current);
-        }, 16);
-      });
-    }
-
-    async function updateUserStatus(user, online = true) {
+    // User Management Functions
+    async function updateUserOnlineStatus(user, online = true) {
       if (!user) return;
       
       try {
         const userRef = ref(database, `users/${user.uid}`);
-        const updates = {
+        await set(userRef, {
+          uid: user.uid,
+          displayName: user.displayName || user.email.split('@')[0],
+          email: user.email,
+          photoURL: user.photoURL || `https://ui-avatars.com/api/?name=${encodeURIComponent(user.displayName || user.email.split('@')[0])}&background=FF0000&color=fff&size=128`,
           online: online,
           lastSeen: serverTimestamp()
-        };
-        
-        await update(userRef, updates);
-        
+        });
+
+        // Set up disconnect handler
         if (online) {
-          onDisconnect(userRef).update({
-            online: false,
-            lastSeen: serverTimestamp()
-          });
+          const disconnectRef = ref(database, `users/${user.uid}/online`);
+          onDisconnect(disconnectRef).set(false);
         }
       } catch (error) {
         console.error('Erro ao atualizar status do usuário:', error);
       }
     }
 
-    function renderLoggedInUser(user) {
+    function displayUserInfo(user) {
       const displayName = user.displayName || user.email.split('@')[0];
-      const photoURL = user.photoURL || 'https://cdn-icons-png.flaticon.com/512/149/149071.png';
+      const photoURL = user.photoURL || `https://ui-avatars.com/api/?name=${encodeURIComponent(displayName)}&background=FF0000&color=fff&size=128`;
       
-      userSection.innerHTML = `
-        <div class="user-info">
-          <img src="${photoURL}" alt="Avatar" class="user-avatar" onerror="this.src='https://cdn-icons-png.flaticon.com/512/149/149071.png'">
-          <span class="user-name">Olá, ${displayName}</span>
-        </div>
-        <button class="btn btn-logout" id="logoutBtn">Sair</button>
-      `;
+      userName.textContent = displayName;
+      userAvatar.src = photoURL;
+      userAvatar.alt = `Avatar de ${displayName}`;
       
-      heroContent.innerHTML = `
-        <div class="cta-buttons">
-          <a href="catalogo.html" class="btn-primary">📚 Explorar Catálogo</a>
-          <a href="#features" class="btn-secondary">🌟 Descobrir Mais</a>
-        </div>
-      `;
-      
-      document.getElementById('logoutBtn').addEventListener('click', handleLogout);
+      userInfo.style.display = 'flex';
+      loginPrompt.style.display = 'none';
+      authenticatedContent.style.display = 'block';
     }
 
-    function renderLoggedOutUser() {
-      userSection.innerHTML = `
-        <a href="teladelogin.html" class="btn">Entrar</a>
-      `;
-      
-      heroContent.innerHTML = `
-        <div class="login-prompt">
-          <h3>🔐 Faça Login para Começar</h3>
-          <p>Crie sua conta gratuita e tenha acesso completo a todos os nossos eBooks incríveis!</p>
-          <div class="cta-buttons">
-            <a href="teladelogin.html" class="btn-primary">🚀 Começar Agora</a>
-            <a href="#features" class="btn-secondary">📖 Saber Mais</a>
-          </div>
-        </div>
-      `;
+    function hideUserInfo() {
+      userInfo.style.display = 'none';
+      loginPrompt.style.display = 'block';
+      authenticatedContent.style.display = 'none';
     }
 
+    // Logout Function
     async function handleLogout() {
+      showLoading();
       try {
         const user = auth.currentUser;
         if (user) {
-          await updateUserStatus(user, false);
+          await updateUserOnlineStatus(user, false);
         }
+        
         await signOut(auth);
-        console.log('Logout realizado com sucesso');
+        showToast('Logout realizado com sucesso!', 'success');
+        
+        setTimeout(() => {
+          window.location.href = 'teladelogin.html';
+        }, 1500);
       } catch (error) {
+        hideLoading();
         console.error('Erro ao fazer logout:', error);
+        showToast('Erro ao fazer logout. Tente novamente.', 'error');
       }
     }
 
-    // Smooth scroll para links internos
-    document.addEventListener('click', (e) => {
-      if (e.target.getAttribute('href') === '#features') {
-        e.preventDefault();
-        document.querySelector('.features').scrollIntoView({
-          behavior: 'smooth'
-        });
+    // Profile Function
+    window.showUserProfile = function() {
+      const user = auth.currentUser;
+      if (user) {
+        const profileInfo = `
+          Nome: ${user.displayName || 'Não informado'}
+          Email: ${user.email}
+          Último login: ${new Date(user.metadata.lastSignInTime).toLocaleString('pt-BR')}
+          Conta criada: ${new Date(user.metadata.creationTime).toLocaleString('pt-BR')}
+        `;
+        
+        showToast('Informações do perfil exibidas no console', 'success');
+        console.log('=== PERFIL DO USUÁRIO ===');
+        console.log(profileInfo);
+        console.log('========================');
       }
-    });
-
-    // Observador de scroll para animações
-    const observerOptions = {
-      threshold: 0.1,
-      rootMargin: '0px 0px -50px 0px'
     };
 
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          if (entry.target.classList.contains('stats')) {
-            animateNumbers();
-          }
-          entry.target.style.opacity = '1';
-          entry.target.style.transform = 'translateY(0)';
-        }
-      });
-    }, observerOptions);
+    // Event Listeners
+    logoutBtn.addEventListener('click', handleLogout);
 
-    // Observar seções para animações
-    document.addEventListener('DOMContentLoaded', () => {
-      const sections = document.querySelectorAll('.features, .stats');
-      sections.forEach(section => {
-        section.style.opacity = '0';
-        section.style.transform = 'translateY(30px)';
-        section.style.transition = 'all 0.6s ease';
-        observer.observe(section);
+    // Add keyboard navigation for feature cards
+    document.querySelectorAll('.feature-card').forEach(card => {
+      card.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          card.click();
+        }
       });
     });
 
-    // Estado de autenticação
+    // Auth State Observer
     onAuthStateChanged(auth, async (user) => {
       hideLoading();
       
       if (user) {
-        console.log('Usuário logado:', user.email);
-        renderLoggedInUser(user);
-        await updateUserStatus(user, true);
+        console.log('Usuário autenticado:', user.email);
+        displayUserInfo(user);
+        await updateUserOnlineStatus(user, true);
       } else {
-        console.log('Usuário não logado');
-        renderLoggedOutUser();
+        console.log('Usuário não autenticado');
+        hideUserInfo();
       }
     });
 
-    // Inicialização
+    // Initialize
+    showLoading();
     createParticles();
-    
-    // Animação inicial da página
+
+    // Smooth loading animation
     window.addEventListener('load', () => {
       document.body.style.opacity = '1';
-      setTimeout(() => {
-        const heroElements = document.querySelectorAll('.hero h2, .hero p');
-        heroElements.forEach((el, index) => {
-          setTimeout(() => {
-            el.style.opacity = '1';
-            el.style.transform = 'translateY(0)';
-          }, index * 200);
-        });
-      }, 300);
     });
 
-    // Configuração inicial de animações
+    // Add loading state
     document.body.style.opacity = '0';
     document.body.style.transition = 'opacity 0.5s ease';
-    
-    document.querySelectorAll('.hero h2, .hero p').forEach(el => {
-      el.style.opacity = '0';
-      el.style.transform = 'translateY(30px)';
-      el.style.transition = 'all 0.6s ease';
+
+    // Handle window resize for particles
+    window.addEventListener('resize', () => {
+      const particlesContainer = document.getElementById('particles');
+      particlesContainer.innerHTML = '';
+      createParticles();
+    });
+
+    // Performance optimization
+    window.addEventListener('beforeunload', async () => {
+      const user = auth.currentUser;
+      if (user) {
+        await updateUserOnlineStatus(user, false);
+      }
     });
   </script>
 </body>
