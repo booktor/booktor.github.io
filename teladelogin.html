@@ -38,7 +38,6 @@
     h2 {
       text-align: center;
       color: #FF0000;
-      margin-bottom: 20px;
     }
 
     .form-group {
@@ -59,6 +58,7 @@
       background-color: #222;
       color: #fff;
       font-size: 16px;
+      box-sizing: border-box;
     }
 
     input[type="email"]:focus, input[type="password"]:focus {
@@ -76,6 +76,12 @@
       font-size: 16px;
       margin-bottom: 10px;
       transition: all 0.3s;
+      box-sizing: border-box;
+    }
+
+    .btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
     }
 
     .btn-primary {
@@ -83,7 +89,7 @@
       color: #fff;
     }
 
-    .btn-primary:hover {
+    .btn-primary:hover:not(:disabled) {
       background-color: #cc0000;
     }
 
@@ -94,10 +100,12 @@
       align-items: center;
       justify-content: center;
       gap: 10px;
+      border: 1px solid #ddd;
     }
 
-    .btn-google:hover {
-      background-color: #f0f0f0;
+    .btn-google:hover:not(:disabled) {
+      background-color: #f8f9fa;
+      box-shadow: 0 1px 2px 0 rgba(60,64,67,.3), 0 1px 3px 1px rgba(60,64,67,.15);
     }
 
     .btn-guest {
@@ -106,33 +114,21 @@
       border: 1px solid #FF0000;
     }
 
-    .btn-guest:hover {
+    .btn-guest:hover:not(:disabled) {
       background-color: #444;
     }
 
-    .btn-toggle {
-      background-color: transparent;
-      color: #FF0000;
-      border: 1px solid #FF0000;
-      margin-bottom: 20px;
-    }
-
-    .btn-toggle:hover {
-      background-color: #FF0000;
-      color: #fff;
-    }
-
-    .link-center {
+    .link-register {
       text-align: center;
       margin: 15px 0;
     }
 
-    .link-center a {
+    .link-register a {
       color: #FF0000;
       text-decoration: none;
     }
 
-    .link-center a:hover {
+    .link-register a:hover {
       text-decoration: underline;
     }
 
@@ -154,6 +150,8 @@
       z-index: 9999;
       opacity: 0.95;
       color: #fff;
+      max-width: 90%;
+      word-wrap: break-word;
     }
 
     .toast.success {
@@ -195,8 +193,58 @@
       display: none;
     }
 
-    .form-section {
-      margin-bottom: 30px;
+    /* Modal styles */
+    .modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.8);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 10001;
+    }
+
+    .modal-content {
+      background-color: #111;
+      padding: 30px;
+      border-radius: 10px;
+      border: 2px solid #FF0000;
+      max-width: 400px;
+      width: 90%;
+    }
+
+    .modal h3 {
+      color: #FF0000;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    .modal input {
+      width: 100%;
+      padding: 12px;
+      margin-bottom: 15px;
+      border: 1px solid #444;
+      border-radius: 5px;
+      background-color: #222;
+      color: #fff;
+      box-sizing: border-box;
+    }
+
+    .modal-buttons {
+      display: flex;
+      gap: 10px;
+    }
+
+    .btn-cancel {
+      background-color: #666;
+      color: #fff;
+    }
+
+    .btn-cancel:hover:not(:disabled) {
+      background-color: #777;
     }
 
     @media (max-width: 480px) {
@@ -208,6 +256,10 @@
       header h1 {
         font-size: 1.8em;
       }
+      
+      .modal-buttons {
+        flex-direction: column;
+      }
     }
   </style>
 </head>
@@ -217,54 +269,47 @@
     <div class="loading-spinner"></div>
   </div>
 
+  <!-- Modal de Cadastro -->
+  <div id="registerModal" class="modal hidden">
+    <div class="modal-content">
+      <h3>Criar Nova Conta</h3>
+      <form id="registerForm">
+        <input type="email" id="registerEmail" placeholder="Seu e-mail" required>
+        <input type="password" id="registerPassword" placeholder="Sua senha (mín. 6 caracteres)" required minlength="6">
+        <div class="modal-buttons">
+          <button type="button" class="btn btn-cancel" id="cancelRegister">Cancelar</button>
+          <button type="submit" class="btn btn-primary">Criar Conta</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
   <header>
     <h1>Booktor 📚</h1>
   </header>
 
   <div class="container">
-    <!-- Botão para alternar entre Login e Cadastro -->
-    <button id="toggleMode" class="btn btn-toggle">Criar Nova Conta</button>
+    <h2>Entrar no Booktor</h2>
 
-    <!-- Seção de Login -->
-    <div id="loginSection" class="form-section">
-      <h2>Entrar no Booktor</h2>
+    <form id="loginForm">
+      <div class="form-group">
+        <label for="email">E-mail:</label>
+        <input type="email" id="email" required />
+      </div>
 
-      <form id="loginForm">
-        <div class="form-group">
-          <label for="loginEmail">E-mail:</label>
-          <input type="email" id="loginEmail" required />
-        </div>
+      <div class="form-group">
+        <label for="password">Senha:</label>
+        <input type="password" id="password" required />
+      </div>
 
-        <div class="form-group">
-          <label for="loginPassword">Senha:</label>
-          <input type="password" id="loginPassword" required />
-        </div>
+      <button type="submit" class="btn btn-primary">
+        Entrar com E-mail
+      </button>
+    </form>
 
-        <button type="submit" class="btn btn-primary">
-          Entrar com E-mail
-        </button>
-      </form>
-    </div>
-
-    <!-- Seção de Cadastro -->
-    <div id="registerSection" class="form-section hidden">
-      <h2>Criar Nova Conta</h2>
-
-      <form id="registerForm">
-        <div class="form-group">
-          <label for="registerEmail">E-mail:</label>
-          <input type="email" id="registerEmail" required />
-        </div>
-
-        <div class="form-group">
-          <label for="registerPassword">Senha:</label>
-          <input type="password" id="registerPassword" placeholder="Mínimo 6 caracteres" required minlength="6" />
-        </div>
-
-        <button type="submit" class="btn btn-primary">
-          Criar Conta
-        </button>
-      </form>
+    <div class="link-register">
+      Não tem uma conta?
+      <a href="#" id="registerLink">Cadastre-se</a>
     </div>
 
     <hr class="divider">
@@ -293,17 +338,19 @@
       signInWithEmailAndPassword,
       signInAnonymously,
       signInWithPopup,
+      signInWithRedirect,
+      getRedirectResult,
       GoogleAuthProvider,
       createUserWithEmailAndPassword,
       onAuthStateChanged
     } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
-    // Configuração do Firebase
+    // Configuração corrigida do Firebase
     const firebaseConfig = {
       apiKey: "AIzaSyDtXjxHE-vn2_QwfyG1i08hefGiemJEWb4",
-      authDomain: "booktorlogin.firebaseapp.com",
-      projectId: "booktorlogin",
-      storageBucket: "booktorlogin.firebasestorage.app",
+      authDomain: "project-889454389797.firebaseapp.com",
+      projectId: "project-889454389797",
+      storageBucket: "project-889454389797.appspot.com", 
       messagingSenderId: "889454389797",
       appId: "1:889454389797:web:63259e79a6a18c03ba2dcc"
     };
@@ -311,29 +358,40 @@
     // Inicializa o Firebase
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
+    
+    // Configuração do Google Provider com scopes específicos
     const provider = new GoogleAuthProvider();
+    provider.addScope('email');
+    provider.addScope('profile');
+    provider.setCustomParameters({
+      'prompt': 'select_account'
+    });
 
     // Elementos do DOM
     const loadingScreen = document.getElementById('loadingScreen');
-    const toggleMode = document.getElementById('toggleMode');
-    const loginSection = document.getElementById('loginSection');
-    const registerSection = document.getElementById('registerSection');
+    const registerModal = document.getElementById('registerModal');
     const loginForm = document.getElementById('loginForm');
     const registerForm = document.getElementById('registerForm');
+    const registerLink = document.getElementById('registerLink');
+    const cancelRegister = document.getElementById('cancelRegister');
     const googleLogin = document.getElementById('googleLogin');
     const anonLogin = document.getElementById('anonLogin');
 
-    let isLoginMode = true;
-
     // Função para mostrar toast
     function showToast(msg, isSuccess = false) {
+      // Remove toasts existentes
+      const existingToasts = document.querySelectorAll('.toast');
+      existingToasts.forEach(toast => toast.remove());
+
       const toast = document.createElement("div");
       toast.innerText = msg;
       toast.className = `toast ${isSuccess ? 'success' : 'error'}`;
       document.body.appendChild(toast);
 
       setTimeout(() => {
-        toast.remove();
+        if (toast.parentNode) {
+          toast.remove();
+        }
       }, 4000);
     }
 
@@ -341,50 +399,56 @@
     function toggleLoading(show) {
       if (show) {
         loadingScreen.classList.remove('hidden');
+        // Desabilita todos os botões durante o loading
+        document.querySelectorAll('.btn').forEach(btn => btn.disabled = true);
       } else {
         loadingScreen.classList.add('hidden');
+        // Reabilita todos os botões
+        document.querySelectorAll('.btn').forEach(btn => btn.disabled = false);
       }
     }
 
-    // Função para alternar entre login e cadastro
-    function toggleLoginMode() {
-      isLoginMode = !isLoginMode;
-      
-      if (isLoginMode) {
-        loginSection.classList.remove('hidden');
-        registerSection.classList.add('hidden');
-        toggleMode.textContent = 'Criar Nova Conta';
-        // Limpa campos de cadastro
+    // Função para mostrar/esconder modal
+    function toggleModal(show) {
+      if (show) {
+        registerModal.classList.remove('hidden');
+      } else {
+        registerModal.classList.add('hidden');
+        // Limpa os campos
         document.getElementById('registerEmail').value = '';
         document.getElementById('registerPassword').value = '';
-      } else {
-        loginSection.classList.add('hidden');
-        registerSection.classList.remove('hidden');
-        toggleMode.textContent = 'Já tenho uma conta';
-        // Limpa campos de login
-        document.getElementById('loginEmail').value = '';
-        document.getElementById('loginPassword').value = '';
       }
     }
 
-    // Event listener para o botão de alternar modo
-    toggleMode.addEventListener('click', toggleLoginMode);
+    // Função para detectar se é dispositivo móvel
+    function isMobile() {
+      return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || 
+             window.innerWidth <= 768;
+    }
 
     // Login com email e senha
     loginForm.addEventListener("submit", async (e) => {
       e.preventDefault();
-      const email = document.getElementById("loginEmail").value;
-      const password = document.getElementById("loginPassword").value;
+      const email = document.getElementById("email").value.trim();
+      const password = document.getElementById("password").value;
       
+      if (!email || !password) {
+        showToast("Por favor, preencha todos os campos");
+        return;
+      }
+
       toggleLoading(true);
       
       try {
-        await signInWithEmailAndPassword(auth, email, password);
+        const userCredential = await signInWithEmailAndPassword(auth, email, password);
+        console.log("Login bem-sucedido:", userCredential.user);
         showToast("Login realizado com sucesso!", true);
+        
         setTimeout(() => {
           window.location.href = "inicio.html";
         }, 1500);
       } catch (error) {
+        console.error("Erro no login:", error);
         let errorMsg = "Erro ao fazer login";
         
         switch (error.code) {
@@ -397,11 +461,17 @@
           case 'auth/invalid-email':
             errorMsg = "E-mail inválido";
             break;
+          case 'auth/invalid-credential':
+            errorMsg = "Credenciais inválidas";
+            break;
           case 'auth/too-many-requests':
             errorMsg = "Muitas tentativas. Tente novamente mais tarde";
             break;
+          case 'auth/network-request-failed':
+            errorMsg = "Erro de conexão. Verifique sua internet";
+            break;
           default:
-            errorMsg = error.message;
+            errorMsg = `Erro: ${error.message}`;
         }
         
         showToast(errorMsg);
@@ -410,21 +480,164 @@
       }
     });
 
-    // Cadastro de nova conta
-    registerForm.addEventListener("submit", async (e) => {
-      e.preventDefault();
-      const email = document.getElementById("registerEmail").value;
-      const password = document.getElementById("registerPassword").value;
-      
+    // Login com Google melhorado
+    googleLogin.addEventListener("click", async () => {
       toggleLoading(true);
       
       try {
-        await createUserWithEmailAndPassword(auth, email, password);
-        showToast("Conta criada com sucesso!", true);
+        let result;
+        
+        // Em dispositivos móveis ou quando popup pode ser bloqueado, use redirect
+        if (isMobile()) {
+          console.log("Usando redirect para dispositivo móvel");
+          await signInWithRedirect(auth, provider);
+          return; // O redirect vai lidar com o resto
+        } else {
+          console.log("Tentando popup para desktop");
+          result = await signInWithPopup(auth, provider);
+        }
+        
+        if (result && result.user) {
+          console.log("Login com Google bem-sucedido:", result.user);
+          showToast("Login com Google realizado!", true);
+          
+          setTimeout(() => {
+            window.location.href = "inicio.html";
+          }, 1500);
+        }
+        
+      } catch (error) {
+        console.error("Erro no login com Google:", error);
+        let errorMsg = "Erro ao fazer login com Google";
+        
+        switch (error.code) {
+          case 'auth/popup-closed-by-user':
+            errorMsg = "Login cancelado pelo usuário";
+            break;
+          case 'auth/popup-blocked':
+            errorMsg = "Pop-up bloqueado. Tentando método alternativo...";
+            // Tenta com redirect como fallback
+            try {
+              await signInWithRedirect(auth, provider);
+              return;
+            } catch (redirectError) {
+              console.error("Erro no redirect:", redirectError);
+              errorMsg = "Erro ao abrir janela de login. Verifique se pop-ups estão habilitados";
+            }
+            break;
+          case 'auth/cancelled-popup-request':
+            errorMsg = "Solicitação cancelada";
+            break;
+          case 'auth/network-request-failed':
+            errorMsg = "Erro de conexão. Verifique sua internet";
+            break;
+          case 'auth/internal-error':
+            errorMsg = "Erro interno. Tente novamente";
+            break;
+          default:
+            errorMsg = `Erro: ${error.message}`;
+        }
+        
+        showToast(errorMsg);
+      } finally {
+        toggleLoading(false);
+      }
+    });
+
+    // Verifica resultado do redirect quando a página carrega
+    window.addEventListener('load', async () => {
+      try {
+        const result = await getRedirectResult(auth);
+        if (result && result.user) {
+          console.log("Login com redirect bem-sucedido:", result.user);
+          showToast("Login com Google realizado!", true);
+          setTimeout(() => {
+            window.location.href = "inicio.html";
+          }, 1500);
+        }
+      } catch (error) {
+        console.error("Erro no resultado do redirect:", error);
+        if (error.code !== 'auth/popup-closed-by-user') {
+          showToast("Erro no login com Google: " + error.message);
+        }
+      }
+    });
+
+    // Login anônimo
+    anonLogin.addEventListener("click", async () => {
+      toggleLoading(true);
+      
+      try {
+        const userCredential = await signInAnonymously(auth);
+        console.log("Login anônimo bem-sucedido:", userCredential.user);
+        showToast("Entrando como visitante!", true);
+        
         setTimeout(() => {
           window.location.href = "inicio.html";
         }, 1500);
       } catch (error) {
+        console.error("Erro no login anônimo:", error);
+        let errorMsg = "Erro ao entrar como visitante";
+        
+        if (error.code === 'auth/operation-not-allowed') {
+          errorMsg = "Login anônimo não está habilitado";
+        } else if (error.code === 'auth/network-request-failed') {
+          errorMsg = "Erro de conexão. Verifique sua internet";
+        }
+        
+        showToast(errorMsg);
+      } finally {
+        toggleLoading(false);
+      }
+    });
+
+    // Mostrar modal de cadastro
+    registerLink.addEventListener("click", (e) => {
+      e.preventDefault();
+      toggleModal(true);
+    });
+
+    // Cancelar cadastro
+    cancelRegister.addEventListener("click", () => {
+      toggleModal(false);
+    });
+
+    // Fechar modal clicando fora
+    registerModal.addEventListener("click", (e) => {
+      if (e.target === registerModal) {
+        toggleModal(false);
+      }
+    });
+
+    // Cadastro de nova conta
+    registerForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const email = document.getElementById("registerEmail").value.trim();
+      const password = document.getElementById("registerPassword").value;
+      
+      if (!email || !password) {
+        showToast("Por favor, preencha todos os campos");
+        return;
+      }
+
+      if (password.length < 6) {
+        showToast("A senha deve ter pelo menos 6 caracteres");
+        return;
+      }
+
+      toggleLoading(true);
+      
+      try {
+        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+        console.log("Conta criada com sucesso:", userCredential.user);
+        showToast("Conta criada com sucesso!", true);
+        toggleModal(false);
+        
+        setTimeout(() => {
+          window.location.href = "inicio.html";
+        }, 1500);
+      } catch (error) {
+        console.error("Erro ao criar conta:", error);
         let errorMsg = "Erro ao criar conta";
         
         switch (error.code) {
@@ -437,53 +650,14 @@
           case 'auth/weak-password':
             errorMsg = "Senha muito fraca. Use pelo menos 6 caracteres";
             break;
+          case 'auth/network-request-failed':
+            errorMsg = "Erro de conexão. Verifique sua internet";
+            break;
           default:
-            errorMsg = error.message;
+            errorMsg = `Erro: ${error.message}`;
         }
         
         showToast(errorMsg);
-      } finally {
-        toggleLoading(false);
-      }
-    });
-
-    // Login com Google
-    googleLogin.addEventListener("click", async () => {
-      toggleLoading(true);
-      
-      try {
-        await signInWithPopup(auth, provider);
-        showToast("Login com Google realizado!", true);
-        setTimeout(() => {
-          window.location.href = "inicio.html";
-        }, 1500);
-      } catch (error) {
-        let errorMsg = "Erro ao fazer login com Google";
-        
-        if (error.code === 'auth/popup-closed-by-user') {
-          errorMsg = "Login cancelado pelo usuário";
-        } else if (error.code === 'auth/popup-blocked') {
-          errorMsg = "Pop-up bloqueado. Permita pop-ups e tente novamente";
-        }
-        
-        showToast(errorMsg);
-      } finally {
-        toggleLoading(false);
-      }
-    });
-
-    // Login anônimo
-    anonLogin.addEventListener("click", async () => {
-      toggleLoading(true);
-      
-      try {
-        await signInAnonymously(auth);
-        showToast("Entrando como visitante!", true);
-        setTimeout(() => {
-          window.location.href = "inicio.html";
-        }, 1500);
-      } catch (error) {
-        showToast("Erro ao entrar como visitante: " + error.message);
       } finally {
         toggleLoading(false);
       }
@@ -492,8 +666,11 @@
     // Verifica se já está logado
     onAuthStateChanged(auth, (user) => {
       if (user) {
+        console.log("Usuário já logado:", user);
         // Usuário já está logado, redireciona
         window.location.href = "inicio.html";
+      } else {
+        console.log("Usuário não logado");
       }
     });
 
@@ -503,6 +680,17 @@
         window.location.reload();
       }
     });
+
+    // Adiciona suporte para Enter no modal
+    registerModal.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        toggleModal(false);
+      }
+    });
+
+    // Adiciona logs para debug
+    console.log("Firebase inicializado com sucesso");
+    console.log("Configuração:", firebaseConfig);
   </script>
 </body>
 </html>
