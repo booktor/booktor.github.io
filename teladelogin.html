@@ -1,11 +1,20 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Booktor - Login</title>
-  <link rel="icon" href="https://cdn-icons-png.flaticon.com/512/29/29302.png" />
+  <link rel="icon" href="https://cdn-icons-png.flaticon.com/512/29/29302.png">
   <style>
+    :root {
+      --vermelho: #FF0000;
+      --preto: #000000;
+      --branco: #FFFFFF;
+      --cinza-escuro: #111;
+      --cinza-medio: #333;
+      --cinza-claro: #444;
+    }
+
     * {
       margin: 0;
       padding: 0;
@@ -13,348 +22,272 @@
     }
 
     body {
-      background: linear-gradient(135deg, #000000 0%, #1a0000 50%, #000000 100%);
-      color: #fff;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, var(--preto) 0%, var(--cinza-escuro) 100%);
+      font-family: 'Arial', sans-serif;
       min-height: 100vh;
-      overflow-x: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--branco);
+      position: relative;
+      overflow: hidden;
     }
 
-    /* Animação de fundo */
-    body::before {
-      content: '';
-      position: fixed;
+    .particles {
+      position: absolute;
       top: 0;
       left: 0;
       width: 100%;
       height: 100%;
-      background: radial-gradient(circle at 20% 80%, rgba(255, 0, 0, 0.1) 0%, transparent 50%),
-                  radial-gradient(circle at 80% 20%, rgba(255, 0, 0, 0.1) 0%, transparent 50%);
-      animation: pulse 4s ease-in-out infinite alternate;
-      z-index: -1;
-    }
-
-    @keyframes pulse {
-      0% { opacity: 0.3; }
-      100% { opacity: 0.7; }
-    }
-
-    header {
-      background: linear-gradient(135deg, #FF0000, #cc0000);
-      padding: 30px 20px;
-      text-align: center;
-      box-shadow: 0 4px 20px rgba(255, 0, 0, 0.3);
-      position: relative;
-      overflow: hidden;
-    }
-
-    header::before {
-      content: '';
-      position: absolute;
-      top: -50%;
-      left: -50%;
-      width: 200%;
-      height: 200%;
-      background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.1), transparent);
-      animation: shine 3s infinite;
-    }
-
-    @keyframes shine {
-      0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
-      100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
-    }
-
-    header h1 {
-      font-size: 2.8em;
-      font-weight: 700;
-      color: #fff;
-      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
-      position: relative;
       z-index: 1;
+      pointer-events: none;
     }
 
-    .main-container {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      min-height: calc(100vh - 120px);
-      padding: 20px;
+    .particle {
+      position: absolute;
+      width: 2px;
+      height: 2px;
+      background: var(--vermelho);
+      border-radius: 50%;
+      animation: float 6s ease-in-out infinite;
     }
 
-    .auth-wrapper {
-      display: flex;
-      background: rgba(17, 17, 17, 0.9);
-      border-radius: 20px;
-      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 0, 0, 0.2);
+    @keyframes float {
+      0%, 100% { transform: translateY(0px) rotate(0deg); opacity: 1; }
+      50% { transform: translateY(-20px) rotate(180deg); opacity: 0.7; }
+    }
+
+    .container {
+      background: rgba(17, 17, 17, 0.95);
       backdrop-filter: blur(10px);
-      overflow: hidden;
-      max-width: 900px;
-      width: 100%;
-      min-height: 500px;
-    }
-
-    .form-section {
-      flex: 1;
+      border: 2px solid var(--vermelho);
+      border-radius: 20px;
+      box-shadow: 0 20px 40px rgba(255, 0, 0, 0.3);
       padding: 40px;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
+      width: 100%;
+      max-width: 450px;
+      position: relative;
+      z-index: 10;
+      animation: slideIn 0.8s ease-out;
     }
 
-    .form-toggle {
-      display: flex;
-      background: rgba(255, 255, 255, 0.1);
-      border-radius: 15px;
-      padding: 5px;
+    @keyframes slideIn {
+      from { transform: translateY(-50px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    .logo {
+      text-align: center;
       margin-bottom: 30px;
     }
 
-    .toggle-btn {
-      flex: 1;
-      padding: 12px 20px;
-      background: transparent;
-      border: none;
-      border-radius: 10px;
-      color: #fff;
-      font-size: 16px;
-      cursor: pointer;
-      transition: all 0.3s ease;
+    .logo h1 {
+      font-size: 2.5em;
+      color: var(--vermelho);
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+      animation: glow 2s ease-in-out infinite alternate;
     }
 
-    .toggle-btn.active {
-      background: linear-gradient(135deg, #FF0000, #cc0000);
-      box-shadow: 0 4px 15px rgba(255, 0, 0, 0.3);
+    @keyframes glow {
+      from { text-shadow: 2px 2px 4px rgba(0,0,0,0.5), 0 0 10px var(--vermelho); }
+      to { text-shadow: 2px 2px 4px rgba(0,0,0,0.5), 0 0 20px var(--vermelho), 0 0 30px var(--vermelho); }
     }
 
-    .toggle-btn:hover:not(.active) {
-      background: rgba(255, 255, 255, 0.1);
+    .logo p {
+      color: #ccc;
+      font-size: 1.1em;
+      margin-top: 10px;
     }
 
     .form-container {
-      position: relative;
-    }
-
-    .form {
-      display: none;
-      animation: fadeIn 0.5s ease-in-out;
-    }
-
-    .form.active {
-      display: block;
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(20px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    h2 {
-      font-size: 1.8em;
-      margin-bottom: 30px;
-      color: #FF0000;
-      text-align: center;
-      font-weight: 600;
+      margin-bottom: 20px;
     }
 
     .form-group {
-      margin-bottom: 20px;
+      margin-bottom: 25px;
       position: relative;
     }
 
     .form-group label {
       display: block;
+      color: var(--vermelho);
       margin-bottom: 8px;
-      color: #ddd;
-      font-weight: 500;
-      font-size: 14px;
+      font-weight: bold;
+      font-size: 1em;
     }
 
-    .input-wrapper {
-      position: relative;
-    }
-
-    input[type="email"], input[type="password"] {
+    .form-input {
       width: 100%;
-      padding: 15px 20px;
-      border: 2px solid rgba(255, 255, 255, 0.2);
-      border-radius: 12px;
-      background: rgba(255, 255, 255, 0.05);
-      color: #fff;
-      font-size: 16px;
+      background: rgba(0, 0, 0, 0.7);
+      border: 2px solid var(--cinza-claro);
+      border-radius: 10px;
+      padding: 15px;
+      color: var(--branco);
+      font-size: 1em;
       transition: all 0.3s ease;
-      backdrop-filter: blur(10px);
-    }
-
-    input[type="email"]:focus, input[type="password"]:focus {
       outline: none;
-      border-color: #FF0000;
-      box-shadow: 0 0 0 3px rgba(255, 0, 0, 0.2);
-      background: rgba(255, 255, 255, 0.1);
     }
 
-    input::placeholder {
-      color: rgba(255, 255, 255, 0.5);
+    .form-input:focus {
+      border-color: var(--vermelho);
+      box-shadow: 0 0 15px rgba(255, 0, 0, 0.3);
+      transform: translateY(-2px);
+    }
+
+    .form-input::placeholder {
+      color: #888;
+    }
+
+    .password-toggle {
+      position: absolute;
+      right: 15px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      color: var(--vermelho);
+      cursor: pointer;
+      font-size: 1.2em;
+      z-index: 2;
     }
 
     .btn {
       width: 100%;
-      padding: 15px;
+      background: linear-gradient(45deg, var(--vermelho), #cc0000);
       border: none;
-      border-radius: 12px;
+      border-radius: 10px;
+      padding: 15px;
+      color: var(--branco);
+      font-size: 1.1em;
+      font-weight: bold;
       cursor: pointer;
-      font-size: 16px;
-      font-weight: 600;
-      margin-bottom: 15px;
       transition: all 0.3s ease;
+      text-transform: uppercase;
+      letter-spacing: 1px;
       position: relative;
       overflow: hidden;
     }
 
+    .btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+      transition: left 0.5s;
+    }
+
+    .btn:hover::before {
+      left: 100%;
+    }
+
+    .btn:hover {
+      background: linear-gradient(45deg, #cc0000, var(--vermelho));
+      transform: translateY(-3px);
+      box-shadow: 0 10px 20px rgba(255, 0, 0, 0.4);
+    }
+
+    .btn:active {
+      transform: translateY(-1px);
+    }
+
     .btn:disabled {
-      opacity: 0.6;
+      background: var(--cinza-medio);
       cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
     }
 
-    .btn-primary {
-      background: linear-gradient(135deg, #FF0000, #cc0000);
-      color: #fff;
-      box-shadow: 0 4px 15px rgba(255, 0, 0, 0.3);
+    .tabs {
+      display: flex;
+      margin-bottom: 30px;
+      border-radius: 10px;
+      overflow: hidden;
+      border: 2px solid var(--cinza-claro);
     }
 
-    .btn-primary:hover:not(:disabled) {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 25px rgba(255, 0, 0, 0.4);
+    .tab {
+      flex: 1;
+      background: var(--cinza-medio);
+      color: var(--branco);
+      border: none;
+      padding: 15px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-size: 1em;
+      font-weight: bold;
     }
 
-    .btn-primary:active {
-      transform: translateY(0);
+    .tab.active {
+      background: var(--vermelho);
+      color: var(--branco);
     }
 
-    .btn-guest {
-      background: linear-gradient(135deg, #333, #555);
-      color: #fff;
-      border: 2px solid #FF0000;
-    }
-
-    .btn-guest:hover:not(:disabled) {
-      background: linear-gradient(135deg, #444, #666);
-      transform: translateY(-2px);
-      box-shadow: 0 8px 25px rgba(255, 0, 0, 0.2);
+    .tab:hover {
+      background: var(--vermelho);
     }
 
     .divider {
-      margin: 30px 0;
-      text-align: center;
-      position: relative;
-      color: rgba(255, 255, 255, 0.5);
+      display: flex;
+      align-items: center;
+      margin: 25px 0;
+      color: #888;
     }
 
-    .divider::before {
+    .divider::before,
+    .divider::after {
       content: '';
-      position: absolute;
-      top: 50%;
-      left: 0;
-      right: 0;
+      flex: 1;
       height: 1px;
-      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+      background: var(--cinza-claro);
     }
 
     .divider span {
-      background: rgba(17, 17, 17, 0.9);
-      padding: 0 20px;
-      position: relative;
-      z-index: 1;
+      padding: 0 15px;
+      font-size: 0.9em;
     }
 
-    .welcome-section {
-      flex: 1;
-      background: linear-gradient(135deg, rgba(255, 0, 0, 0.1), rgba(204, 0, 0, 0.1));
+    .google-btn {
+      width: 100%;
+      background: var(--branco);
+      color: var(--preto);
+      border: 2px solid #ddd;
+      border-radius: 10px;
+      padding: 15px;
+      font-size: 1em;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.3s ease;
       display: flex;
-      flex-direction: column;
-      justify-content: center;
       align-items: center;
-      padding: 40px;
-      text-align: center;
-      position: relative;
-    }
-
-    .welcome-section::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="books" x="0" y="0" width="20" height="20" patternUnits="userSpaceOnUse"><rect width="20" height="20" fill="none"/><rect x="2" y="8" width="3" height="8" fill="rgba(255,255,255,0.1)"/><rect x="6" y="6" width="3" height="10" fill="rgba(255,255,255,0.1)"/><rect x="10" y="7" width="3" height="9" fill="rgba(255,255,255,0.1)"/><rect x="14" y="5" width="3" height="11" fill="rgba(255,255,255,0.1)"/></pattern></defs><rect width="100" height="100" fill="url(%23books)"/></svg>');
-      opacity: 0.3;
-    }
-
-    .welcome-content {
-      position: relative;
-      z-index: 1;
-    }
-
-    .welcome-section h3 {
-      font-size: 2.2em;
-      margin-bottom: 20px;
-      color: #FF0000;
-      font-weight: 700;
-    }
-
-    .welcome-section p {
-      font-size: 1.1em;
-      line-height: 1.6;
-      color: rgba(255, 255, 255, 0.8);
-      margin-bottom: 30px;
-    }
-
-    .feature-list {
-      list-style: none;
-      text-align: left;
-    }
-
-    .feature-list li {
+      justify-content: center;
+      gap: 10px;
       margin-bottom: 15px;
-      padding-left: 30px;
-      position: relative;
-      color: rgba(255, 255, 255, 0.7);
     }
 
-    .feature-list li::before {
-      content: '📚';
-      position: absolute;
-      left: 0;
-      top: 0;
+    .google-btn:hover {
+      background: #f5f5f5;
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(0,0,0,0.2);
     }
 
-    .toast {
-      position: fixed;
-      bottom: 30px;
-      right: 30px;
-      padding: 20px 25px;
-      border-radius: 12px;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-      z-index: 9999;
-      color: #fff;
-      max-width: 400px;
-      word-wrap: break-word;
-      backdrop-filter: blur(10px);
-      animation: slideIn 0.3s ease-out;
+    .forgot-password {
+      text-align: center;
+      margin-top: 20px;
     }
 
-    @keyframes slideIn {
-      from { transform: translateX(100%); opacity: 0; }
-      to { transform: translateX(0); opacity: 1; }
+    .forgot-password a {
+      color: var(--vermelho);
+      text-decoration: none;
+      font-size: 0.9em;
+      transition: color 0.3s ease;
     }
 
-    .toast.success {
-      background: linear-gradient(135deg, #28a745, #20c997);
-      border-left: 4px solid #155724;
-    }
-
-    .toast.error {
-      background: linear-gradient(135deg, #FF0000, #dc3545);
-      border-left: 4px solid #721c24;
+    .forgot-password a:hover {
+      color: #cc0000;
+      text-decoration: underline;
     }
 
     .loading {
@@ -363,29 +296,28 @@
       left: 0;
       width: 100%;
       height: 100%;
-      background: rgba(0, 0, 0, 0.9);
+      background: rgba(0, 0, 0, 0.8);
       display: flex;
-      flex-direction: column;
       align-items: center;
       justify-content: center;
-      z-index: 10000;
-      backdrop-filter: blur(5px);
+      z-index: 9999;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.3s ease;
+    }
+
+    .loading.show {
+      opacity: 1;
+      visibility: visible;
     }
 
     .loading-spinner {
-      width: 60px;
-      height: 60px;
-      border: 4px solid rgba(255, 255, 255, 0.3);
-      border-top: 4px solid #FF0000;
+      border: 4px solid var(--cinza-medio);
+      border-top: 4px solid var(--vermelho);
       border-radius: 50%;
+      width: 50px;
+      height: 50px;
       animation: spin 1s linear infinite;
-      margin-bottom: 20px;
-    }
-
-    .loading-text {
-      color: #fff;
-      font-size: 18px;
-      font-weight: 500;
     }
 
     @keyframes spin {
@@ -393,402 +325,495 @@
       100% { transform: rotate(360deg); }
     }
 
-    .hidden {
-      display: none;
+    .toast {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: var(--vermelho);
+      color: var(--branco);
+      padding: 15px 25px;
+      border-radius: 10px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+      z-index: 10000;
+      transform: translateX(400px);
+      transition: transform 0.3s ease;
+      max-width: 300px;
     }
 
-    @media (max-width: 768px) {
-      .auth-wrapper {
-        flex-direction: column;
-        margin: 20px;
-      }
-      
-      .welcome-section {
-        order: -1;
-        min-height: 200px;
-      }
-      
-      .form-section {
-        padding: 30px 20px;
-      }
-      
-      header h1 {
-        font-size: 2.2em;
-      }
-      
-      .welcome-section h3 {
-        font-size: 1.8em;
-      }
-      
-      .toast {
-        bottom: 20px;
-        right: 20px;
-        left: 20px;
-        max-width: none;
-      }
+    .toast.show {
+      transform: translateX(0);
+    }
+
+    .toast.success {
+      background: #4CAF50;
+    }
+
+    .toast.error {
+      background: #f44336;
+    }
+
+    .hidden {
+      display: none !important;
     }
 
     @media (max-width: 480px) {
-      .form-section {
-        padding: 20px 15px;
+      .container {
+        margin: 20px;
+        padding: 30px 25px;
       }
       
-      .btn {
-        padding: 12px;
-        font-size: 15px;
+      .logo h1 {
+        font-size: 2em;
       }
       
-      input[type="email"], input[type="password"] {
-        padding: 12px 15px;
-        font-size: 15px;
+      .tabs {
+        flex-direction: column;
+      }
+      
+      .tab {
+        border-radius: 0;
       }
     }
   </style>
 </head>
 <body>
-  <!-- Loading Screen -->
-  <div id="loadingScreen" class="loading hidden">
+  <div class="particles" id="particles"></div>
+
+  <div class="loading" id="loading">
     <div class="loading-spinner"></div>
-    <div class="loading-text">Carregando...</div>
   </div>
 
-  <header>
-    <h1>Booktor 📚</h1>
-  </header>
+  <div class="container">
+    <div class="logo">
+      <h1>📖 Booktor</h1>
+      <p>Sistema de Gerenciamento de Usuários</p>
+    </div>
 
-  <div class="main-container">
-    <div class="auth-wrapper">
-      <div class="form-section">
-        <div class="form-toggle">
-          <button class="toggle-btn active" id="loginToggle">Entrar</button>
-          <button class="toggle-btn" id="registerToggle">Cadastrar</button>
-        </div>
+    <div class="tabs">
+      <button class="tab active" data-tab="login">Entrar</button>
+      <button class="tab" data-tab="register">Registrar</button>
+    </div>
 
-        <div class="form-container">
-          <!-- Login Form -->
-          <div class="form active" id="loginForm">
-            <h2>Bem-vindo de volta!</h2>
-            <form id="emailLoginForm">
-              <div class="form-group">
-                <label for="loginEmail">E-mail</label>
-                <div class="input-wrapper">
-                  <input type="email" id="loginEmail" placeholder="Digite seu e-mail" required />
-                </div>
-              </div>
-
-              <div class="form-group">
-                <label for="loginPassword">Senha</label>
-                <div class="input-wrapper">
-                  <input type="password" id="loginPassword" placeholder="Digite sua senha" required />
-                </div>
-              </div>
-
-              <button type="submit" class="btn btn-primary">
-                Entrar
-              </button>
-            </form>
-
-            <div class="divider">
-              <span>ou</span>
-            </div>
-
-            <button id="anonLogin" class="btn btn-guest">
-              Entrar como Visitante
-            </button>
-          </div>
-
-          <!-- Register Form -->
-          <div class="form" id="registerForm">
-            <h2>Criar nova conta</h2>
-            <form id="emailRegisterForm">
-              <div class="form-group">
-                <label for="registerEmail">E-mail</label>
-                <div class="input-wrapper">
-                  <input type="email" id="registerEmail" placeholder="Digite seu e-mail" required />
-                </div>
-              </div>
-
-              <div class="form-group">
-                <label for="registerPassword">Senha</label>
-                <div class="input-wrapper">
-                  <input type="password" id="registerPassword" placeholder="Mínimo 6 caracteres" required minlength="6" />
-                </div>
-              </div>
-
-              <button type="submit" class="btn btn-primary">
-                Criar Conta
-              </button>
-            </form>
-
-            <div class="divider">
-              <span>ou</span>
-            </div>
-
-            <button id="anonLoginRegister" class="btn btn-guest">
-              Entrar como Visitante
-            </button>
-          </div>
-        </div>
+    <div id="loginForm" class="form-container">
+      <div class="form-group">
+        <label for="loginEmail">Email:</label>
+        <input type="email" id="loginEmail" class="form-input" placeholder="seu@email.com" required>
       </div>
+      
+      <div class="form-group" style="position: relative;">
+        <label for="loginPassword">Senha:</label>
+        <input type="password" id="loginPassword" class="form-input" placeholder="Sua senha" required>
+        <button type="button" class="password-toggle" onclick="togglePassword('loginPassword')">👁️</button>
+      </div>
+      
+      <button class="btn" id="loginBtn">Entrar</button>
+      
+      <div class="divider">
+        <span>ou</span>
+      </div>
+      
+      <button class="google-btn" id="googleLoginBtn">
+        <svg width="20" height="20" viewBox="0 0 24 24">
+          <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+          <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+          <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+          <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+        </svg>
+        Entrar com Google
+      </button>
+      
+      <div class="forgot-password">
+        <a href="#" id="forgotPasswordLink">Esqueceu sua senha?</a>
+      </div>
+    </div>
 
-      <div class="welcome-section">
-        <div class="welcome-content">
-          <h3>Explore o mundo dos livros</h3>
-          <p>Descubra, organize e compartilhe suas leituras favoritas com a comunidade Booktor.</p>
-          <ul class="feature-list">
-            <li>Organize sua biblioteca pessoal</li>
-            <li>Descubra novos livros e autores</li>
-            <li>Compartilhe resenhas e avaliações</li>
-            <li>Conecte-se com outros leitores</li>
-          </ul>
-        </div>
+    <div id="registerForm" class="form-container hidden">
+      <div class="form-group">
+        <label for="registerName">Nome:</label>
+        <input type="text" id="registerName" class="form-input" placeholder="Seu nome completo" required>
+      </div>
+      
+      <div class="form-group">
+        <label for="registerEmail">Email:</label>
+        <input type="email" id="registerEmail" class="form-input" placeholder="seu@email.com" required>
+      </div>
+      
+      <div class="form-group" style="position: relative;">
+        <label for="registerPassword">Senha:</label>
+        <input type="password" id="registerPassword" class="form-input" placeholder="Mínimo 6 caracteres" required>
+        <button type="button" class="password-toggle" onclick="togglePassword('registerPassword')">👁️</button>
+      </div>
+      
+      <div class="form-group" style="position: relative;">
+        <label for="confirmPassword">Confirmar Senha:</label>
+        <input type="password" id="confirmPassword" class="form-input" placeholder="Confirme sua senha" required>
+        <button type="button" class="password-toggle" onclick="togglePassword('confirmPassword')">👁️</button>
+      </div>
+      
+      <button class="btn" id="registerBtn">Registrar</button>
+      
+      <div class="divider">
+        <span>ou</span>
+      </div>
+      
+      <button class="google-btn" id="googleRegisterBtn">
+        <svg width="20" height="20" viewBox="0 0 24 24">
+          <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+          <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+          <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+          <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+        </svg>
+        Registrar com Google
+      </button>
+    </div>
+
+    <div id="resetPasswordForm" class="form-container hidden">
+      <div class="form-group">
+        <label for="resetEmail">Email:</label>
+        <input type="email" id="resetEmail" class="form-input" placeholder="seu@email.com" required>
+      </div>
+      
+      <button class="btn" id="resetBtn">Enviar Link de Recuperação</button>
+      
+      <div class="forgot-password">
+        <a href="#" id="backToLoginLink">Voltar ao Login</a>
       </div>
     </div>
   </div>
 
-  <!-- Firebase SDKs -->
   <script type="module">
-    // Importa os módulos do Firebase
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
     import {
       getAuth,
       signInWithEmailAndPassword,
-      signInAnonymously,
       createUserWithEmailAndPassword,
+      signInWithPopup,
+      GoogleAuthProvider,
+      sendPasswordResetEmail,
+      updateProfile,
       onAuthStateChanged
     } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+    import {
+      getDatabase,
+      ref,
+      set,
+      serverTimestamp
+    } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 
-    // Configuração do Firebase
     const firebaseConfig = {
-      apiKey: "AIzaSyDtXjxHE-vn2_QwfyG1i08hefGiemJEWb4",
-      authDomain: "project-889454389797.firebaseapp.com",
-      projectId: "project-889454389797",
-      storageBucket: "project-889454389797.appspot.com", 
-      messagingSenderId: "889454389797",
-      appId: "1:889454389797:web:63259e79a6a18c03ba2dcc"
+      apiKey: "AIzaSyBauGgt1pm-sBas75N40ufWRsGD6c4BsgM",
+      authDomain: "sistema-de-login-blog.firebaseapp.com",
+      databaseURL: "https://sistema-de-login-blog-default-rtdb.firebaseio.com",
+      projectId: "sistema-de-login-blog",
+      storageBucket: "sistema-de-login-blog.firebasestorage.app",
+      messagingSenderId: "416120877008",
+      appId: "1:416120877008:web:a5b0a26bec246d577a93d5"
     };
 
-    // Inicializa o Firebase
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
+    const database = getDatabase(app);
+    const googleProvider = new GoogleAuthProvider();
 
-    // Elementos do DOM
-    const loadingScreen = document.getElementById('loadingScreen');
-    const loginToggle = document.getElementById('loginToggle');
-    const registerToggle = document.getElementById('registerToggle');
+    const loading = document.getElementById('loading');
     const loginForm = document.getElementById('loginForm');
     const registerForm = document.getElementById('registerForm');
-    const emailLoginForm = document.getElementById('emailLoginForm');
-    const emailRegisterForm = document.getElementById('emailRegisterForm');
-    const anonLogin = document.getElementById('anonLogin');
-    const anonLoginRegister = document.getElementById('anonLoginRegister');
+    const resetPasswordForm = document.getElementById('resetPasswordForm');
 
-    // Função para alternar entre login e cadastro
-    function toggleForms(showLogin) {
-      if (showLogin) {
-        loginToggle.classList.add('active');
-        registerToggle.classList.remove('active');
-        loginForm.classList.add('active');
-        registerForm.classList.remove('active');
-      } else {
-        loginToggle.classList.remove('active');
-        registerToggle.classList.add('active');
-        loginForm.classList.remove('active');
-        registerForm.classList.add('active');
-      }
+    function showLoading() {
+      loading.classList.add('show');
     }
 
-    // Event listeners para os botões de toggle
-    loginToggle.addEventListener('click', () => toggleForms(true));
-    registerToggle.addEventListener('click', () => toggleForms(false));
+    function hideLoading() {
+      loading.classList.remove('show');
+    }
 
-    // Função para mostrar toast
-    function showToast(msg, isSuccess = false) {
-      // Remove toasts existentes
-      const existingToasts = document.querySelectorAll('.toast');
-      existingToasts.forEach(toast => toast.remove());
-
-      const toast = document.createElement("div");
-      toast.innerText = msg;
-      toast.className = `toast ${isSuccess ? 'success' : 'error'}`;
+    function showToast(message, type = 'info') {
+      const toast = document.createElement('div');
+      toast.className = `toast ${type}`;
+      toast.textContent = message;
       document.body.appendChild(toast);
-
+      
+      setTimeout(() => toast.classList.add('show'), 100);
+      
       setTimeout(() => {
-        if (toast.parentNode) {
-          toast.remove();
-        }
-      }, 5000);
+        toast.classList.remove('show');
+        setTimeout(() => toast.remove(), 300);
+      }, 4000);
     }
 
-    // Função para mostrar/esconder loading
-    function toggleLoading(show) {
-      if (show) {
-        loadingScreen.classList.remove('hidden');
-        document.querySelectorAll('.btn').forEach(btn => btn.disabled = true);
-      } else {
-        loadingScreen.classList.add('hidden');
-        document.querySelectorAll('.btn').forEach(btn => btn.disabled = false);
+    function createParticles() {
+      const particlesContainer = document.getElementById('particles');
+      for (let i = 0; i < 50; i++) {
+        const particle = document.createElement('div');
+        particle.className = 'particle';
+        particle.style.left = Math.random() * 100 + '%';
+        particle.style.top = Math.random() * 100 + '%';
+        particle.style.animationDelay = Math.random() * 6 + 's';
+        particle.style.animationDuration = (Math.random() * 3 + 3) + 's';
+        particlesContainer.appendChild(particle);
       }
     }
 
-    // Login com email e senha
-    emailLoginForm.addEventListener("submit", async (e) => {
-      e.preventDefault();
-      const email = document.getElementById("loginEmail").value.trim();
-      const password = document.getElementById("loginPassword").value;
-      
-      if (!email || !password) {
-        showToast("Por favor, preencha todos os campos");
-        return;
+    async function saveUserToDatabase(user) {
+      try {
+        const userRef = ref(database, `users/${user.uid}`);
+        await set(userRef, {
+          uid: user.uid,
+          displayName: user.displayName || user.email.split('@')[0],
+          email: user.email,
+          photoURL: user.photoURL || null,
+          online: true,
+          lastSeen: serverTimestamp(),
+          createdAt: serverTimestamp()
+        });
+      } catch (error) {
+        console.error('Erro ao salvar usuário no banco:', error);
       }
+    }
 
-      toggleLoading(true);
-      
+    async function handleLogin(email, password) {
+      showLoading();
       try {
         const userCredential = await signInWithEmailAndPassword(auth, email, password);
-        console.log("Login bem-sucedido:", userCredential.user);
-        showToast("Login realizado com sucesso!", true);
-        
+        await saveUserToDatabase(userCredential.user);
+        showToast('Login realizado com sucesso!', 'success');
         setTimeout(() => {
-          window.location.href = "inicio.html";
+          window.location.href = 'inicio.html';
         }, 1500);
       } catch (error) {
-        console.error("Erro no login:", error);
-        let errorMsg = "Erro ao fazer login";
-        
+        hideLoading();
+        let errorMessage = 'Erro ao fazer login. ';
         switch (error.code) {
           case 'auth/user-not-found':
-            errorMsg = "Usuário não encontrado";
+            errorMessage += 'Usuário não encontrado.';
             break;
           case 'auth/wrong-password':
-            errorMsg = "Senha incorreta";
+            errorMessage += 'Senha incorreta.';
             break;
           case 'auth/invalid-email':
-            errorMsg = "E-mail inválido";
+            errorMessage += 'Email inválido.';
             break;
-          case 'auth/invalid-credential':
-            errorMsg = "Credenciais inválidas";
+          case 'auth/user-disabled':
+            errorMessage += 'Conta desabilitada.';
             break;
           case 'auth/too-many-requests':
-            errorMsg = "Muitas tentativas. Tente novamente mais tarde";
-            break;
-          case 'auth/network-request-failed':
-            errorMsg = "Erro de conexão. Verifique sua internet";
+            errorMessage += 'Muitas tentativas. Tente novamente mais tarde.';
             break;
           default:
-            errorMsg = `Erro: ${error.message}`;
+            errorMessage += error.message;
         }
-        
-        showToast(errorMsg);
-      } finally {
-        toggleLoading(false);
+        showToast(errorMessage, 'error');
       }
-    });
+    }
 
-    // Cadastro de nova conta
-    emailRegisterForm.addEventListener("submit", async (e) => {
-      e.preventDefault();
-      const email = document.getElementById("registerEmail").value.trim();
-      const password = document.getElementById("registerPassword").value;
-      
-      if (!email || !password) {
-        showToast("Por favor, preencha todos os campos");
+    async function handleRegister(name, email, password, confirmPassword) {
+      if (password !== confirmPassword) {
+        showToast('As senhas não coincidem!', 'error');
         return;
       }
 
       if (password.length < 6) {
-        showToast("A senha deve ter pelo menos 6 caracteres");
+        showToast('A senha deve ter pelo menos 6 caracteres!', 'error');
         return;
       }
 
-      toggleLoading(true);
-      
+      showLoading();
       try {
         const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-        console.log("Conta criada com sucesso:", userCredential.user);
-        showToast("Conta criada com sucesso!", true);
-        
+        await updateProfile(userCredential.user, {
+          displayName: name
+        });
+        await saveUserToDatabase(userCredential.user);
+        showToast('Conta criada com sucesso!', 'success');
         setTimeout(() => {
-          window.location.href = "inicio.html";
+          window.location.href = 'inicio.html';
         }, 1500);
       } catch (error) {
-        console.error("Erro ao criar conta:", error);
-        let errorMsg = "Erro ao criar conta";
-        
+        hideLoading();
+        let errorMessage = 'Erro ao criar conta. ';
         switch (error.code) {
           case 'auth/email-already-in-use':
-            errorMsg = "Este e-mail já está em uso";
+            errorMessage += 'Este email já está em uso.';
             break;
           case 'auth/invalid-email':
-            errorMsg = "E-mail inválido";
+            errorMessage += 'Email inválido.';
             break;
           case 'auth/weak-password':
-            errorMsg = "Senha muito fraca. Use pelo menos 6 caracteres";
-            break;
-          case 'auth/network-request-failed':
-            errorMsg = "Erro de conexão. Verifique sua internet";
+            errorMessage += 'Senha muito fraca.';
             break;
           default:
-            errorMsg = `Erro: ${error.message}`;
+            errorMessage += error.message;
         }
-        
-        showToast(errorMsg);
-      } finally {
-        toggleLoading(false);
+        showToast(errorMessage, 'error');
       }
-    });
-
-    // Login anônimo (ambos os botões)
-    function handleAnonLogin() {
-      return async () => {
-        toggleLoading(true);
-        
-        try {
-          const userCredential = await signInAnonymously(auth);
-          console.log("Login anônimo bem-sucedido:", userCredential.user);
-          showToast("Entrando como visitante!", true);
-          
-          setTimeout(() => {
-            window.location.href = "inicio.html";
-          }, 1500);
-        } catch (error) {
-          console.error("Erro no login anônimo:", error);
-          let errorMsg = "Erro ao entrar como visitante";
-          
-          if (error.code === 'auth/operation-not-allowed') {
-            errorMsg = "Login anônimo não está habilitado";
-          } else if (error.code === 'auth/network-request-failed') {
-            errorMsg = "Erro de conexão. Verifique sua internet";
-          }
-          
-          showToast(errorMsg);
-        } finally {
-          toggleLoading(false);
-        }
-      };
     }
 
-    anonLogin.addEventListener("click", handleAnonLogin());
-    anonLoginRegister.addEventListener("click", handleAnonLogin());
+    async function handleGoogleAuth() {
+      showLoading();
+      try {
+        const result = await signInWithPopup(auth, googleProvider);
+        await saveUserToDatabase(result.user);
+        showToast('Login com Google realizado com sucesso!', 'success');
+        setTimeout(() => {
+          window.location.href = 'inicio.html';
+        }, 1500);
+      } catch (error) {
+        hideLoading();
+        let errorMessage = 'Erro ao fazer login com Google. ';
+        switch (error.code) {
+          case 'auth/popup-closed-by-user':
+            errorMessage += 'Popup fechado pelo usuário.';
+            break;
+          case 'auth/cancelled-popup-request':
+            errorMessage += 'Operação cancelada.';
+            break;
+          default:
+            errorMessage += error.message;
+        }
+        showToast(errorMessage, 'error');
+      }
+    }
 
-    // Verifica se já está logado
+    async function handlePasswordReset(email) {
+      if (!email) {
+        showToast('Por favor, digite seu email!', 'error');
+        return;
+      }
+
+      showLoading();
+      try {
+        await sendPasswordResetEmail(auth, email);
+        hideLoading();
+        showToast('Link de recuperação enviado para seu email!', 'success');
+        switchForm('login');
+      } catch (error) {
+        hideLoading();
+        let errorMessage = 'Erro ao enviar email de recuperação. ';
+        switch (error.code) {
+          case 'auth/user-not-found':
+            errorMessage += 'Email não encontrado.';
+            break;
+          case 'auth/invalid-email':
+            errorMessage += 'Email inválido.';
+            break;
+          default:
+            errorMessage += error.message;
+        }
+        showToast(errorMessage, 'error');
+      }
+    }
+
+    function switchForm(formType) {
+      loginForm.classList.add('hidden');
+      registerForm.classList.add('hidden');
+      resetPasswordForm.classList.add('hidden');
+
+      document.querySelectorAll('.tab').forEach(tab => {
+        tab.classList.remove('active');
+      });
+
+      if (formType === 'login') {
+        loginForm.classList.remove('hidden');
+        document.querySelector('[data-tab="login"]').classList.add('active');
+      } else if (formType === 'register') {
+        registerForm.classList.remove('hidden');
+        document.querySelector('[data-tab="register"]').classList.add('active');
+      } else if (formType === 'reset') {
+        resetPasswordForm.classList.remove('hidden');
+      }
+    }
+
+    window.togglePassword = function(inputId) {
+      const input = document.getElementById(inputId);
+      const button = input.nextElementSibling;
+      
+      if (input.type === 'password') {
+        input.type = 'text';
+        button.textContent = '🙈';
+      } else {
+        input.type = 'password';
+        button.textContent = '👁️';
+      }
+    };
+
+    document.querySelectorAll('.tab').forEach(tab => {
+      tab.addEventListener('click', () => {
+        const tabType = tab.getAttribute('data-tab');
+        switchForm(tabType);
+      });
+    });
+
+    document.getElementById('loginBtn').addEventListener('click', () => {
+      const email = document.getElementById('loginEmail').value.trim();
+      const password = document.getElementById('loginPassword').value.trim();
+      
+      if (!email || !password) {
+        showToast('Por favor, preencha todos os campos!', 'error');
+        return;
+      }
+      
+      handleLogin(email, password);
+    });
+
+    document.getElementById('registerBtn').addEventListener('click', () => {
+      const name = document.getElementById('registerName').value.trim();
+      const email = document.getElementById('registerEmail').value.trim();
+      const password = document.getElementById('registerPassword').value.trim();
+      const confirmPassword = document.getElementById('confirmPassword').value.trim();
+      
+      if (!name || !email || !password || !confirmPassword) {
+        showToast('Por favor, preencha todos os campos!', 'error');
+        return;
+      }
+      
+      handleRegister(name, email, password, confirmPassword);
+    });
+
+    document.getElementById('googleLoginBtn').addEventListener('click', handleGoogleAuth);
+    document.getElementById('googleRegisterBtn').addEventListener('click', handleGoogleAuth);
+
+    document.getElementById('resetBtn').addEventListener('click', () => {
+      const email = document.getElementById('resetEmail').value.trim();
+      handlePasswordReset(email);
+    });
+
+    document.getElementById('forgotPasswordLink').addEventListener('click', (e) => {
+      e.preventDefault();
+      switchForm('reset');
+    });
+
+    document.getElementById('backToLoginLink').addEventListener('click', (e) => {
+      e.preventDefault();
+      switchForm('login');
+    });
+
+    [
+      'loginEmail', 'loginPassword', 'registerName', 'registerEmail', 
+      'registerPassword', 'confirmPassword', 'resetEmail'
+    ].forEach(id => {
+      document.getElementById(id).addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+          if (id.startsWith('login')) {
+            document.getElementById('loginBtn').click();
+          } else if (id.startsWith('register') || id === 'confirmPassword') {
+            document.getElementById('registerBtn').click();
+          } else if (id === 'resetEmail') {
+            document.getElementById('resetBtn').click();
+          }
+        }
+      });
+    });
+
     onAuthStateChanged(auth, (user) => {
       if (user) {
-        console.log("Usuário já logado:", user);
-        window.location.href = "inicio.html";
-      } else {
-        console.log("Usuário não logado");
+        console.log('Usuário já logado, redirecionando...');
+        window.location.href = 'inicio.html';
       }
+      hideLoading();
     });
 
-    // Previne cache para garantir verificação de auth
-    window.addEventListener('pageshow', (event) => {
-      if (event.persisted) {
-        window.location.reload();
-      }
-    });
-
-    console.log("Firebase inicializado com sucesso");
+    createParticles();
   </script>
 </body>
 </html>
