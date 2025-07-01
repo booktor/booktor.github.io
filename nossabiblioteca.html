@@ -424,10 +424,10 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/9.23.0/firebase-app-compat.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/9.23.0/firebase-auth-compat.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/9.23.0/firebase-database-compat.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/9.23.0/firebase-storage-compat.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cloudinary-core/2.13.0/cloudinary-core-shrinkwrap.min.js"></script>
 
     <script>
-        const authConfig = {
+        const firebaseConfig = {
             apiKey: "AIzaSyBauGgt1pm-sBas75N40ufWRsGD6c4BsgM",
             authDomain: "sistema-de-login-blog.firebaseapp.com",
             databaseURL: "https://sistema-de-login-blog-default-rtdb.firebaseio.com",
@@ -437,22 +437,17 @@
             appId: "1:416120877008:web:a5b0a26bec246d577a93d5"
         };
 
-        const dataConfig = {
-            apiKey: "AIzaSyDop2mk0Stb1QtItDdpiRA-IT0AZmIKkic",
-            authDomain: "booktorextras.firebaseapp.com",
-            databaseURL: "https://booktorextras-default-rtdb.firebaseio.com",
-            projectId: "booktorextras",
-            storageBucket: "booktorextras.firebasestorage.app",
-            messagingSenderId: "168627698061",
-            appId: "1:168627698061:web:6bdb984cf6885fbdf125c4"
+        const cloudinaryConfig = {
+            cloudName: 'dt8rdfeli',
+            apiKey: '758716343938378',
+            uploadPreset: 'ml_default'
         };
 
-        const authApp = firebase.initializeApp(authConfig, 'auth');
-        const dataApp = firebase.initializeApp(dataConfig, 'data');
-
-        const auth = authApp.auth();
-        const database = dataApp.database();
-        const storage = dataApp.storage();
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const database = firebase.database();
+        
+        const cloudinary = window.cloudinary.Cloudinary.new({cloud_name: cloudinaryConfig.cloudName});
 
         let currentUser = null;
         let allBooks = [];
@@ -588,29 +583,31 @@
             submitBtn.textContent = 'Enviando...';
             
             try {
-                const fileRef = storage.ref(`pdfs/${Date.now()}_${file.name}`);
-                const uploadTask = fileRef.put(file);
+                const formData = new FormData();
+                formData.append('file', file);
+                formData.append('upload_preset', 'ml_default');
+                formData.append('resource_type', 'raw');
                 
-                uploadTask.on('state_changed', 
-                    (snapshot) => {
-                        const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                const xhr = new XMLHttpRequest();
+                
+                xhr.upload.addEventListener('progress', (e) => {
+                    if (e.lengthComputable) {
+                        const progress = (e.loaded / e.total) * 100;
                         progressFill.style.width = progress + '%';
-                    },
-                    (error) => {
-                        alert('Erro no upload: ' + error.message);
-                        progressBar.style.display = 'none';
-                        submitBtn.disabled = false;
-                        submitBtn.textContent = 'Fazer Upload';
-                    },
-                    async () => {
-                        const downloadURL = await uploadTask.snapshot.ref.getDownloadURL();
+                    }
+                });
+                
+                xhr.onload = async function() {
+                    if (xhr.status === 200) {
+                        const response = JSON.parse(xhr.responseText);
+                        const pdfUrl = response.secure_url;
                         
                         const bookData = {
                             title,
                             author,
                             category,
                             description,
-                            pdfUrl: downloadURL,
+                            pdfUrl,
                             uploadedBy: currentUser.email,
                             uploadedAt: Date.now()
                         };
@@ -624,8 +621,18 @@
                         submitBtn.textContent = 'Fazer Upload';
                         
                         loadBooks();
+                    } else {
+                        throw new Error('Erro no upload para Cloudinary');
                     }
-                );
+                };
+                
+                xhr.onerror = function() {
+                    throw new Error('Erro de conexão');
+                };
+                
+                xhr.open('POST', `https://api.cloudinary.com/v1_1/${cloudinaryConfig.cloudName}/raw/upload`);
+                xhr.send(formData);
+                
             } catch (error) {
                 alert('Erro no upload: ' + error.message);
                 progressBar.style.display = 'none';
@@ -708,4 +715,4 @@
         loadBooks();
     </script>
 </body>
-  </html>
+</html>
