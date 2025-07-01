@@ -1,612 +1,313 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Booktor - Leitor de eBook</title>
-  <link rel="icon" href="https://cdn-icons-png.flaticon.com/512/29/29302.png" />
-  <style>
-    :root {
-      --vermelho: #FF0000;
-      --preto: #000000;
-      --branco: #FFFFFF;
-      --cinza-escuro: #1a1a1a;
-      --cinza-medio: #333;
-      --cinza-claro: #666;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Visualizador de PDF - Catálogo</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
+            color: white;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
 
-    body, html {
-      height: 100%;
-      background-color: var(--preto);
-      color: var(--branco);
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      display: flex;
-      flex-direction: column;
-      min-height: 100vh;
-    }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
 
-    a {
-      color: var(--vermelho);
-      text-decoration: none;
-    }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            position: relative;
+        }
 
-    a:hover {
-      text-decoration: underline;
-    }
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 4px;
+            background: linear-gradient(90deg, #ff0000, #cc0000);
+            border-radius: 2px;
+        }
 
-    .header {
-      position: sticky;
-      top: 0;
-      background: linear-gradient(135deg, var(--vermelho), #cc0000);
-      color: var(--branco);
-      padding: 15px 20px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.5);
-      z-index: 1000;
-    }
+        .header h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            background: linear-gradient(45deg, #ff0000, #ff4444);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-top: 20px;
+            text-shadow: 0 0 30px rgba(255, 0, 0, 0.3);
+        }
 
-    .btn {
-      background-color: var(--preto);
-      color: var(--branco);
-      border: 2px solid var(--branco);
-      padding: 12px 18px;
-      border-radius: 8px;
-      font-size: 1em;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      font-weight: 500;
-    }
+        .header p {
+            font-size: 1.1rem;
+            color: #cccccc;
+            margin-top: 10px;
+            opacity: 0.9;
+        }
 
-    .btn:hover {
-      background-color: var(--cinza-medio);
-      transform: translateY(-2px);
-      box-shadow: 0 4px 8px rgba(0,0,0,0.3);
-    }
+        .pdf-container {
+            background: linear-gradient(145deg, #1a1a1a, #2a2a2a);
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 
+                0 20px 60px rgba(0, 0, 0, 0.5),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
 
-    .controls {
-      display: flex;
-      align-items: center;
-      gap: 15px;
-    }
+        .pdf-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #ff0000, #ff4444, #ff0000);
+            animation: pulse 2s ease-in-out infinite alternate;
+        }
 
-    .reader-controls {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      background-color: rgba(0,0,0,0.3);
-      padding: 8px 15px;
-      border-radius: 8px;
-    }
+        @keyframes pulse {
+            0% { opacity: 0.7; }
+            100% { opacity: 1; }
+        }
 
-    .control-btn {
-      background-color: transparent;
-      color: var(--branco);
-      border: 1px solid var(--branco);
-      padding: 8px 12px;
-      border-radius: 4px;
-      font-size: 14px;
-      cursor: pointer;
-      transition: all 0.2s ease;
-      min-width: 35px;
-    }
+        .pdf-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid rgba(255, 0, 0, 0.2);
+        }
 
-    .control-btn:hover {
-      background-color: var(--branco);
-      color: var(--preto);
-    }
+        .pdf-title {
+            font-size: 1.3rem;
+            color: #ff0000;
+            font-weight: 600;
+        }
 
-    .control-btn:disabled {
-      opacity: 0.5;
-      cursor: not-allowed;
-    }
+        .controls {
+            display: flex;
+            gap: 15px;
+        }
 
-    .zoom-level {
-      color: var(--branco);
-      font-size: 14px;
-      min-width: 50px;
-      text-align: center;
-      font-weight: 500;
-    }
+        .btn {
+            background: linear-gradient(45deg, #ff0000, #cc0000);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 4px 15px rgba(255, 0, 0, 0.3);
+        }
 
-    .main-content {
-      flex: 1;
-      padding: 0;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      background-color: var(--cinza-escuro);
-    }
+        .btn:hover {
+            background: linear-gradient(45deg, #ff4444, #ff0000);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 0, 0, 0.4);
+        }
 
-    .pdf-container {
-      width: 100%;
-      height: 100%;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      position: relative;
-    }
+        .btn-secondary {
+            background: linear-gradient(45deg, #333, #555);
+            box-shadow: 0 4px 15px rgba(255, 255, 255, 0.1);
+        }
 
-    .pdf-viewer {
-      width: 95%;
-      max-width: 1200px;
-      height: 85vh;
-      background-color: var(--branco);
-      border: 3px solid var(--vermelho);
-      border-radius: 12px;
-      box-shadow: 0 8px 32px rgba(255,0,0,0.3);
-      overflow: hidden;
-      position: relative;
-    }
+        .btn-secondary:hover {
+            background: linear-gradient(45deg, #555, #777);
+            box-shadow: 0 6px 20px rgba(255, 255, 255, 0.2);
+        }
 
-    .pdf-embed {
-      width: 100%;
-      height: 100%;
-      border: none;
-      display: block;
-    }
+        .pdf-viewer {
+            width: 100%;
+            height: 80vh;
+            border: none;
+            border-radius: 15px;
+            background: #000;
+            box-shadow: 
+                inset 0 0 20px rgba(0, 0, 0, 0.5),
+                0 0 30px rgba(255, 0, 0, 0.1);
+        }
 
-    .loading {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      text-align: center;
-      background-color: rgba(0,0,0,0.8);
-      padding: 30px;
-      border-radius: 12px;
-      color: var(--branco);
-    }
+        .loading {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 80vh;
+            font-size: 1.2rem;
+            color: #ff0000;
+        }
 
-    .spinner {
-      border: 3px solid var(--cinza-medio);
-      border-top: 3px solid var(--vermelho);
-      border-radius: 50%;
-      width: 40px;
-      height: 40px;
-      animation: spin 1s linear infinite;
-      margin: 0 auto 15px;
-    }
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid rgba(255, 0, 0, 0.3);
+            border-top: 4px solid #ff0000;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-right: 15px;
+        }
 
-    @keyframes spin {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
-    }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
 
-    .error-message {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      background-color: rgba(51, 0, 0, 0.95);
-      border: 2px solid var(--vermelho);
-      color: var(--branco);
-      padding: 30px;
-      border-radius: 12px;
-      text-align: center;
-      max-width: 400px;
-      display: none;
-    }
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            padding: 20px;
+            color: #888;
+            border-top: 1px solid rgba(255, 0, 0, 0.1);
+        }
 
-    .error-icon {
-      font-size: 48px;
-      margin-bottom: 15px;
-      color: var(--vermelho);
-    }
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .pdf-header {
+                flex-direction: column;
+                gap: 15px;
+                text-align: center;
+            }
+            
+            .controls {
+                justify-content: center;
+            }
+            
+            .pdf-viewer {
+                height: 70vh;
+            }
+        }
 
-    .pdf-selector {
-      position: absolute;
-      top: 10px;
-      left: 10px;
-      background-color: rgba(0,0,0,0.7);
-      color: var(--branco);
-      border: 1px solid var(--vermelho);
-      padding: 8px 12px;
-      border-radius: 6px;
-      font-size: 12px;
-      z-index: 100;
-    }
+        /* Animação de entrada */
+        .fade-in {
+            animation: fadeIn 0.8s ease-out;
+        }
 
-    .pdf-selector select {
-      background-color: var(--preto);
-      color: var(--branco);
-      border: 1px solid var(--vermelho);
-      padding: 4px 8px;
-      border-radius: 4px;
-      font-size: 12px;
-    }
-
-    .footer {
-      background: linear-gradient(135deg, #111, #1a1a1a);
-      border-top: 2px solid var(--vermelho);
-      text-align: center;
-      padding: 20px;
-      font-size: 0.95em;
-      color: var(--branco);
-    }
-
-    .back-to-top {
-      position: fixed;
-      bottom: 20px;
-      right: 20px;
-      background: linear-gradient(135deg, var(--vermelho), #cc0000);
-      color: var(--branco);
-      border: none;
-      padding: 15px;
-      border-radius: 50%;
-      font-size: 20px;
-      cursor: pointer;
-      box-shadow: 0 4px 16px rgba(255,0,0,0.3);
-      display: none;
-      z-index: 9999;
-      transition: all 0.3s ease;
-    }
-
-    .back-to-top:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 6px 20px rgba(255,0,0,0.4);
-    }
-
-    .fullscreen-btn {
-      position: absolute;
-      top: 10px;
-      right: 10px;
-      background-color: rgba(0,0,0,0.7);
-      color: var(--branco);
-      border: 1px solid var(--vermelho);
-      padding: 8px 12px;
-      border-radius: 6px;
-      cursor: pointer;
-      font-size: 12px;
-      transition: all 0.2s ease;
-      z-index: 100;
-    }
-
-    .fullscreen-btn:hover {
-      background-color: var(--vermelho);
-    }
-
-    /* Responsividade */
-    @media (max-width: 768px) {
-      .header {
-        padding: 12px 15px;
-        flex-wrap: wrap;
-        gap: 10px;
-      }
-
-      .controls {
-        flex-wrap: wrap;
-        gap: 8px;
-      }
-
-      .reader-controls {
-        padding: 6px 10px;
-        gap: 8px;
-      }
-
-      .control-btn {
-        padding: 6px 10px;
-        font-size: 12px;
-        min-width: 30px;
-      }
-
-      .pdf-viewer {
-        width: 98%;
-        height: 80vh;
-        border-width: 2px;
-      }
-
-      .main-content {
-        padding: 10px 0;
-      }
-    }
-
-    @media (max-width: 480px) {
-      .header h1 {
-        font-size: 1.2em;
-      }
-
-      .btn {
-        padding: 10px 14px;
-        font-size: 0.9em;
-      }
-
-      .pdf-viewer {
-        height: 75vh;
-        border-radius: 8px;
-      }
-
-      .reader-controls {
-        padding: 4px 8px;
-        gap: 6px;
-      }
-
-      .zoom-level {
-        font-size: 12px;
-        min-width: 40px;
-      }
-    }
-
-    /* Modo escuro para o PDF */
-    .dark-mode .pdf-embed {
-      filter: invert(1) hue-rotate(180deg);
-    }
-
-    .dark-mode-toggle {
-      background-color: transparent;
-      color: var(--branco);
-      border: 1px solid var(--branco);
-      padding: 8px 12px;
-      border-radius: 4px;
-      cursor: pointer;
-      font-size: 14px;
-      transition: all 0.2s ease;
-    }
-
-    .dark-mode-toggle:hover {
-      background-color: var(--branco);
-      color: var(--preto);
-    }
-  </style>
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
 </head>
 <body>
-  <header class="header">
-    <button class="btn" onclick="goBack()">
-      ← Voltar
-    </button>
-    <h1>📖 Leitor de eBook</h1>
-    <div class="controls">
-      <div class="reader-controls">
-        <button class="control-btn" onclick="zoomOut()" title="Diminuir zoom">−</button>
-        <span class="zoom-level" id="zoomLevel">100%</span>
-        <button class="control-btn" onclick="zoomIn()" title="Aumentar zoom">+</button>
-        <button class="control-btn" onclick="resetZoom()" title="Zoom original">⚬</button>
-        <button class="dark-mode-toggle" onclick="toggleDarkMode()" title="Modo escuro">🌙</button>
-      </div>
+    <div class="container">
+        <div class="header fade-in">
+            <h1>📚 Visualizador de PDF</h1>
+            <p>Explore nosso catálogo digital com interface elegante</p>
+        </div>
+
+        <div class="pdf-container fade-in">
+            <div class="pdf-header">
+                <div class="pdf-title">📖 Documento do Catálogo</div>
+                <div class="controls">
+                    <button class="btn" onclick="openFullscreen()">
+                        🔍 Tela Cheia
+                    </button>
+                    <a href="https://drive.google.com/file/d/1t5RBR1ABM8hXhivgmOgUPp2UoxJsNkEN/view" 
+                       target="_blank" class="btn btn-secondary">
+                        📱 Abrir no Drive
+                    </a>
+                </div>
+            </div>
+
+            <div id="loading" class="loading">
+                <div class="spinner"></div>
+                Carregando documento...
+            </div>
+
+            <iframe 
+                id="pdfViewer"
+                class="pdf-viewer" 
+                src="https://drive.google.com/file/d/1t5RBR1ABM8hXhivgmOgUPp2UoxJsNkEN/preview"
+                style="display: none;"
+                onload="hideLoading()"
+                title="Visualizador de PDF">
+            </iframe>
+        </div>
+
+        <div class="footer fade-in">
+            <p>Interface desenvolvida para uma experiência de leitura otimizada</p>
+        </div>
     </div>
-  </header>
 
-  <main class="main-content">
-    <div class="pdf-container">
-      <div class="pdf-viewer" id="pdfViewer">
-        <div class="pdf-selector">
-          <label for="pdfSelect">eBook:</label>
-          <select id="pdfSelect" onchange="changePDF()">
-            <option value="https://drive.google.com/file/d/1tBkpRyBzmEJtrloHdoioK4p_9OqM_hTt/preview">Seu eBook Principal</option>
-            <option value="https://drive.google.com/file/d/SEU_ID_AQUI/preview">Manual do Usuário</option>
-            <option value="https://drive.google.com/file/d/SEU_ID_AQUI/preview">Guia Completo</option>
-            <option value="https://drive.google.com/file/d/SEU_ID_AQUI/preview">Romance Clássico</option>
-            <option value="https://drive.google.com/file/d/SEU_ID_AQUI/preview">Aventura Épica</option>
-          </select>
-        </div>
-        
-        <button class="fullscreen-btn" onclick="toggleFullscreen()" title="Tela cheia">⛶</button>
-        <embed id="pdfEmbed" class="pdf-embed" src="https://drive.google.com/file/d/1tBkpRyBzmEJtrloHdoioK4p_9OqM_hTt/preview" type="application/pdf">
-        
-        <div class="loading" id="loading">
-          <div class="spinner"></div>
-          <p>Carregando eBook...</p>
-        </div>
-
-        <div class="error-message" id="errorMessage">
-          <div class="error-icon">⚠️</div>
-          <h3>Erro ao carregar o eBook</h3>
-          <p>Verifique se o arquivo existe e tente novamente.</p>
-          <button class="btn" onclick="location.reload()" style="margin-top: 15px;">
-            Recarregar página
-          </button>
-        </div>
-      </div>
-    </div>
-  </main>
-
-  <footer class="footer">
-    <p>📚 <strong>Booktor</strong> — Todos os eBooks são gratuitos</p>
-    <p>Desenvolvido com ❤️ por <strong>Alírio Neto</strong></p>
-  </footer>
-
-  <button class="back-to-top" id="backToTop" title="Voltar ao topo">⬆️</button>
-
-  <script>
-    let currentZoom = 100;
-    let isDarkMode = false;
-    let isFullscreen = false;
-
-    // Elementos do DOM
-    const pdfEmbed = document.getElementById('pdfEmbed');
-    const loading = document.getElementById('loading');
-    const errorMessage = document.getElementById('errorMessage');
-    const zoomLevel = document.getElementById('zoomLevel');
-    const backToTop = document.getElementById('backToTop');
-    const pdfViewer = document.getElementById('pdfViewer');
-    const pdfSelect = document.getElementById('pdfSelect');
-
-    // Lista de PDFs disponíveis
-    const availablePDFs = {
-      'https://drive.google.com/file/d/1tBkpRyBzmEJtrloHdoioK4p_9OqM_hTt/preview': 'Seu eBook Principal',
-      'https://drive.google.com/file/d/SEU_ID_AQUI/preview': 'Manual do Usuário',
-      'https://drive.google.com/file/d/SEU_ID_AQUI/preview': 'Guia Completo',
-      'https://drive.google.com/file/d/SEU_ID_AQUI/preview': 'Romance Clássico',
-      'https://drive.google.com/file/d/SEU_ID_AQUI/preview': 'Aventura Épica'
-    };
-
-    // Controles de Zoom
-    function zoomIn() {
-      if (currentZoom < 300) {
-        currentZoom += 25;
-        updateZoom();
-      }
-    }
-
-    function zoomOut() {
-      if (currentZoom > 25) {
-        currentZoom -= 25;
-        updateZoom();
-      }
-    }
-
-    function resetZoom() {
-      currentZoom = 100;
-      updateZoom();
-    }
-
-    function updateZoom() {
-      zoomLevel.textContent = currentZoom + '%';
-      pdfEmbed.style.transform = `scale(${currentZoom / 100})`;
-      pdfEmbed.style.transformOrigin = 'top left';
-      
-      // Ajustar container para zoom
-      if (currentZoom !== 100) {
-        pdfEmbed.style.width = `${100 / (currentZoom / 100)}%`;
-        pdfEmbed.style.height = `${100 / (currentZoom / 100)}%`;
-      } else {
-        pdfEmbed.style.width = '100%';
-        pdfEmbed.style.height = '100%';
-      }
-    }
-
-    // Trocar PDF
-    function changePDF() {
-      const selectedPDF = pdfSelect.value;
-      loading.style.display = 'block';
-      errorMessage.style.display = 'none';
-      pdfEmbed.src = selectedPDF;
-      
-      // Atualizar título da página
-      document.title = `Booktor - ${availablePDFs[selectedPDF]}`;
-      
-      // Resetar zoom ao trocar PDF
-      currentZoom = 100;
-      updateZoom();
-      
-      setTimeout(() => {
-        loading.style.display = 'none';
-      }, 2000);
-    }
-
-    // Modo escuro
-    function toggleDarkMode() {
-      isDarkMode = !isDarkMode;
-      if (isDarkMode) {
-        document.body.classList.add('dark-mode');
-      } else {
-        document.body.classList.remove('dark-mode');
-      }
-    }
-
-    // Tela cheia
-    function toggleFullscreen() {
-      if (!isFullscreen) {
-        if (pdfViewer.requestFullscreen) {
-          pdfViewer.requestFullscreen();
-        } else if (pdfViewer.webkitRequestFullscreen) {
-          pdfViewer.webkitRequestFullscreen();
-        } else if (pdfViewer.msRequestFullscreen) {
-          pdfViewer.msRequestFullscreen();
+    <script>
+        function hideLoading() {
+            document.getElementById('loading').style.display = 'none';
+            document.getElementById('pdfViewer').style.display = 'block';
         }
-        isFullscreen = true;
-      } else {
-        if (document.exitFullscreen) {
-          document.exitFullscreen();
-        } else if (document.webkitExitFullscreen) {
-          document.webkitExitFullscreen();
-        } else if (document.msExitFullscreen) {
-          document.msExitFullscreen();
+
+        function openFullscreen() {
+            const iframe = document.getElementById('pdfViewer');
+            if (iframe.requestFullscreen) {
+                iframe.requestFullscreen();
+            } else if (iframe.webkitRequestFullscreen) {
+                iframe.webkitRequestFullscreen();
+            } else if (iframe.msRequestFullscreen) {
+                iframe.msRequestFullscreen();
+            }
         }
-        isFullscreen = false;
-      }
-    }
 
-    // Voltar
-    function goBack() {
-      if (document.referrer) {
-        window.history.back();
-      } else {
-        window.location.href = 'catalogo.html';
-      }
-    }
+        // Adiciona efeito de fade-in aos elementos quando a página carrega
+        window.addEventListener('load', function() {
+            const elements = document.querySelectorAll('.fade-in');
+            elements.forEach((el, index) => {
+                setTimeout(() => {
+                    el.style.opacity = '1';
+                }, index * 200);
+            });
+        });
 
-    // Carregamento do PDF
-    function checkPDFLoad() {
-      setTimeout(() => {
-        loading.style.display = 'none';
-      }, 2000);
-    }
-
-    // Tratar erro de carregamento
-    pdfEmbed.addEventListener('error', () => {
-      loading.style.display = 'none';
-      errorMessage.style.display = 'block';
-    });
-
-    // Botão voltar ao topo
-    backToTop.addEventListener('click', () => {
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    });
-
-    window.addEventListener('scroll', () => {
-      if (window.scrollY > 300) {
-        backToTop.style.display = 'block';
-      } else {
-        backToTop.style.display = 'none';
-      }
-    });
-
-    // Atalhos de teclado
-    document.addEventListener('keydown', (e) => {
-      if (e.ctrlKey || e.metaKey) {
-        if (e.key === '=' || e.key === '+') {
-          e.preventDefault();
-          zoomIn();
-        } else if (e.key === '-' || e.key === '_') {
-          e.preventDefault();
-          zoomOut();
-        } else if (e.key === '0') {
-          e.preventDefault();
-          resetZoom();
-        }
-      }
-      
-      // Esc para sair do fullscreen
-      if (e.key === 'Escape' && isFullscreen) {
-        toggleFullscreen();
-      }
-      
-      // F11 para fullscreen
-      if (e.key === 'F11') {
-        e.preventDefault();
-        toggleFullscreen();
-      }
-    });
-
-    // Detectar mudança de fullscreen
-    document.addEventListener('fullscreenchange', () => {
-      isFullscreen = !!document.fullscreenElement;
-    });
-
-    // Inicializar
-    window.addEventListener('load', () => {
-      checkPDFLoad();
-    });
-
-    // Parâmetros da URL para PDF específico
-    window.addEventListener('DOMContentLoaded', () => {
-      const urlParams = new URLSearchParams(window.location.search);
-      const pdfFile = urlParams.get('pdf');
-      
-      if (pdfFile && availablePDFs[pdfFile]) {
-        pdfEmbed.src = pdfFile;
-        pdfSelect.value = pdfFile;
-        document.title = `Booktor - ${availablePDFs[pdfFile]}`;
-      }
-    });
-  </script>
+        // Melhor tratamento de erro para o iframe
+        document.getElementById('pdfViewer').addEventListener('error', function() {
+            document.getElementById('loading').innerHTML = `
+                <div style="text-align: center;">
+                    <div style="font-size: 3rem; margin-bottom: 20px;">⚠️</div>
+                    <div>Erro ao carregar o documento</div>
+                    <div style="margin-top: 10px; opacity: 0.7;">
+                        <a href="https://drive.google.com/file/d/1t5RBR1ABM8hXhivgmOgUPp2UoxJsNkEN/view" 
+                           target="_blank" class="btn" style="margin-top: 15px;">
+                            Abrir no Google Drive
+                        </a>
+                    </div>
+                </div>
+            `;
+        });
+    </script>
 </body>
 </html>
