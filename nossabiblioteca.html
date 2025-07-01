@@ -600,11 +600,9 @@
                     if (xhr.status === 200) {
                         const response = JSON.parse(xhr.responseText);
                         console.log('Cloudinary response:', response);
-                        let pdfUrl = response.secure_url;
                         
-                        if (response.resource_type === 'image') {
-                            pdfUrl = response.secure_url.replace('/upload/', '/upload/fl_attachment/');
-                        }
+                        // URL básica do Cloudinary
+                        let pdfUrl = response.secure_url;
                         
                         const bookData = {
                             title,
@@ -693,8 +691,18 @@
         }
 
         function openPDF(url, title) {
+            console.log('Tentando abrir PDF:', url);
+            
+            // Modifica a URL do Cloudinary para visualização inline
+            let viewerUrl = url;
+            if (url.includes('cloudinary.com')) {
+                // Remove qualquer transformação existente e adiciona fl_attachment
+                viewerUrl = url.replace(/\/upload\/[^\/]*\//, '/upload/fl_attachment/');
+                console.log('URL modificada:', viewerUrl);
+            }
+            
             document.getElementById('pdfTitle').textContent = title;
-            document.getElementById('pdfIframe').src = url;
+            document.getElementById('pdfIframe').src = viewerUrl;
             elements.pdfViewer.style.display = 'block';
         }
 
