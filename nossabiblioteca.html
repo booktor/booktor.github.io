@@ -586,6 +586,8 @@
                 const formData = new FormData();
                 formData.append('file', file);
                 formData.append('upload_preset', 'ml_default');
+                formData.append('resource_type', 'auto');
+                formData.append('type', 'upload');
                 
                 const xhr = new XMLHttpRequest();
                 
