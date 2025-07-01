@@ -586,8 +586,6 @@
                 const formData = new FormData();
                 formData.append('file', file);
                 formData.append('upload_preset', 'ml_default');
-                formData.append('resource_type', 'auto');
-                formData.append('type', 'upload');
                 
                 const xhr = new XMLHttpRequest();
                 
@@ -601,7 +599,12 @@
                 xhr.onload = async function() {
                     if (xhr.status === 200) {
                         const response = JSON.parse(xhr.responseText);
-                        const pdfUrl = response.secure_url;
+                        console.log('Cloudinary response:', response);
+                        let pdfUrl = response.secure_url;
+                        
+                        if (response.resource_type === 'image') {
+                            pdfUrl = response.secure_url.replace('/upload/', '/upload/fl_attachment/');
+                        }
                         
                         const bookData = {
                             title,
@@ -621,9 +624,11 @@
                         submitBtn.disabled = false;
                         submitBtn.textContent = 'Fazer Upload';
                         
+                        alert('PDF enviado com sucesso!');
                         loadBooks();
                     } else {
-                        throw new Error('Erro no upload para Cloudinary');
+                        console.error('Erro Cloudinary:', xhr.responseText);
+                        throw new Error('Erro no upload para Cloudinary: ' + xhr.status);
                     }
                 };
                 
@@ -631,7 +636,7 @@
                     throw new Error('Erro de conexão');
                 };
                 
-                xhr.open('POST', `https://api.cloudinary.com/v1_1/${cloudinaryConfig.cloudName}/auto/upload`);
+                xhr.open('POST', `https://api.cloudinary.com/v1_1/${cloudinaryConfig.cloudName}/upload`);
                 xhr.send(formData);
                 
             } catch (error) {
