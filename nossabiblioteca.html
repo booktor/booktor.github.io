@@ -586,7 +586,6 @@
                 const formData = new FormData();
                 formData.append('file', file);
                 formData.append('upload_preset', 'ml_default');
-                formData.append('resource_type', 'raw');
                 
                 const xhr = new XMLHttpRequest();
                 
@@ -630,7 +629,7 @@
                     throw new Error('Erro de conexão');
                 };
                 
-                xhr.open('POST', `https://api.cloudinary.com/v1_1/${cloudinaryConfig.cloudName}/raw/upload`);
+                xhr.open('POST', `https://api.cloudinary.com/v1_1/${cloudinaryConfig.cloudName}/auto/upload`);
                 xhr.send(formData);
                 
             } catch (error) {
