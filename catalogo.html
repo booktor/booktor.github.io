@@ -10,7 +10,6 @@
   <script type="module">
     import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
     import { getFirestore, collection, getDocs, doc, updateDoc, increment } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
-    import { getAuth, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
 
     // Configuração do Firebase para eBooks
     const firebaseConfig = {
@@ -24,11 +23,9 @@
 
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
-    const auth = getAuth(app);
 
     window.firebaseApp = app;
     window.firebaseDb = db;
-    window.firebaseAuth = auth;
   </script>
 
   <style>
@@ -63,22 +60,22 @@
       overflow-x: hidden;
     }
 
-    /* Header melhorado */
+    /* Header */
     .header {
       position: sticky;
       top: 0;
       background: linear-gradient(135deg, var(--vermelho) 0%, var(--vermelho-hover) 100%);
-      padding: 15px 20px;
+      padding: 20px;
       display: flex;
       justify-content: space-between;
       align-items: center;
       box-shadow: 0 4px 20px var(--sombra);
       z-index: 1000;
       backdrop-filter: blur(15px);
-      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      border-bottom: 2px solid rgba(255, 255, 255, 0.1);
     }
 
-    .header-content {
+    .header-left {
       display: flex;
       align-items: center;
       gap: 15px;
@@ -86,7 +83,7 @@
 
     .header h1 {
       color: var(--branco);
-      font-size: 1.8em;
+      font-size: 2em;
       margin: 0;
       font-weight: 700;
       text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
@@ -95,98 +92,39 @@
       gap: 10px;
     }
 
-    .stats-info {
-      font-size: 0.9em;
-      opacity: 0.9;
+    .header-buttons {
       display: flex;
       gap: 15px;
     }
 
-    .btn-inicio {
+    .btn-header {
       background-color: var(--preto);
       color: var(--branco);
       border: 2px solid var(--branco);
-      padding: 10px 16px;
-      border-radius: 8px;
+      padding: 12px 20px;
+      border-radius: 10px;
       font-size: 1em;
       font-weight: 600;
       cursor: pointer;
       transition: all 0.3s ease;
       text-transform: uppercase;
       letter-spacing: 0.5px;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 8px;
     }
 
-    .btn-inicio:hover {
+    .btn-header:hover {
       background-color: var(--cinza-claro);
       transform: translateY(-2px);
-      box-shadow: 0 4px 8px var(--sombra);
+      box-shadow: 0 6px 15px var(--sombra);
     }
 
-    /* Filtros e busca */
-    .search-filters {
-      background: rgba(26, 26, 26, 0.8);
-      backdrop-filter: blur(10px);
-      padding: 25px;
-      margin: 20px 0;
-      border-radius: 15px;
-      border: 1px solid rgba(255, 0, 0, 0.2);
-    }
-
-    .search-container {
-      display: flex;
-      gap: 15px;
-      align-items: center;
-      flex-wrap: wrap;
-      margin-bottom: 20px;
-    }
-
-    .search-input {
-      flex: 1;
-      min-width: 250px;
-      padding: 12px 20px;
-      border: 2px solid var(--cinza-claro);
-      border-radius: 25px;
-      background: var(--cinza-escuro);
-      color: var(--branco);
-      font-size: 1em;
-      transition: all 0.3s ease;
-    }
-
-    .search-input:focus {
-      outline: none;
-      border-color: var(--vermelho);
-      box-shadow: 0 0 15px rgba(255, 0, 0, 0.3);
-    }
-
-    .filter-buttons {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
-
-    .filter-btn {
-      padding: 8px 16px;
-      border: 2px solid var(--vermelho);
-      border-radius: 20px;
-      background: transparent;
-      color: var(--vermelho);
-      cursor: pointer;
-      transition: all 0.3s ease;
-      font-size: 0.9em;
-      font-weight: 500;
-    }
-
-    .filter-btn.active,
-    .filter-btn:hover {
-      background: var(--vermelho);
-      color: var(--branco);
-      transform: translateY(-1px);
-    }
-
-    /* Main content melhorado */
+    /* Main content */
     .main-content {
       flex: 1;
-      padding: 40px 20px;
+      padding: 50px 20px;
       max-width: 1400px;
       margin: auto;
       width: 100%;
@@ -196,27 +134,31 @@
       text-align: center;
       margin-bottom: 20px;
       color: var(--branco);
-      font-size: 2.8em;
+      font-size: 3.2em;
       font-weight: 300;
       position: relative;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
     }
 
     .page-title::after {
       content: '';
       display: block;
-      width: 100px;
+      width: 120px;
       height: 4px;
       background: linear-gradient(90deg, var(--vermelho), var(--vermelho-hover));
-      margin: 20px auto;
+      margin: 25px auto;
       border-radius: 2px;
     }
 
     .subtitle {
       text-align: center;
-      margin-bottom: 40px;
-      color: rgba(255, 255, 255, 0.7);
-      font-size: 1.2em;
+      margin-bottom: 50px;
+      color: rgba(255, 255, 255, 0.8);
+      font-size: 1.3em;
       font-weight: 300;
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
     }
 
     /* Loading state */
@@ -224,16 +166,16 @@
       display: flex;
       justify-content: center;
       align-items: center;
-      min-height: 300px;
+      min-height: 400px;
       flex-direction: column;
       gap: 20px;
     }
 
     .spinner {
-      width: 50px;
-      height: 50px;
-      border: 3px solid rgba(255, 0, 0, 0.3);
-      border-top: 3px solid var(--vermelho);
+      width: 60px;
+      height: 60px;
+      border: 4px solid rgba(255, 0, 0, 0.3);
+      border-top: 4px solid var(--vermelho);
       border-radius: 50%;
       animation: spin 1s linear infinite;
     }
@@ -243,27 +185,32 @@
       100% { transform: rotate(360deg); }
     }
 
-    /* Grid de catálogo melhorado */
+    .loading-text {
+      font-size: 1.2em;
+      color: rgba(255, 255, 255, 0.8);
+    }
+
+    /* Grid de catálogo */
     .catalogo-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-      gap: 25px;
-      margin-bottom: 40px;
+      grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+      gap: 30px;
+      margin-bottom: 50px;
     }
 
     .ebook-card {
       background: linear-gradient(145deg, var(--cinza-escuro), var(--cinza-medio));
       border: 2px solid transparent;
       border-radius: 20px;
-      padding: 25px;
+      padding: 30px;
       display: flex;
       flex-direction: column;
       cursor: pointer;
       transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
       position: relative;
       overflow: hidden;
-      min-height: 280px;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+      min-height: 320px;
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
     }
 
     .ebook-card::before {
@@ -280,9 +227,9 @@
     }
 
     .ebook-card:hover {
-      transform: translateY(-10px) scale(1.03);
+      transform: translateY(-12px) scale(1.03);
       border-color: var(--vermelho);
-      box-shadow: 0 20px 50px rgba(255, 0, 0, 0.4);
+      box-shadow: 0 25px 60px rgba(255, 0, 0, 0.4);
     }
 
     .ebook-card:hover::before {
@@ -293,74 +240,75 @@
       display: flex;
       justify-content: space-between;
       align-items: flex-start;
-      margin-bottom: 15px;
+      margin-bottom: 20px;
     }
 
     .ebook-title {
       color: var(--vermelho);
-      font-size: 1.4em;
-      font-weight: 600;
+      font-size: 1.5em;
+      font-weight: 700;
       line-height: 1.3;
       flex: 1;
+      margin-right: 15px;
     }
 
     .ebook-status {
-      background: var(--vermelho);
+      background: linear-gradient(135deg, var(--vermelho), var(--vermelho-hover));
       color: var(--branco);
-      padding: 4px 10px;
-      border-radius: 12px;
-      font-size: 0.8em;
-      font-weight: 500;
-      margin-left: 10px;
+      padding: 6px 12px;
+      border-radius: 15px;
+      font-size: 0.85em;
+      font-weight: 600;
+      box-shadow: 0 2px 8px rgba(255, 0, 0, 0.3);
     }
 
     .ebook-description {
       flex-grow: 1;
       color: rgba(255, 255, 255, 0.9);
-      margin-bottom: 20px;
-      font-size: 1em;
-      line-height: 1.6;
+      margin-bottom: 25px;
+      font-size: 1.05em;
+      line-height: 1.7;
     }
 
     .ebook-meta {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 20px;
-      font-size: 0.9em;
+      margin-bottom: 25px;
+      font-size: 0.95em;
       color: rgba(255, 255, 255, 0.7);
     }
 
-    .ebook-stats {
-      display: flex;
-      gap: 15px;
+    .ebook-author {
+      font-weight: 600;
+      color: var(--branco);
     }
 
-    .stat-item {
-      display: flex;
-      align-items: center;
-      gap: 5px;
+    .ebook-date {
+      opacity: 0.8;
     }
 
     .btn-ler {
       background: linear-gradient(135deg, var(--vermelho), var(--vermelho-hover));
       color: var(--branco);
       border: none;
-      border-radius: 12px;
-      padding: 14px 24px;
-      font-weight: 600;
-      font-size: 1em;
+      border-radius: 15px;
+      padding: 16px 28px;
+      font-weight: 700;
+      font-size: 1.1em;
       cursor: pointer;
       transition: all 0.3s ease;
       text-transform: uppercase;
-      letter-spacing: 0.5px;
+      letter-spacing: 0.8px;
       position: relative;
       overflow: hidden;
       width: 100%;
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 10px;
+      gap: 12px;
+      box-shadow: 0 6px 20px rgba(255, 0, 0, 0.3);
+      text-decoration: none;
     }
 
     .btn-ler::before {
@@ -379,30 +327,34 @@
     }
 
     .btn-ler:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 25px rgba(255, 0, 0, 0.5);
+      transform: translateY(-3px);
+      box-shadow: 0 12px 30px rgba(255, 0, 0, 0.5);
     }
 
     /* Empty state */
     .empty-state {
       text-align: center;
-      padding: 60px 20px;
+      padding: 80px 20px;
       color: rgba(255, 255, 255, 0.6);
     }
 
     .empty-state h3 {
-      font-size: 1.5em;
-      margin-bottom: 10px;
+      font-size: 2em;
+      margin-bottom: 15px;
       color: var(--vermelho);
     }
 
-    /* Footer melhorado */
+    .empty-state p {
+      font-size: 1.1em;
+    }
+
+    /* Footer */
     .footer {
       background: linear-gradient(135deg, #0a0a0a, #111);
-      border-top: 2px solid var(--vermelho);
+      border-top: 3px solid var(--vermelho);
       text-align: center;
-      padding: 40px 20px;
-      font-size: 0.95em;
+      padding: 50px 20px;
+      font-size: 1em;
       color: var(--branco);
       margin-top: auto;
     }
@@ -413,36 +365,22 @@
     }
 
     .footer p {
-      margin-bottom: 8px;
+      margin-bottom: 10px;
     }
 
     .footer strong {
       color: var(--vermelho);
     }
 
-    .footer-stats {
-      margin: 20px 0;
-      padding: 15px;
+    .footer-highlight {
+      margin: 30px 0;
+      padding: 20px;
       background: rgba(255, 0, 0, 0.1);
-      border-radius: 10px;
-      display: flex;
-      justify-content: center;
-      gap: 30px;
-      flex-wrap: wrap;
+      border-radius: 15px;
+      border: 2px solid rgba(255, 0, 0, 0.2);
     }
 
-    .stat-footer {
-      text-align: center;
-    }
-
-    .stat-footer .number {
-      display: block;
-      font-size: 1.5em;
-      font-weight: bold;
-      color: var(--vermelho);
-    }
-
-    /* Botão voltar ao topo melhorado */
+    /* Botão voltar ao topo */
     .btn-topo {
       position: fixed;
       bottom: 30px;
@@ -450,21 +388,21 @@
       background: linear-gradient(135deg, var(--vermelho), var(--vermelho-hover));
       color: var(--branco);
       border: none;
-      padding: 15px;
+      padding: 18px;
       border-radius: 50%;
-      font-size: 20px;
+      font-size: 22px;
       cursor: pointer;
-      box-shadow: 0 6px 20px var(--sombra);
+      box-shadow: 0 8px 25px var(--sombra);
       z-index: 9999;
       display: none;
       transition: all 0.3s ease;
-      width: 60px;
-      height: 60px;
+      width: 65px;
+      height: 65px;
     }
 
     .btn-topo:hover {
       transform: translateY(-5px) scale(1.1);
-      box-shadow: 0 10px 30px rgba(255, 0, 0, 0.5);
+      box-shadow: 0 15px 40px rgba(255, 0, 0, 0.5);
     }
 
     .btn-topo.show {
@@ -488,27 +426,24 @@
     /* Responsividade */
     @media (max-width: 768px) {
       .header {
-        padding: 12px 15px;
+        padding: 15px;
         flex-direction: column;
-        gap: 10px;
+        gap: 15px;
       }
 
-      .header-content {
+      .header-left {
         width: 100%;
-        justify-content: space-between;
+        justify-content: center;
       }
 
-      .stats-info {
-        display: none;
+      .header-buttons {
+        width: 100%;
+        justify-content: center;
       }
 
-      .search-container {
-        flex-direction: column;
-        align-items: stretch;
-      }
-
-      .search-input {
-        min-width: auto;
+      .btn-header {
+        padding: 10px 16px;
+        font-size: 0.9em;
       }
 
       .main-content {
@@ -516,26 +451,30 @@
       }
 
       .page-title {
-        font-size: 2.2em;
+        font-size: 2.5em;
         margin-bottom: 15px;
+      }
+
+      .subtitle {
+        font-size: 1.1em;
       }
 
       .catalogo-grid {
         grid-template-columns: 1fr;
-        gap: 20px;
+        gap: 25px;
       }
 
-      .footer-stats {
-        flex-direction: column;
-        gap: 15px;
+      .ebook-card {
+        min-height: 300px;
+        padding: 25px;
       }
 
       .btn-topo {
         bottom: 20px;
         right: 20px;
-        width: 55px;
-        height: 55px;
-        font-size: 18px;
+        width: 60px;
+        height: 60px;
+        font-size: 20px;
       }
     }
 
@@ -549,30 +488,12 @@
     .ebook-card:nth-child(1) { animation-delay: 0.1s; }
     .ebook-card:nth-child(2) { animation-delay: 0.2s; }
     .ebook-card:nth-child(3) { animation-delay: 0.3s; }
-    .ebook-card:nth-child(4) { animation-delay: 0.4s; }
-    .ebook-card:nth-child(5) { animation-delay: 0.5s; }
-    .ebook-card:nth-child(6) { animation-delay: 0.6s; }
 
     @keyframes slideInUp {
       to {
         opacity: 1;
         transform: translateY(0);
       }
-    }
-
-    /* Acessibilidade */
-    .ebook-card:focus {
-      outline: 3px solid var(--vermelho);
-      outline-offset: 2px;
-      transform: translateY(-5px);
-    }
-
-    .btn-ler:focus,
-    .btn-inicio:focus,
-    .btn-topo:focus,
-    .search-input:focus {
-      outline: 2px solid var(--branco);
-      outline-offset: 2px;
     }
 
     /* Toast notifications */
@@ -582,91 +503,71 @@
       right: 20px;
       background: var(--vermelho);
       color: var(--branco);
-      padding: 15px 20px;
-      border-radius: 10px;
-      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+      padding: 15px 25px;
+      border-radius: 12px;
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
       z-index: 10000;
       transform: translateX(400px);
       transition: transform 0.3s ease;
+      font-weight: 600;
     }
 
     .toast.show {
       transform: translateX(0);
     }
+
+    .toast.success {
+      background: linear-gradient(135deg, #4CAF50, #45a049);
+    }
+
+    .toast.error {
+      background: linear-gradient(135deg, #f44336, #d32f2f);
+    }
   </style>
 </head>
 <body>
   <header class="header">
-    <div class="header-content">
+    <div class="header-left">
       <h1>📚 Booktor</h1>
-      <div class="stats-info">
-        <span id="totalBooks">Carregando...</span>
-        <span id="totalReads">Carregando...</span>
-      </div>
     </div>
-    <button class="btn-inicio" onclick="window.location.href='inicio.html'" aria-label="Voltar para a página inicial">
-      Início
-    </button>
+    <div class="header-buttons">
+      <a href="#link1" class="btn-header">
+        📖 Nossa Biblioteca
+      </a>
+      <a href="inicio.html" class="btn-header">
+        🏠 Início
+      </a>
+    </div>
   </header>
 
   <main class="main-content">
-    <h2 class="page-title">Descubra Novos Mundos</h2>
-    <p class="subtitle">Explore nossa coleção crescente de histórias únicas e envolventes</p>
+    <h2 class="page-title">Catálogo de eBooks</h2>
+    <p class="subtitle">Explore nossa coleção de histórias únicas criadas com paixão e dedicação</p>
     
-    <div class="search-filters">
-      <div class="search-container">
-        <input 
-          type="text" 
-          class="search-input" 
-          id="searchInput" 
-          placeholder="🔍 Buscar por título, descrição ou autor..."
-          autocomplete="off"
-        >
-      </div>
-      
-      <div class="filter-buttons">
-        <button class="filter-btn active" data-filter="all">Todos</button>
-        <button class="filter-btn" data-filter="aventura">Aventura</button>
-        <button class="filter-btn" data-filter="drama">Drama</button>
-        <button class="filter-btn" data-filter="biografia">Biografia</button>
-        <button class="filter-btn" data-filter="fantasia">Fantasia</button>
-      </div>
-    </div>
-
     <section class="catalogo-grid" id="catalogGrid" role="main" aria-label="Catálogo de eBooks disponíveis">
       <!-- Loading state -->
       <div class="loading" id="loadingState">
         <div class="spinner"></div>
-        <p>Carregando catálogo...</p>
+        <p class="loading-text">Carregando catálogo...</p>
       </div>
     </section>
 
     <div class="empty-state" id="emptyState" style="display: none;">
-      <h3>📖 Nenhum eBook encontrado</h3>
-      <p>Tente ajustar os filtros ou termo de busca</p>
+      <h3>📖 Catálogo em Construção</h3>
+      <p>Novos eBooks serão adicionados em breve!</p>
     </div>
   </main>
 
   <footer class="footer">
     <div class="footer-content">
-      <div class="footer-stats">
-        <div class="stat-footer">
-          <span class="number" id="footerTotalBooks">0</span>
-          <span>eBooks Disponíveis</span>
-        </div>
-        <div class="stat-footer">
-          <span class="number" id="footerTotalReads">0</span>
-          <span>Leituras Realizadas</span>
-        </div>
-        <div class="stat-footer">
-          <span class="number">100%</span>
-          <span>Gratuito</span>
-        </div>
+      <div class="footer-highlight">
+        <p>📚 <strong>Todos os eBooks são gratuitos</strong></p>
+        <p>Acesso livre e irrestrito ao conhecimento</p>
       </div>
       
-      <p>📚 <strong>Booktor</strong> — Todos os eBooks são gratuitos</p>
+      <p>📚 <strong>Booktor</strong> — Plataforma de eBooks Gratuitos</p>
       <p>Desenvolvido com ❤️ por <strong>Alírio Neto</strong></p>
-      <p style="margin-top: 10px; opacity: 0.8; font-size: 0.85em;">
+      <p style="margin-top: 15px; opacity: 0.8; font-size: 0.9em;">
         © 2025 Booktor. Compartilhando conhecimento livremente.
       </p>
     </div>
@@ -681,22 +582,16 @@
 
     // Estado da aplicação
     let allBooks = [];
-    let filteredBooks = [];
-    let currentFilter = 'all';
 
-    // Dados iniciais dos eBooks (será migrado para Firebase)
+    // Dados iniciais dos eBooks
     const defaultBooks = [
       {
         id: 'ebook1',
         title: 'UMA HISTÓRIA NA GUERRA DOS MITOS',
         description: 'Uma história envolvente escrita por mim quando criança. O livro conta a história mitológica de Matsuno e sua jornada épica através de mundos fantásticos.',
         author: 'Alírio Neto',
-        category: 'fantasia',
         status: 'Completo',
-        pages: 45,
-        reads: 128,
-        rating: 4.5,
-        url: 'leitor.html',
+        url: '#link2',
         publishDate: '2024-12-15'
       },
       {
@@ -704,12 +599,8 @@
         title: 'Onde o caos não me engoliu',
         description: 'Uma história que mostra que mesmo nascido no sangue, ainda se pode mudar e melhorar. Se aprofunde na história do Juan, o justiceiro, e sua transformação.',
         author: 'Alírio Neto',
-        category: 'drama',
         status: 'Completo',
-        pages: 67,
-        reads: 89,
-        rating: 4.7,
-        url: 'leitor1.html',
+        url: '#link3',
         publishDate: '2024-11-20'
       },
       {
@@ -717,12 +608,8 @@
         title: 'Bem no dia em que meu coração parou',
         description: 'Uma história minha, e sobre mim. Diferente das histórias de biografia, esta narrativa é sobre alguns erros meus, suas consequências, meus medos e minhas superações pessoais.',
         author: 'Alírio Neto',
-        category: 'biografia',
         status: 'Completo',
-        pages: 52,
-        reads: 156,
-        rating: 4.8,
-        url: 'leitor2.html',
+        url: '#link4',
         publishDate: '2024-10-05'
       }
     ];
@@ -741,12 +628,12 @@
       }, 3000);
     }
 
-    function formatNumber(num) {
-      return new Intl.NumberFormat('pt-BR').format(num);
-    }
-
     function formatDate(dateStr) {
-      return new Date(dateStr).toLocaleDateString('pt-BR');
+      return new Date(dateStr).toLocaleDateString('pt-BR', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+      });
     }
 
     // Carregar dados do Firebase ou usar dados padrão
@@ -759,22 +646,21 @@
         if (booksSnapshot.empty) {
           // Se não há dados no Firebase, usar dados padrão
           allBooks = defaultBooks;
-          showToast('Usando dados locais', 'info');
+          console.log('Usando dados padrão');
         } else {
           allBooks = booksSnapshot.docs.map(doc => ({
             id: doc.id,
             ...doc.data()
           }));
+          console.log('Dados carregados do Firebase');
         }
       } catch (error) {
         console.error('Erro ao carregar do Firebase:', error);
         allBooks = defaultBooks;
-        showToast('Carregado dados locais', 'info');
+        console.log('Usando dados padrão devido ao erro');
       }
       
-      filteredBooks = [...allBooks];
       renderBooks();
-      updateStats();
     }
 
     // Renderizar livros na grid
@@ -785,7 +671,7 @@
       
       loadingState.style.display = 'none';
       
-      if (filteredBooks.length === 0) {
+      if (allBooks.length === 0) {
         grid.innerHTML = '';
         emptyState.style.display = 'block';
         return;
@@ -793,9 +679,8 @@
       
       emptyState.style.display = 'none';
       
-      grid.innerHTML = filteredBooks.map((book, index) => `
+      grid.innerHTML = allBooks.map((book, index) => `
         <article class="ebook-card" 
-                 onclick="openBook('${book.url}', '${book.id}')" 
                  tabindex="0" 
                  role="button" 
                  aria-label="Ler ${book.title}"
@@ -808,117 +693,16 @@
           <p class="ebook-description">${book.description}</p>
           
           <div class="ebook-meta">
-            <span>Por ${book.author}</span>
-            <span>${formatDate(book.publishDate)}</span>
+            <span class="ebook-author">Por ${book.author}</span>
+            <span class="ebook-date">${formatDate(book.publishDate)}</span>
           </div>
           
-          <div class="ebook-stats">
-            <div class="stat-item">
-              <span>📖</span>
-              <span>${book.pages} páginas</span>
-            </div>
-            <div class="stat-item">
-              <span>👥</span>
-              <span>${formatNumber(book.reads)} leituras</span>
-            </div>
-            <div class="stat-item">
-              <span>⭐</span>
-              <span>${book.rating}</span>
-            </div>
-          </div>
-          
-          <button class="btn-ler" aria-label="Ler ${book.title} agora">
+          <a href="${book.url}" class="btn-ler" aria-label="Ler ${book.title} agora">
             <span>📚</span>
             Ler Agora
-          </button>
+          </a>
         </article>
       `).join('');
-    }
-
-    // Abrir livro e incrementar contador
-    async function openBook(url, bookId) {
-      try {
-        // Incrementar contador de leituras no Firebase
-        const db = window.firebaseDb;
-        const bookRef = doc(db, 'ebooks', bookId);
-        await updateDoc(bookRef, {
-          reads: increment(1)
-        });
-        
-        // Atualizar localmente
-        const book = allBooks.find(b => b.id === bookId);
-        if (book) {
-          book.reads += 1;
-          updateStats();
-        }
-        
-        showToast('Abrindo eBook...', 'success');
-        setTimeout(() => {
-          window.location.href = url;
-        }, 500);
-      } catch (error) {
-        console.error('Erro ao atualizar leituras:', error);
-        // Abrir mesmo com erro
-        window.location.href = url;
-      }
-    }
-
-    // Atualizar estatísticas
-    function updateStats() {
-      const totalBooks = allBooks.length;
-      const totalReads = allBooks.reduce((sum, book) => sum + book.reads, 0);
-      
-      // Header stats
-      document.getElementById('totalBooks').textContent = `${totalBooks} eBooks`;
-      document.getElementById('totalReads').textContent = `${formatNumber(totalReads)} leituras`;
-      
-      // Footer stats
-      document.getElementById('footerTotalBooks').textContent = totalBooks;
-      document.getElementById('footerTotalReads').textContent = formatNumber(totalReads);
-    }
-
-    // Sistema de busca
-    function setupSearch() {
-      const searchInput = document.getElementById('searchInput');
-      
-      searchInput.addEventListener('input', (e) => {
-        const query = e.target.value.toLowerCase().trim();
-        filterBooks(query, currentFilter);
-      });
-    }
-
-    // Sistema de filtros
-    function setupFilters() {
-      const filterButtons = document.querySelectorAll('.filter-btn');
-      
-      filterButtons.forEach(btn => {
-        btn.addEventListener('click', () => {
-          // Atualizar estado visual
-          filterButtons.forEach(b => b.classList.remove('active'));
-          btn.classList.add('active');
-          
-          // Aplicar filtro
-          currentFilter = btn.dataset.filter;
-          const searchQuery = document.getElementById('searchInput').value.toLowerCase().trim();
-          filterBooks(searchQuery, currentFilter);
-        });
-      });
-    }
-
-    // Filtrar livros
-    function filterBooks(searchQuery = '', category = 'all') {
-      filteredBooks = allBooks.filter(book => {
-        const matchesSearch = searchQuery === '' || 
-          book.title.toLowerCase().includes(searchQuery) ||
-          book.description.toLowerCase().includes(searchQuery) ||
-          book.author.toLowerCase().includes(searchQuery);
-        
-        const matchesCategory = category === 'all' || book.category === category;
-        
-        return matchesSearch && matchesCategory;
-      });
-      
-      renderBooks();
     }
 
     // Scroll to top functionality
@@ -945,26 +729,12 @@
     // Navegação por teclado
     function setupKeyboardNavigation() {
       document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape') {
-          document.getElementById('searchInput').blur();
-        }
-      });
-
-      // Navegação entre cards
-      document.addEventListener('click', (e) => {
-        if (e.target.closest('.ebook-card')) {
-          const card = e.target.closest('.ebook-card');
-          const url = card.getAttribute('onclick').match(/'([^']+)'/)[1];
-          const bookId = card.getAttribute('onclick').match(/'([^']+)', '([^']+)'/)[2];
-          openBook(url, bookId);
-        }
-      });
-
-      // Enter e Space para cards
-      document.addEventListener('keydown', (e) => {
         if ((e.key === 'Enter' || e.key === ' ') && e.target.classList.contains('ebook-card')) {
           e.preventDefault();
-          e.target.click();
+          const link = e.target.querySelector('.btn-ler');
+          if (link) {
+            link.click();
+          }
         }
       });
     }
@@ -976,8 +746,6 @@
         document.getElementById('loadingState').style.display = 'flex';
         
         // Configurar funcionalidades
-        setupSearch();
-        setupFilters();
         setupScrollToTop();
         setupKeyboardNavigation();
         
@@ -995,18 +763,14 @@
           <div style="text-align: center; color: var(--vermelho);">
             <h3>❌ Erro ao carregar catálogo</h3>
             <p>Tente recarregar a página</p>
-            <button onclick="location.reload()" style="margin-top: 15px; padding: 10px 20px; background: var(--vermelho); color: white; border: none; border-radius: 5px; cursor: pointer;">
+            <button onclick="location.reload()" style="margin-top: 20px; padding: 12px 24px; background: var(--vermelho); color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600;">
               🔄 Recarregar
             </button>
           </div>
         `;
-        showToast('Erro ao carregar dados', 'error');
+        showToast('Erro ao carregar catálogo', 'error');
       }
     }
-
-    // Tornar funções globais
-    window.openBook = openBook;
-    window.filterBooks = filterBooks;
 
     // Inicializar quando DOM estiver pronto
     if (document.readyState === 'loading') {
@@ -1019,58 +783,15 @@
     document.body.style.opacity = '0';
     document.body.style.transition = 'opacity 0.5s ease';
 
-    // Service Worker para cache (opcional)
-    if ('serviceWorker' in navigator) {
-      window.addEventListener('load', () => {
-        navigator.serviceWorker.register('/sw.js')
-          .then(registration => {
-            console.log('SW registrado com sucesso:', registration);
-          })
-          .catch(registrationError => {
-            console.log('SW falhou ao registrar:', registrationError);
-          });
-      });
-    }
-
-    // Analytics simples (opcional)
-    function trackEvent(eventName, eventData = {}) {
-      console.log(`📊 Evento: ${eventName}`, eventData);
-      // Aqui você pode integrar com Google Analytics ou similar
-    }
-
-    // Detectar tema do sistema
-    function detectTheme() {
-      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-      if (prefersDark) {
-        document.body.classList.add('dark-theme');
-      }
-    }
-
-    // Performance monitoring
-    function monitorPerformance() {
-      window.addEventListener('load', () => {
-        const loadTime = performance.now();
-        console.log(`⚡ Página carregada em ${loadTime.toFixed(2)}ms`);
-        
-        if (loadTime > 3000) {
-          console.warn('⚠️ Carregamento lento detectado');
-        }
-      });
-    }
-
-    // Executar otimizações
-    detectTheme();
-    monitorPerformance();
-
     // Tratamento de erros globais
     window.addEventListener('error', (e) => {
-      console.error('💥 Erro global:', e.error);
+      console.error('Erro global:', e.error);
       showToast('Ocorreu um erro inesperado', 'error');
     });
 
     // Tratamento de promessas rejeitadas
     window.addEventListener('unhandledrejection', (e) => {
-      console.error('💥 Promise rejeitada:', e.reason);
+      console.error('Promise rejeitada:', e.reason);
       showToast('Erro de conexão detectado', 'error');
     });
 
@@ -1087,87 +808,6 @@
     }
 
     preloadImages();
-
-    // Otimização de scroll
-    let ticking = false;
-    function updateScrollPosition() {
-      // Otimizar animações baseadas em scroll
-      if (!ticking) {
-        requestAnimationFrame(() => {
-          // Lógica de scroll otimizada aqui
-          ticking = false;
-        });
-        ticking = true;
-      }
-    }
-
-    window.addEventListener('scroll', updateScrollPosition, { passive: true });
-
-    // Lazy loading para imagens futuras
-    function setupLazyLoading() {
-      if ('IntersectionObserver' in window) {
-        const imageObserver = new IntersectionObserver((entries, observer) => {
-          entries.forEach(entry => {
-            if (entry.isIntersecting) {
-              const img = entry.target;
-              img.src = img.dataset.src;
-              img.classList.remove('lazy');
-              imageObserver.unobserve(img);
-            }
-          });
-        });
-
-        document.querySelectorAll('img[data-src]').forEach(img => {
-          imageObserver.observe(img);
-        });
-      }
-    }
-
-    // PWA Support
-    let deferredPrompt;
-    window.addEventListener('beforeinstallprompt', (e) => {
-      e.preventDefault();
-      deferredPrompt = e;
-      
-      // Mostrar botão de instalação personalizado
-      const installButton = document.createElement('button');
-      installButton.textContent = '📱 Instalar App';
-      installButton.className = 'btn-install';
-      installButton.style.cssText = `
-        position: fixed;
-        bottom: 100px;
-        right: 30px;
-        background: var(--vermelho);
-        color: white;
-        border: none;
-        padding: 12px 16px;
-        border-radius: 25px;
-        cursor: pointer;
-        font-size: 0.9em;
-        box-shadow: 0 4px 15px rgba(255, 0, 0, 0.3);
-        z-index: 9998;
-        transition: all 0.3s ease;
-      `;
-      
-      installButton.addEventListener('click', async () => {
-        if (deferredPrompt) {
-          deferredPrompt.prompt();
-          const { outcome } = await deferredPrompt.userChoice;
-          console.log(`PWA install outcome: ${outcome}`);
-          deferredPrompt = null;
-          installButton.remove();
-        }
-      });
-      
-      document.body.appendChild(installButton);
-      
-      setTimeout(() => {
-        installButton.style.transform = 'scale(1.1)';
-        setTimeout(() => {
-          installButton.style.transform = 'scale(1)';
-        }, 200);
-      }, 1000);
-    });
   </script>
 </body>
 </html>
