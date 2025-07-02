@@ -464,11 +464,57 @@
             color: #fff;
             text-decoration: none;
         }
+
+        .auth-error {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background: #000;
+            color: #fff;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .auth-error h2 {
+            color: #ff0000;
+            margin-bottom: 20px;
+            font-size: 2em;
+        }
+
+        .auth-error p {
+            margin-bottom: 30px;
+            font-size: 1.1em;
+            color: #ccc;
+        }
+
+        .auth-error button {
+            background: linear-gradient(45deg, #ff0000, #ff4444);
+            color: #fff;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 12px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .auth-error button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(255, 0, 0, 0.4);
+        }
     </style>
 </head>
 <body>
     <div class="loading" id="loading">
         <div class="loading-spinner"></div>
+    </div>
+
+    <div class="auth-error" id="authError" style="display: none;">
+        <h2>⚠️ Acesso Restrito</h2>
+        <p>Você precisa estar logado para acessar o chat.</p>
+        <button onclick="window.location.href='teladelogin.html'">Fazer Login</button>
     </div>
 
     <div class="container" id="app" style="display: none;">
@@ -535,7 +581,7 @@
             onDisconnect
         } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 
-        // Configuração Firebase principal (mesma do inicio.html)
+        // MESMA configuração Firebase do inicio.html
         const firebaseConfig = {
             apiKey: "AIzaSyBauGgt1pm-sBas75N40ufWRsGD6c4BsgM",
             authDomain: "sistema-de-login-blog.firebaseapp.com",
@@ -554,42 +600,60 @@
         let currentUser = null;
         let messagesRef = null;
         let usersRef = null;
+        let authCheckComplete = false;
 
-        console.log('Iniciando verificação de autenticação...');
+        console.log('🔥 Iniciando Chat Privado...');
+
+        // Elementos DOM
+        const loading = document.getElementById('loading');
+        const authError = document.getElementById('authError');
+        const appContainer = document.getElementById('app');
+
+        // Função para mostrar erro de autenticação
+        function showAuthError() {
+            console.log('❌ Mostrando erro de autenticação');
+            loading.style.display = 'none';
+            authError.style.display = 'flex';
+            appContainer.style.display = 'none';
+        }
 
         // Função para inicializar o chat
-        function initializeChat() {
-            console.log('Inicializando chat para usuário:', currentUser.email);
+        function initializeChat(user) {
+            console.log('✅ Inicializando chat para:', user.email);
             
             try {
-                const displayName = currentUser.displayName || currentUser.email.split('@')[0];
+                currentUser = user;
+                const displayName = user.displayName || user.email.split('@')[0];
+                
+                // Atualizar UI do usuário
                 document.getElementById('userName').textContent = displayName;
                 document.getElementById('userAvatar').textContent = displayName[0].toUpperCase();
 
-                // Usar o mesmo banco de dados do sistema principal
+                // Configurar referências do banco
                 messagesRef = ref(database, 'chat/messages');
                 usersRef = ref(database, 'chat/users');
 
-                console.log('Configurando presença do usuário...');
+                console.log('📊 Configurando usuário no banco...');
                 
-                // Configurar usuário online
-                set(ref(database, `chat/users/${currentUser.uid}`), {
+                // Configurar presença do usuário
+                const userRef = ref(database, `chat/users/${user.uid}`);
+                set(userRef, {
                     name: displayName,
-                    email: currentUser.email,
+                    email: user.email,
                     lastSeen: serverTimestamp(),
                     online: true,
-                    photoURL: currentUser.photoURL || `https://ui-avatars.com/api/?name=${encodeURIComponent(displayName)}&background=FF0000&color=fff&size=128`
+                    photoURL: user.photoURL || `https://ui-avatars.com/api/?name=${encodeURIComponent(displayName)}&background=FF0000&color=fff&size=128`
                 }).then(() => {
-                    console.log('Usuário configurado no banco de dados');
+                    console.log('✅ Usuário configurado no banco');
                 }).catch(error => {
-                    console.error('Erro ao configurar usuário:', error);
+                    console.error('❌ Erro ao configurar usuário:', error);
                 });
 
                 // Configurar desconexão
-                onDisconnect(ref(database, `chat/users/${currentUser.uid}/online`)).set(false);
-                onDisconnect(ref(database, `chat/users/${currentUser.uid}/lastSeen`)).set(serverTimestamp());
+                onDisconnect(ref(database, `chat/users/${user.uid}/online`)).set(false);
+                onDisconnect(ref(database, `chat/users/${user.uid}/lastSeen`)).set(serverTimestamp());
 
-                console.log('Configurando listeners...');
+                console.log('👂 Configurando listeners...');
                 
                 // Listener para mensagens
                 onValue(limitToLast(messagesRef, 50), (snapshot) => {
@@ -607,10 +671,12 @@
                 // Listener para usuários
                 onValue(usersRef, updateUsersList);
 
-                document.getElementById('loading').style.display = 'none';
-                document.getElementById('app').style.display = 'flex';
+                // Mostrar interface
+                loading.style.display = 'none';
+                authError.style.display = 'none';
+                appContainer.style.display = 'flex';
 
-                console.log('Chat inicializado com sucesso!');
+                console.log('🎉 Chat inicializado com sucesso!');
 
                 // Event listener para Enter
                 document.getElementById('messageInput').addEventListener('keypress', e => {
@@ -620,8 +686,8 @@
                     }
                 });
             } catch (error) {
-                console.error('Erro ao inicializar chat:', error);
-                alert('Erro ao carregar o chat. Recarregue a página.');
+                console.error('💥 Erro ao inicializar chat:', error);
+                showAuthError();
             }
         }
 
@@ -731,18 +797,17 @@
             signOut(auth);
         };
 
-        // Observer de autenticação
+        // Observer de autenticação - MELHORADO
         onAuthStateChanged(auth, (user) => {
-            console.log('Estado de autenticação mudou:', user);
+            console.log('🔐 Estado de autenticação mudou:', user ? user.email : 'null');
+            authCheckComplete = true;
+            
             if (user) {
-                console.log('Usuário logado:', user.email);
-                currentUser = user;
-                initializeChat();
+                console.log('✅ Usuário autenticado:', user.email);
+                initializeChat(user);
             } else {
-                console.log('Usuário não logado, redirecionando...');
-                setTimeout(() => {
-                    window.location.href = 'teladelogin.html';
-                }, 2000);
+                console.log('❌ Usuário não autenticado');
+                showAuthError();
             }
         });
 
@@ -753,21 +818,23 @@
             }
         });
 
-        // Verificação inicial
+        // Timeout de segurança melhorado
         setTimeout(() => {
-            if (!currentUser) {
-                console.log('Timeout na autenticação, verificando currentUser...');
+            if (!authCheckComplete) {
+                console.log('⏰ Timeout na verificação de auth, checando currentUser...');
                 const user = auth.currentUser;
                 if (user) {
-                    console.log('Usuário encontrado no currentUser:', user.email);
-                    currentUser = user;
-                    initializeChat();
+                    console.log('✅ Usuário encontrado via currentUser:', user.email);
+                    initializeChat(user);
                 } else {
-                    console.log('Nenhum usuário encontrado, redirecionando...');
-                    window.location.href = 'teladelogin.html';
+                    console.log('❌ Nenhum usuário encontrado, mostrando erro');
+                    showAuthError();
                 }
             }
-        }, 3000);
+        }, 5000);
+
+        // Log inicial
+        console.log('🚀 Chat Privado carregado, aguardando autenticação...');
     </script>
 </body>
 </html>
