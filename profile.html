@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Booktor - Perfil</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
+            color: #ffffff;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .navbar {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            padding: 1rem 2rem;
+            border-bottom: 2px solid #dc2626;
+        }
+
+        .nav-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #dc2626;
+            text-decoration: none;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .nav-links a {
+            color: #ffffff;
+            text-decoration: none;
+            transition: color 0.3s ease;
+            font-weight: 500;
+        }
+
+        .nav-links a:hover {
+            color: #dc2626;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 8rem 2rem 2rem;
+        }
+
+        .profile-header {
+            text-align: center;
+            margin-bottom: 3rem;
+            position: relative;
+        }
+
+        .profile-avatar {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            border: 4px solid #dc2626;
+            margin: 0 auto 1.5rem;
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .profile-avatar:hover {
+            transform: scale(1.05);
+        }
+
+        .profile-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .profile-avatar .placeholder {
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #dc2626, #ef4444);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            color: white;
+        }
+
+        .profile-name {
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(135deg, #ffffff, #dc2626);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .profile-bio {
+            font-size: 1.2rem;
+            color: #cccccc;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+            margin-top: 3rem;
+        }
+
+        .profile-view, .profile-edit {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(220, 38, 38, 0.3);
+            border-radius: 20px;
+            padding: 2rem;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+
+        .profile-view:hover, .profile-edit:hover {
+            border-color: #dc2626;
+            box-shadow: 0 10px 40px rgba(220, 38, 38, 0.2);
+        }
+
+        .section-title {
+            font-size: 1.8rem;
+            font-weight: bold;
+            margin-bottom: 1.5rem;
+            color: #dc2626;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .info-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .info-item:last-child {
+            border-bottom: none;
+        }
+
+        .info-label {
+            font-weight: 600;
+            color: #cccccc;
+        }
+
+        .info-value {
+            color: #ffffff;
+            font-weight: 500;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: #cccccc;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.05);
+            color: #ffffff;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #dc2626;
+            box-shadow: 0 0 20px rgba(220, 38, 38, 0.3);
+        }
+
+        .form-input::placeholder {
+            color: #888888;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #dc2626, #ef4444);
+            color: white;
+            border: none;
+            padding: 0.75rem 2rem;
+            border-radius: 25px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(220, 38, 38, 0.4);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+            margin: 2rem 0;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, rgba(220, 38, 38, 0.1), rgba(239, 68, 68, 0.1));
+            border: 1px solid rgba(220, 38, 38, 0.3);
+            border-radius: 15px;
+            padding: 1.5rem;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            border-color: #dc2626;
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #dc2626;
+            display: block;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: #cccccc;
+            margin-top: 0.5rem;
+        }
+
+        .floating-particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .particle {
+            position: absolute;
+            background: #dc2626;
+            border-radius: 50%;
+            opacity: 0.1;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(180deg); }
+        }
+
+        .success-message {
+            background: linear-gradient(135deg, #059669, #10b981);
+            color: white;
+            padding: 1rem;
+            border-radius: 10px;
+            margin-bottom: 1rem;
+            display: none;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from { transform: translateX(-100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .container {
+                padding: 6rem 1rem 2rem;
+            }
+
+            .profile-name {
+                font-size: 2rem;
+            }
+
+            .nav-links {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="floating-particles" id="particles"></div>
+
+    <nav class="navbar">
+        <div class="nav-content">
+            <a href="https://booktor.github.io/inicio.html" class="logo">
+                <i class="fas fa-book-open"></i> Booktor
+            </a>
+            <div class="nav-links">
+                <a href="https://booktor.github.io/inicio.html">
+                    <i class="fas fa-home"></i> Início
+                </a>
+                <a href="#" class="active">
+                    <i class="fas fa-user"></i> Perfil
+                </a>
+                <a href="#" onclick="logout()">
+                    <i class="fas fa-sign-out-alt"></i> Sair
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="profile-header">
+            <div class="profile-avatar" onclick="document.getElementById('avatarInput').click()">
+                <div class="placeholder" id="avatarPlaceholder">
+                    <i class="fas fa-user"></i>
+                </div>
+                <img id="avatarImage" style="display: none;" alt="Avatar">
+            </div>
+            <input type="file" id="avatarInput" accept="image/*" style="display: none;">
+            <h1 class="profile-name" id="displayName">Carregando...</h1>
+            <p class="profile-bio" id="displayBio">Bem-vindo ao Booktor</p>
+        </div>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <span class="stat-number" id="booksRead">0</span>
+                <span class="stat-label">Livros Lidos</span>
+            </div>
+            <div class="stat-card">
+                <span class="stat-number" id="reviewsWritten">0</span>
+                <span class="stat-label">Resenhas</span>
+            </div>
+            <div class="stat-card">
+                <span class="stat-number" id="daysMember">0</span>
+                <span class="stat-label">Dias no Site</span>
+            </div>
+        </div>
+
+        <div class="main-content">
+            <div class="profile-view">
+                <h2 class="section-title">
+                    <i class="fas fa-id-card"></i>
+                    Informações do Perfil
+                </h2>
+                <div class="info-item">
+                    <span class="info-label">Nome Completo</span>
+                    <span class="info-value" id="viewFullName">-</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Email</span>
+                    <span class="info-value" id="viewEmail">-</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Data de Nascimento</span>
+                    <span class="info-value" id="viewBirthDate">-</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Localização</span>
+                    <span class="info-value" id="viewLocation">-</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Gênero Favorito</span>
+                    <span class="info-value" id="viewFavoriteGenre">-</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Autor Favorito</span>
+                    <span class="info-value" id="viewFavoriteAuthor">-</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Membro desde</span>
+                    <span class="info-value" id="viewMemberSince">-</span>
+                </div>
+            </div>
+
+            <div class="profile-edit">
+                <h2 class="section-title">
+                    <i class="fas fa-edit"></i>
+                    Editar Perfil
+                </h2>
+                <div class="success-message" id="successMessage">
+                    <i class="fas fa-check-circle"></i>
+                    Perfil atualizado com sucesso!
+                </div>
+                <form id="profileForm">
+                    <div class="form-group">
+                        <label class="form-label">Nome Completo</label>
+                        <input type="text" class="form-input" id="fullName" placeholder="Seu nome completo">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Bio</label>
+                        <input type="text" class="form-input" id="bio" placeholder="Conte um pouco sobre você">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Data de Nascimento</label>
+                        <input type="date" class="form-input" id="birthDate">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Localização</label>
+                        <input type="text" class="form-input" id="location" placeholder="Cidade, País">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Gênero Favorito</label>
+                        <input type="text" class="form-input" id="favoriteGenre" placeholder="Ex: Ficção Científica">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Autor Favorito</label>
+                        <input type="text" class="form-input" id="favoriteAuthor" placeholder="Nome do autor">
+                    </div>
+                    <button type="submit" class="btn">
+                        <i class="fas fa-save"></i>
+                        Salvar Alterações
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/9.23.0/firebase-app-compat.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/9.23.0/firebase-auth-compat.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/9.23.0/firebase-database-compat.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/9.23.0/firebase-storage-compat.min.js"></script>
+
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyBauGgt1pm-sBas75N40ufWRsGD6c4BsgM",
+            authDomain: "sistema-de-login-blog.firebaseapp.com",
+            databaseURL: "https://sistema-de-login-blog-default-rtdb.firebaseio.com",
+            projectId: "sistema-de-login-blog",
+            storageBucket: "sistema-de-login-blog.firebasestorage.app",
+            messagingSenderId: "416120877008",
+            appId: "1:416120877008:web:a5b0a26bec246d577a93d5"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const database = firebase.database();
+        const storage = firebase.storage();
+
+        let currentUser = null;
+
+        function createParticles() {
+            const particlesContainer = document.getElementById('particles');
+            for (let i = 0; i < 20; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.width = Math.random() * 6 + 2 + 'px';
+                particle.style.height = particle.style.width;
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.top = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 6 + 's';
+                particle.style.animationDuration = (Math.random() * 3 + 3) + 's';
+                particlesContainer.appendChild(particle);
+            }
+        }
+
+        function formatDate(dateString) {
+            if (!dateString) return '-';
+            const date = new Date(dateString);
+            return date.toLocaleDateString('pt-BR');
+        }
+
+        function calculateDaysSince(dateString) {
+            if (!dateString) return 0;
+            const startDate = new Date(dateString);
+            const currentDate = new Date();
+            const timeDiff = currentDate.getTime() - startDate.getTime();
+            return Math.floor(timeDiff / (1000 * 3600 * 24));
+        }
+
+        function initializeUserData() {
+            if (!currentUser) return;
+
+            const userRef = database.ref('users/' + currentUser.uid);
+            userRef.once('value').then((snapshot) => {
+                if (!snapshot.exists()) {
+                    userRef.set({
+                        email: currentUser.email,
+                        createdAt: new Date().toISOString(),
+                        booksRead: 0,
+                        reviewsWritten: 0,
+                        fullName: currentUser.displayName || '',
+                        bio: '',
+                        birthDate: '',
+                        location: '',
+                        favoriteGenre: '',
+                        favoriteAuthor: '',
+                        avatarUrl: currentUser.photoURL || ''
+                    });
+                }
+            });
+        }
+
+        function loadUserProfile() {
+            if (!currentUser) return;
+
+            const userRef = database.ref('users/' + currentUser.uid);
+            userRef.on('value', (snapshot) => {
+                const userData = snapshot.val();
+                if (userData) {
+                    document.getElementById('displayName').textContent = userData.fullName || userData.email || 'Usuário';
+                    document.getElementById('displayBio').textContent = userData.bio || 'Bem-vindo ao Booktor';
+                    
+                    document.getElementById('viewFullName').textContent = userData.fullName || '-';
+                    document.getElementById('viewEmail').textContent = userData.email;
+                    document.getElementById('viewBirthDate').textContent = formatDate(userData.birthDate);
+                    document.getElementById('viewLocation').textContent = userData.location || '-';
+                    document.getElementById('viewFavoriteGenre').textContent = userData.favoriteGenre || '-';
+                    document.getElementById('viewFavoriteAuthor').textContent = userData.favoriteAuthor || '-';
+                    document.getElementById('viewMemberSince').textContent = formatDate(userData.createdAt);
+
+                    document.getElementById('fullName').value = userData.fullName || '';
+                    document.getElementById('bio').value = userData.bio || '';
+                    document.getElementById('birthDate').value = userData.birthDate || '';
+                    document.getElementById('location').value = userData.location || '';
+                    document.getElementById('favoriteGenre').value = userData.favoriteGenre || '';
+                    document.getElementById('favoriteAuthor').value = userData.favoriteAuthor || '';
+
+                    document.getElementById('booksRead').textContent = userData.booksRead || 0;
+                    document.getElementById('reviewsWritten').textContent = userData.reviewsWritten || 0;
+                    document.getElementById('daysMember').textContent = calculateDaysSince(userData.createdAt);
+
+                    if (userData.avatarUrl) {
+                        document.getElementById('avatarImage').src = userData.avatarUrl;
+                        document.getElementById('avatarImage').style.display = 'block';
+                        document.getElementById('avatarPlaceholder').style.display = 'none';
+                    } else {
+                        const firstLetter = (userData.fullName || userData.email || 'U')[0].toUpperCase();
+                        document.getElementById('avatarPlaceholder').innerHTML = firstLetter;
+                    }
+                } else {
+                    initializeUserData();
+                }
+            });
+        }
+
+        function uploadAvatar(file) {
+            if (!currentUser || !file) return;
+
+            const storageRef = storage.ref('avatars/' + currentUser.uid);
+            const uploadTask = storageRef.put(file);
+
+            uploadTask.on('state_changed', 
+                (snapshot) => {
+                    const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                },
+                (error) => {
+                    console.error('Erro no upload:', error);
+                },
+                () => {
+                    uploadTask.snapshot.ref.getDownloadURL().then((downloadURL) => {
+                        database.ref('users/' + currentUser.uid).update({
+                            avatarUrl: downloadURL
+                        });
+                    });
+                }
+            );
+        }
+
+        function showSuccessMessage() {
+            const message = document.getElementById('successMessage');
+            message.style.display = 'block';
+            setTimeout(() => {
+                message.style.display = 'none';
+            }, 3000);
+        }
+
+        function logout() {
+            auth.signOut().then(() => {
+                window.location.href = 'https://booktor.github.io/inicio.html';
+            }).catch((error) => {
+                console.error('Erro ao fazer logout:', error);
+            });
+        }
+
+        auth.onAuthStateChanged((user) => {
+            if (user) {
+                currentUser = user;
+                loadUserProfile();
+                initializeUserData();
+            } else {
+                window.location.href = 'https://booktor.github.io/inicio.html';
+            }
+        });
+
+        document.getElementById('avatarInput').addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                uploadAvatar(file);
+                
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    document.getElementById('avatarImage').src = e.target.result;
+                    document.getElementById('avatarImage').style.display = 'block';
+                    document.getElementById('avatarPlaceholder').style.display = 'none';
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        document.getElementById('profileForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            if (!currentUser) return;
+
+            const profileData = {
+                fullName: document.getElementById('fullName').value,
+                bio: document.getElementById('bio').value,
+                birthDate: document.getElementById('birthDate').value,
+                location: document.getElementById('location').value,
+                favoriteGenre: document.getElementById('favoriteGenre').value,
+                favoriteAuthor: document.getElementById('favoriteAuthor').value,
+                updatedAt: new Date().toISOString()
+            };
+
+            database.ref('users/' + currentUser.uid).update(profileData).then(() => {
+                showSuccessMessage();
+            }).catch((error) => {
+                console.error('Erro ao atualizar perfil:', error);
+            });
+        });
+
+        createParticles();
+    </script>
+</body>
+</html>
