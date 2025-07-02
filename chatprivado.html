@@ -528,46 +528,84 @@
         let messagesRef = null;
         let usersRef = null;
 
+        console.log('Iniciando verificação de autenticação...');
+
         auth.onAuthStateChanged(user => {
+            console.log('Estado de autenticação mudou:', user);
             if (user) {
+                console.log('Usuário logado:', user.email);
                 currentUser = user;
                 initializeChat();
             } else {
-                window.location.href = 'https://booktor.github.io/inicio.html';
+                console.log('Usuário não logado, redirecionando...');
+                setTimeout(() => {
+                    window.location.href = 'https://booktor.github.io/inicio.html';
+                }, 2000);
             }
         });
 
-        function initializeChat() {
-            document.getElementById('userName').textContent = currentUser.displayName || currentUser.email.split('@')[0];
-            document.getElementById('userAvatar').textContent = (currentUser.displayName || currentUser.email)[0].toUpperCase();
-
-            messagesRef = database.ref('messages');
-            usersRef = database.ref('users');
-
-            usersRef.child(currentUser.uid).set({
-                name: currentUser.displayName || currentUser.email.split('@')[0],
-                email: currentUser.email,
-                lastSeen: firebase.database.ServerValue.TIMESTAMP,
-                online: true
-            });
-
-            usersRef.child(currentUser.uid).onDisconnect().update({
-                online: false,
-                lastSeen: firebase.database.ServerValue.TIMESTAMP
-            });
-
-            messagesRef.limitToLast(50).on('child_added', displayMessage);
-            usersRef.on('value', updateUsersList);
-
-            document.getElementById('loading').style.display = 'none';
-            document.getElementById('app').style.display = 'flex';
-
-            document.getElementById('messageInput').addEventListener('keypress', e => {
-                if (e.key === 'Enter' && !e.shiftKey) {
-                    e.preventDefault();
-                    sendMessage();
+        setTimeout(() => {
+            if (!currentUser) {
+                console.log('Timeout na autenticação, forçando verificação...');
+                const user = auth.currentUser;
+                if (user) {
+                    console.log('Usuário encontrado no currentUser:', user.email);
+                    currentUser = user;
+                    initializeChat();
+                } else {
+                    console.log('Nenhum usuário encontrado, redirecionando...');
+                    window.location.href = 'https://booktor.github.io/inicio.html';
                 }
-            });
+            }
+        }, 3000);
+
+        function initializeChat() {
+            console.log('Inicializando chat para usuário:', currentUser.email);
+            
+            try {
+                document.getElementById('userName').textContent = currentUser.displayName || currentUser.email.split('@')[0];
+                document.getElementById('userAvatar').textContent = (currentUser.displayName || currentUser.email)[0].toUpperCase();
+
+                messagesRef = database.ref('messages');
+                usersRef = database.ref('users');
+
+                console.log('Configurando presença do usuário...');
+                
+                usersRef.child(currentUser.uid).set({
+                    name: currentUser.displayName || currentUser.email.split('@')[0],
+                    email: currentUser.email,
+                    lastSeen: firebase.database.ServerValue.TIMESTAMP,
+                    online: true
+                }).then(() => {
+                    console.log('Usuário configurado no banco de dados');
+                }).catch(error => {
+                    console.error('Erro ao configurar usuário:', error);
+                });
+
+                usersRef.child(currentUser.uid).onDisconnect().update({
+                    online: false,
+                    lastSeen: firebase.database.ServerValue.TIMESTAMP
+                });
+
+                console.log('Configurando listeners...');
+                messagesRef.limitToLast(50).on('child_added', displayMessage);
+                usersRef.on('value', updateUsersList);
+
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('app').style.display = 'flex';
+
+                console.log('Chat inicializado com sucesso!');
+
+                document.getElementById('messageInput').addEventListener('keypress', e => {
+                    if (e.key === 'Enter' && !e.shiftKey) {
+                        e.preventDefault();
+                        sendMessage();
+                    }
+                });
+            } catch (error) {
+                console.error('Erro ao inicializar chat:', error);
+                alert('Erro ao carregar o chat. Recarregue a página.');
+            }
         }
 
         function sendMessage() {
