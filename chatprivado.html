@@ -557,7 +557,18 @@
                     window.location.href = 'https://booktor.github.io/inicio.html';
                 }
             }
-        }, 3000);
+        }, 5000);
+
+        window.addEventListener('load', () => {
+            console.log('Página carregada, verificando autenticação novamente...');
+            setTimeout(() => {
+                if (auth.currentUser && !currentUser) {
+                    console.log('Usuário encontrado após load:', auth.currentUser.email);
+                    currentUser = auth.currentUser;
+                    initializeChat();
+                }
+            }, 1000);
+        });
 
         function initializeChat() {
             console.log('Inicializando chat para usuário:', currentUser.email);
