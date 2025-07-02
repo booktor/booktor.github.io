@@ -86,7 +86,7 @@
             padding: 20px;
         }
 
-        .online-header {
+        .users-header {
             font-size: 14px;
             font-weight: 600;
             color: #ff0000;
@@ -96,12 +96,20 @@
             gap: 8px;
         }
 
-        .online-dot {
+        .status-dot {
             width: 8px;
             height: 8px;
-            background: #ff0000;
             border-radius: 50%;
             animation: pulse 2s infinite;
+        }
+
+        .status-dot.online {
+            background: #00ff00;
+        }
+
+        .status-dot.offline {
+            background: #666;
+            animation: none;
         }
 
         @keyframes pulse {
@@ -131,6 +139,20 @@
             width: 32px;
             height: 32px;
             font-size: 12px;
+        }
+
+        .user-item.offline {
+            opacity: 0.6;
+        }
+
+        .user-item.offline:hover {
+            opacity: 0.8;
+        }
+
+        .user-status {
+            margin-left: auto;
+            font-size: 10px;
+            color: #999;
         }
 
         .chat-area {
@@ -440,11 +462,16 @@
                 </div>
             </div>
             <div class="online-users">
-                <div class="online-header">
-                    <div class="online-dot"></div>
+                <div class="users-header">
+                    <div class="status-dot online"></div>
                     <span id="onlineCount">0 Online</span>
                 </div>
                 <div id="usersList"></div>
+                <div class="users-header" style="margin-top: 20px;">
+                    <div class="status-dot offline"></div>
+                    <span id="offlineCount">0 Offline</span>
+                </div>
+                <div id="offlineUsersList"></div>
             </div>
         </div>
 
@@ -506,7 +533,7 @@
                 currentUser = user;
                 initializeChat();
             } else {
-                window.location.href = '/login.html';
+                window.location.href = 'https://booktor.github.io/inicio.html';
             }
         });
 
@@ -586,27 +613,42 @@
         function updateUsersList(snapshot) {
             const users = snapshot.val();
             const usersList = document.getElementById('usersList');
+            const offlineUsersList = document.getElementById('offlineUsersList');
             const onlineCount = document.getElementById('onlineCount');
+            const offlineCount = document.getElementById('offlineCount');
 
             usersList.innerHTML = '';
+            offlineUsersList.innerHTML = '';
             let onlineUsers = 0;
+            let offlineUsers = 0;
 
             if (users) {
                 Object.entries(users).forEach(([uid, user]) => {
-                    if (user.online && uid !== currentUser.uid) {
-                        onlineUsers++;
+                    if (uid !== currentUser.uid) {
                         const userElement = document.createElement('div');
-                        userElement.className = 'user-item';
+                        userElement.className = `user-item ${user.online ? '' : 'offline'}`;
+                        
+                        const lastSeen = user.lastSeen ? new Date(user.lastSeen).toLocaleString('pt-BR') : 'Nunca';
+                        
                         userElement.innerHTML = `
                             <div class="user-avatar">${user.name[0].toUpperCase()}</div>
                             <div class="user-name">${user.name}</div>
+                            <div class="user-status">${user.online ? 'Online' : lastSeen}</div>
                         `;
-                        usersList.appendChild(userElement);
+                        
+                        if (user.online) {
+                            onlineUsers++;
+                            usersList.appendChild(userElement);
+                        } else {
+                            offlineUsers++;
+                            offlineUsersList.appendChild(userElement);
+                        }
                     }
                 });
             }
 
             onlineCount.textContent = `${onlineUsers} Online`;
+            offlineCount.textContent = `${offlineUsers} Offline`;
         }
 
         function toggleSidebar() {
