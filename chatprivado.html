@@ -39,6 +39,7 @@
             padding: 20px;
             background: rgba(255, 0, 0, 0.1);
             border-bottom: 1px solid rgba(255, 0, 0, 0.3);
+            backdrop-filter: blur(20px);
         }
 
         .logo {
@@ -102,6 +103,7 @@
 
         .search-result:hover {
             background: rgba(255, 0, 0, 0.2);
+            transform: translateX(3px);
         }
 
         .user-avatar-small {
@@ -135,6 +137,7 @@
         .chat-item:hover {
             background: rgba(255, 0, 0, 0.1);
             transform: translateX(5px);
+            box-shadow: 0 5px 20px rgba(255, 0, 0, 0.2);
         }
 
         .chat-item.active {
@@ -424,6 +427,10 @@
         <div class="sidebar" id="sidebar">
             <div class="sidebar-header">
                 <div class="logo">Chat Privado</div>
+                <div class="user-info" style="display: flex; align-items: center; gap: 10px; margin-bottom: 15px;">
+                    <div class="user-avatar-small" id="currentUserAvatar">U</div>
+                    <span id="currentUserName" style="font-size: 0.9rem; opacity: 0.8;">Carregando...</span>
+                </div>
                 <div class="search-container">
                     <input type="text" class="search-input" id="searchInput" placeholder="Buscar usuários...">
                     <div class="search-results" id="searchResults"></div>
@@ -525,17 +532,24 @@
         onAuthStateChanged(auth, (user) => {
             if (user) {
                 currentUser = user;
+                
+                const currentUserName = document.getElementById('currentUserName');
+                const currentUserAvatar = document.getElementById('currentUserAvatar');
+                const displayName = formatUserName(user.displayName || user.email);
+                
+                currentUserName.textContent = displayName;
+                currentUserAvatar.textContent = displayName.charAt(0).toUpperCase();
+                
                 loadAllUsers();
                 loadUserChats();
             } else {
-                window.location.href = '/login.html';
+                window.location.href = 'https://booktor.github.io/teladelogin.html';
             }
         });
 
         async function loadAllUsers() {
             try {
-                const authDb = getDatabase(authApp);
-                const usersRef = ref(authDb, 'users');
+                const usersRef = ref(privateDb, 'users');
                 const snapshot = await get(usersRef);
                 
                 if (snapshot.exists()) {
@@ -544,9 +558,24 @@
                         .filter(([uid]) => uid !== currentUser.uid)
                         .map(([uid, data]) => ({
                             uid,
-                            name: data.name || data.email,
+                            name: data.displayName || data.name || data.email,
                             email: data.email
                         }));
+                } else {
+                    const authDb = getDatabase(authApp);
+                    const authUsersRef = ref(authDb, 'usuarios');
+                    const authSnapshot = await get(authUsersRef);
+                    
+                    if (authSnapshot.exists()) {
+                        const authUsers = authSnapshot.val();
+                        allUsers = Object.entries(authUsers)
+                            .filter(([uid]) => uid !== currentUser.uid)
+                            .map(([uid, data]) => ({
+                                uid,
+                                name: data.nome || data.email,
+                                email: data.email
+                            }));
+                    }
                 }
             } catch (error) {
                 console.error('Erro ao carregar usuários:', error);
