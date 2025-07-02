@@ -65,6 +65,26 @@
             justify-content: center;
             font-weight: bold;
             color: white;
+            object-fit: cover;
+        }
+
+        .back-btn {
+            background: linear-gradient(45deg, #333, #666);
+            border: none;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .back-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+            background: linear-gradient(45deg, #666, #999);
         }
 
         .private-chat-btn {
@@ -235,6 +255,77 @@
             animation: pulse 2s infinite;
         }
 
+        .loading {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .loading.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .loading-spinner {
+            border: 4px solid #333;
+            border-top: 4px solid #ff0000;
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            animation: spin 1s linear infinite;
+        }
+
+        .not-logged-in {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .not-logged-in h2 {
+            color: #ff0000;
+            margin-bottom: 20px;
+            font-size: 2rem;
+        }
+
+        .not-logged-in p {
+            margin-bottom: 30px;
+            font-size: 1.2rem;
+            color: #ccc;
+        }
+
+        .login-btn {
+            background: linear-gradient(45deg, #ff0000, #cc0000);
+            border: none;
+            color: white;
+            padding: 15px 30px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 1.1rem;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.3s ease;
+        }
+
+        .login-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(255, 0, 0, 0.4);
+        }
+
         @keyframes slideIn {
             from {
                 opacity: 0;
@@ -249,6 +340,11 @@
         @keyframes pulse {
             0%, 100% { opacity: 1; }
             50% { opacity: 0.5; }
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
 
         .messages-container::-webkit-scrollbar {
@@ -268,13 +364,14 @@
         @media (max-width: 768px) {
             .header {
                 padding: 15px;
+                flex-wrap: wrap;
             }
 
             .logo {
                 font-size: 1.5rem;
             }
 
-            .private-chat-btn {
+            .private-chat-btn, .back-btn {
                 padding: 10px 20px;
                 font-size: 0.9rem;
             }
@@ -318,12 +415,23 @@
     </style>
 </head>
 <body>
-    <div class="container">
+    <div class="loading" id="loading">
+        <div class="loading-spinner"></div>
+    </div>
+
+    <div class="not-logged-in" id="notLoggedIn" style="display: none;">
+        <h2>Acesso Restrito</h2>
+        <p>Você precisa estar logado para acessar o chat.</p>
+        <a href="inicio.html" class="login-btn">Voltar ao Início</a>
+    </div>
+
+    <div class="container" id="chatContainer" style="display: none;">
         <header class="header">
             <div class="logo">Chat para Booktores</div>
             <div class="user-info">
-                <div class="user-avatar" id="userAvatar">B</div>
+                <img src="" alt="Avatar" class="user-avatar" id="userAvatar">
                 <span id="userName">Carregando...</span>
+                <a href="inicio.html" class="back-btn">← Voltar</a>
                 <a href="https://booktor.github.io/chatprivado.html" class="private-chat-btn">Chat Privado</a>
             </div>
         </header>
@@ -360,11 +468,12 @@
     </div>
 
     <script type="module">
-        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
-        import { getAuth, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
-        import { getDatabase, ref, push, onValue, serverTimestamp, onDisconnect, set, remove } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js';
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
+        import { getAuth, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
+        import { getDatabase, ref, push, onValue, serverTimestamp, onDisconnect, set, remove } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js';
 
-        const authConfig = {
+        // Usar a MESMA configuração Firebase do inicio.html
+        const firebaseConfig = {
             apiKey: "AIzaSyBauGgt1pm-sBas75N40ufWRsGD6c4BsgM",
             authDomain: "sistema-de-login-blog.firebaseapp.com",
             databaseURL: "https://sistema-de-login-blog-default-rtdb.firebaseio.com",
@@ -374,23 +483,15 @@
             appId: "1:416120877008:web:a5b0a26bec246d577a93d5"
         };
 
-        const chatConfig = {
-            apiKey: "AIzaSyAtTkhmeODwBZePZVYuyU4JpiVm3xsc2-w",
-            authDomain: "booktorchat.firebaseapp.com",
-            databaseURL: "https://booktorchat-default-rtdb.firebaseio.com",
-            projectId: "booktorchat",
-            storageBucket: "booktorchat.firebasestorage.app",
-            messagingSenderId: "1070296724867",
-            appId: "1:1070296724867:web:4c91165dc82cbb6216b2b6"
-        };
-
-        const authApp = initializeApp(authConfig, 'auth');
-        const chatApp = initializeApp(chatConfig, 'chat');
-        const auth = getAuth(authApp);
-        const chatDb = getDatabase(chatApp);
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const database = getDatabase(app);
 
         let currentUser = null;
 
+        const loading = document.getElementById('loading');
+        const notLoggedIn = document.getElementById('notLoggedIn');
+        const chatContainer = document.getElementById('chatContainer');
         const messageInput = document.getElementById('messageInput');
         const sendBtn = document.getElementById('sendBtn');
         const messagesContainer = document.getElementById('messagesContainer');
@@ -398,26 +499,52 @@
         const userAvatar = document.getElementById('userAvatar');
         const onlineUsersList = document.getElementById('onlineUsersList');
 
+        function showLoading() {
+            loading.classList.add('show');
+        }
+
+        function hideLoading() {
+            loading.classList.remove('show');
+        }
+
+        function showNotLoggedIn() {
+            hideLoading();
+            notLoggedIn.style.display = 'flex';
+            chatContainer.style.display = 'none';
+        }
+
+        function showChat() {
+            hideLoading();
+            notLoggedIn.style.display = 'none';
+            chatContainer.style.display = 'flex';
+        }
+
         onAuthStateChanged(auth, (user) => {
             if (user) {
                 currentUser = user;
-                userName.textContent = user.displayName || user.email;
-                userAvatar.textContent = (user.displayName || user.email).charAt(0).toUpperCase();
+                const displayName = user.displayName || user.email.split('@')[0];
+                const photoURL = user.photoURL || `https://ui-avatars.com/api/?name=${encodeURIComponent(displayName)}&background=FF0000&color=fff&size=128`;
                 
+                userName.textContent = displayName;
+                userAvatar.src = photoURL;
+                userAvatar.alt = `Avatar de ${displayName}`;
+                
+                showChat();
                 setupOnlinePresence();
                 loadMessages();
                 loadOnlineUsers();
             } else {
-                window.location.href = 'https://booktor.github.io/teladelogin.html';
+                showNotLoggedIn();
             }
         });
 
         function setupOnlinePresence() {
             if (!currentUser) return;
 
-            const userOnlineRef = ref(chatDb, `online/${currentUser.uid}`);
+            const userOnlineRef = ref(database, `chat/online/${currentUser.uid}`);
             const userInfo = {
-                name: currentUser.displayName || currentUser.email,
+                name: currentUser.displayName || currentUser.email.split('@')[0],
+                photoURL: currentUser.photoURL || `https://ui-avatars.com/api/?name=${encodeURIComponent(currentUser.displayName || currentUser.email.split('@')[0])}&background=FF0000&color=fff&size=128`,
                 timestamp: serverTimestamp()
             };
 
@@ -426,7 +553,7 @@
         }
 
         function loadOnlineUsers() {
-            const onlineRef = ref(chatDb, 'online');
+            const onlineRef = ref(database, 'chat/online');
             onValue(onlineRef, (snapshot) => {
                 const users = snapshot.val() || {};
                 onlineUsersList.innerHTML = '';
@@ -436,22 +563,34 @@
                     userElement.className = 'online-user';
                     userElement.innerHTML = `
                         <div class="status-dot"></div>
-                        <span>${userInfo.name}</span>
+                        <span>${userInfo.name || 'Usuário'}</span>
                     `;
                     onlineUsersList.appendChild(userElement);
                 });
+
+                if (Object.keys(users).length === 0) {
+                    onlineUsersList.innerHTML = '<div class="online-user"><span>Nenhum usuário online</span></div>';
+                }
             });
         }
 
         function loadMessages() {
-            const messagesRef = ref(chatDb, 'messages');
+            const messagesRef = ref(database, 'chat/messages');
             onValue(messagesRef, (snapshot) => {
                 const messages = snapshot.val() || {};
                 const messagesArray = Object.entries(messages)
                     .map(([key, value]) => ({ id: key, ...value }))
-                    .sort((a, b) => a.timestamp - b.timestamp);
+                    .sort((a, b) => a.timestamp - b.timestamp)
+                    .slice(-100); // Limitar a 100 mensagens mais recentes
 
-                messagesContainer.innerHTML = '';
+                messagesContainer.innerHTML = `
+                    <div class="message">
+                        <div class="message-info">Sistema</div>
+                        <div class="message-bubble other">
+                            <div class="message-text">Bem-vindo ao Chat para Booktores! Compartilhe suas experiências literárias.</div>
+                        </div>
+                    </div>
+                `;
                 
                 messagesArray.forEach(message => {
                     addMessageToDOM(message);
@@ -473,7 +612,7 @@
             });
 
             messageDiv.innerHTML = `
-                <div class="message-info">${message.userName} - ${time}</div>
+                <div class="message-info">${escapeHtml(message.userName)} - ${time}</div>
                 <div class="message-bubble ${isOwnMessage ? 'own' : 'other'}">
                     <div class="message-text">${escapeHtml(message.text)}</div>
                 </div>
@@ -488,15 +627,24 @@
             const text = messageInput.value.trim();
             if (!text) return;
 
-            const messagesRef = ref(chatDb, 'messages');
+            const messagesRef = ref(database, 'chat/messages');
             push(messagesRef, {
                 text: text,
                 userId: currentUser.uid,
-                userName: currentUser.displayName || currentUser.email,
+                userName: currentUser.displayName || currentUser.email.split('@')[0],
                 timestamp: Date.now()
+            }).then(() => {
+                messageInput.value = '';
+                updateSendButton();
+            }).catch((error) => {
+                console.error('Erro ao enviar mensagem:', error);
             });
+        }
 
-            messageInput.value = '';
+        function updateSendButton() {
+            sendBtn.style.background = messageInput.value.trim() 
+                ? 'linear-gradient(45deg, #ff0000, #cc0000)' 
+                : 'linear-gradient(45deg, #666, #999)';
         }
 
         function escapeHtml(text) {
@@ -505,18 +653,28 @@
             return div.innerHTML;
         }
 
+        // Event Listeners
         sendBtn.addEventListener('click', sendMessage);
+        
         messageInput.addEventListener('keypress', (e) => {
             if (e.key === 'Enter') {
+                e.preventDefault();
                 sendMessage();
             }
         });
 
-        messageInput.addEventListener('input', () => {
-            sendBtn.style.background = messageInput.value.trim() 
-                ? 'linear-gradient(45deg, #ff0000, #cc0000)' 
-                : 'linear-gradient(45deg, #666, #999)';
+        messageInput.addEventListener('input', updateSendButton);
+
+        // Initialize
+        showLoading();
+
+        // Cleanup on page unload
+        window.addEventListener('beforeunload', () => {
+            if (currentUser) {
+                const userOnlineRef = ref(database, `chat/online/${currentUser.uid}`);
+                remove(userOnlineRef);
+            }
         });
     </script>
 </body>
-                      </html>
+</html>
