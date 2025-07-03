@@ -91,7 +91,7 @@
             color: #aaa;
         }
 
-        .contacts-search {
+        .search-section {
             padding: 15px 20px;
             border-bottom: 1px solid #333;
         }
@@ -117,13 +117,13 @@
             color: #888;
         }
 
-        .contacts-list {
+        .users-list {
             flex: 1;
             overflow-y: auto;
             padding: 10px 0;
         }
 
-        .contact-item {
+        .user-item {
             padding: 15px 20px;
             cursor: pointer;
             transition: all 0.3s ease;
@@ -131,17 +131,17 @@
             position: relative;
         }
 
-        .contact-item:hover {
+        .user-item:hover {
             background: rgba(255,0,0,0.1);
             border-left-color: #ff0000;
         }
 
-        .contact-item.active {
+        .user-item.active {
             background: rgba(255,0,0,0.2);
             border-left-color: #ff0000;
         }
 
-        .contact-item.active::before {
+        .user-item.active::before {
             content: '';
             position: absolute;
             right: 0;
@@ -153,13 +153,13 @@
             border-radius: 2px 0 0 2px;
         }
 
-        .contact-info {
+        .user-info-item {
             display: flex;
             align-items: center;
             gap: 12px;
         }
 
-        .contact-avatar {
+        .user-avatar-item {
             width: 45px;
             height: 45px;
             border-radius: 50%;
@@ -170,20 +170,17 @@
             font-weight: bold;
             font-size: 1.1rem;
             box-shadow: 0 2px 8px rgba(255,0,0,0.3);
+            position: relative;
         }
 
-        .contact-details h4 {
+        .user-details-item h4 {
             font-size: 0.95rem;
             margin-bottom: 3px;
         }
 
-        .contact-last-message {
+        .user-email {
             font-size: 0.8rem;
             color: #aaa;
-            display: -webkit-box;
-            -webkit-line-clamp: 1;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
         }
 
         .main-chat {
@@ -356,63 +353,53 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0,0,0,0.8);
+            background: rgba(0,0,0,0.9);
             display: flex;
             align-items: center;
             justify-content: center;
             z-index: 1000;
-            opacity: 0;
-            visibility: hidden;
-            transition: all 0.3s ease;
-        }
-
-        .modal.active {
-            opacity: 1;
-            visibility: visible;
+            backdrop-filter: blur(10px);
         }
 
         .modal-content {
             background: linear-gradient(135deg, #1a1a1a 0%, #2a2a2a 100%);
-            padding: 30px;
-            border-radius: 15px;
+            padding: 40px;
+            border-radius: 20px;
             width: 90%;
-            max-width: 400px;
+            max-width: 450px;
             text-align: center;
             border: 1px solid #333;
-            transform: scale(0.7);
-            transition: all 0.3s ease;
-        }
-
-        .modal.active .modal-content {
-            transform: scale(1);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.5);
         }
 
         .modal h2 {
-            margin-bottom: 20px;
+            margin-bottom: 30px;
             color: #ff0000;
-            font-size: 1.5rem;
+            font-size: 2rem;
+            font-weight: 700;
         }
 
         .form-group {
-            margin-bottom: 20px;
+            margin-bottom: 25px;
             text-align: left;
         }
 
         .form-group label {
             display: block;
-            margin-bottom: 5px;
+            margin-bottom: 8px;
             color: #fff;
-            font-size: 0.9rem;
+            font-size: 0.95rem;
+            font-weight: 500;
         }
 
         .form-group input {
             width: 100%;
-            padding: 12px 16px;
+            padding: 15px 20px;
             background: rgba(255,255,255,0.1);
             border: 1px solid #333;
-            border-radius: 8px;
+            border-radius: 10px;
             color: #fff;
-            font-size: 0.9rem;
+            font-size: 1rem;
             transition: all 0.3s ease;
         }
 
@@ -424,25 +411,26 @@
 
         .auth-buttons {
             display: flex;
-            gap: 10px;
-            margin-top: 20px;
+            gap: 15px;
+            margin-top: 30px;
         }
 
         .auth-button {
             flex: 1;
-            padding: 12px;
+            padding: 15px;
             background: linear-gradient(135deg, #ff0000, #cc0000);
             border: none;
-            border-radius: 8px;
+            border-radius: 10px;
             color: #fff;
-            font-size: 0.9rem;
+            font-size: 1rem;
+            font-weight: 600;
             cursor: pointer;
             transition: all 0.3s ease;
         }
 
         .auth-button:hover {
             transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(255,0,0,0.3);
+            box-shadow: 0 10px 25px rgba(255,0,0,0.4);
         }
 
         .auth-button.secondary {
@@ -457,8 +445,48 @@
             justify-content: center;
             height: 100%;
             color: #666;
-            font-size: 1.1rem;
+            font-size: 1.2rem;
             text-align: center;
+        }
+
+        .no-chat-selected h3 {
+            margin-bottom: 10px;
+            font-size: 1.5rem;
+        }
+
+        .online-indicator {
+            width: 12px;
+            height: 12px;
+            background: #00ff00;
+            border-radius: 50%;
+            position: absolute;
+            bottom: 2px;
+            right: 2px;
+            border: 2px solid #000;
+            animation: pulse 2s infinite;
+        }
+
+        .loading {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 3px solid #333;
+            border-top: 3px solid #ff0000;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
 
         @keyframes shimmer {
@@ -475,18 +503,6 @@
                 opacity: 1;
                 transform: translateY(0);
             }
-        }
-
-        .online-indicator {
-            width: 12px;
-            height: 12px;
-            background: #00ff00;
-            border-radius: 50%;
-            position: absolute;
-            bottom: 2px;
-            right: 2px;
-            border: 2px solid #000;
-            animation: pulse 2s infinite;
         }
 
         @keyframes pulse {
@@ -536,24 +552,45 @@
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="sidebar" id="sidebar">
+    <div id="loadingScreen" class="loading">
+        <div class="spinner"></div>
+        <h3>Carregando Chat Privado...</h3>
+    </div>
+
+    <div id="authModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <h2>Bem-vindo ao Chat Privado</h2>
+            <div class="form-group">
+                <label for="email">Email:</label>
+                <input type="email" id="email" placeholder="Digite seu email" required>
+            </div>
+            <div class="form-group">
+                <label for="password">Senha:</label>
+                <input type="password" id="password" placeholder="Digite sua senha" required>
+            </div>
+            <div class="auth-buttons">
+                <button class="auth-button" id="loginButton">Entrar</button>
+                <button class="auth-button secondary" id="registerButton">Cadastrar</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="mainContainer" class="container" style="display: none;">
+        <div class="sidebar">
             <div class="sidebar-header">
                 <h1>Chat Privado</h1>
             </div>
-            <div class="user-info" id="userInfo">
+            <div class="user-info">
                 <div class="user-avatar" id="userAvatar">U</div>
                 <div class="user-details">
                     <h3 id="userName">Usuário</h3>
                     <div class="user-status">Online</div>
                 </div>
             </div>
-            <div class="contacts-search">
-                <input type="text" class="search-input" placeholder="Buscar contatos..." id="searchInput">
+            <div class="search-section">
+                <input type="text" class="search-input" placeholder="Buscar usuários..." id="searchInput">
             </div>
-            <div class="contacts-list" id="contactsList">
-                <!-- Contacts will be populated here -->
-            </div>
+            <div class="users-list" id="usersList"></div>
         </div>
 
         <div class="main-chat">
@@ -566,9 +603,9 @@
             </div>
             
             <div class="chat-messages" id="chatMessages">
-                <div class="no-chat-selected" id="noChatSelected">
-                    <h3>Selecione um contato para iniciar uma conversa</h3>
-                    <p>Escolha um dos seus contatos na lista ao lado</p>
+                <div class="no-chat-selected">
+                    <h3>Selecione um usuário para conversar</h3>
+                    <p>Escolha um usuário da lista para iniciar uma conversa privada</p>
                 </div>
             </div>
             
@@ -581,30 +618,10 @@
         </div>
     </div>
 
-    <div class="modal" id="authModal">
-        <div class="modal-content">
-            <h2 id="modalTitle">Entrar</h2>
-            <div id="loginForm">
-                <div class="form-group">
-                    <label for="email">Email:</label>
-                    <input type="email" id="email" required>
-                </div>
-                <div class="form-group">
-                    <label for="password">Senha:</label>
-                    <input type="password" id="password" required>
-                </div>
-                <div class="auth-buttons">
-                    <button class="auth-button" id="loginButton">Entrar</button>
-                    <button class="auth-button secondary" id="registerButton">Cadastrar</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
     <script type="module">
         import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
         import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
-        import { getDatabase, ref, push, onValue, set, serverTimestamp, onDisconnect, off } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js';
+        import { getDatabase, ref, push, onValue, set, serverTimestamp, onDisconnect, off, get } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js';
 
         const authConfig = {
             apiKey: "AIzaSyBauGgt1pm-sBas75N40ufWRsGD6c4BsgM",
@@ -635,18 +652,19 @@
         let currentChat = null;
         let messagesListener = null;
         let usersListener = null;
+        let allUsers = [];
 
         const elements = {
+            loadingScreen: document.getElementById('loadingScreen'),
             authModal: document.getElementById('authModal'),
-            loginForm: document.getElementById('loginForm'),
+            mainContainer: document.getElementById('mainContainer'),
             emailInput: document.getElementById('email'),
             passwordInput: document.getElementById('password'),
             loginButton: document.getElementById('loginButton'),
             registerButton: document.getElementById('registerButton'),
-            userInfo: document.getElementById('userInfo'),
             userName: document.getElementById('userName'),
             userAvatar: document.getElementById('userAvatar'),
-            contactsList: document.getElementById('contactsList'),
+            usersList: document.getElementById('usersList'),
             searchInput: document.getElementById('searchInput'),
             chatHeader: document.getElementById('chatHeader'),
             chatName: document.getElementById('chatName'),
@@ -655,16 +673,19 @@
             chatMessages: document.getElementById('chatMessages'),
             messageInput: document.getElementById('messageInput'),
             sendButton: document.getElementById('sendButton'),
-            chatInputContainer: document.getElementById('chatInputContainer'),
-            noChatSelected: document.getElementById('noChatSelected')
+            chatInputContainer: document.getElementById('chatInputContainer')
         };
 
         function showModal() {
-            elements.authModal.classList.add('active');
+            elements.loadingScreen.style.display = 'none';
+            elements.authModal.style.display = 'flex';
+            elements.mainContainer.style.display = 'none';
         }
 
-        function hideModal() {
-            elements.authModal.classList.remove('active');
+        function showMain() {
+            elements.loadingScreen.style.display = 'none';
+            elements.authModal.style.display = 'none';
+            elements.mainContainer.style.display = 'flex';
         }
 
         function getInitials(name) {
@@ -676,47 +697,34 @@
             return date.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
         }
 
-        function createMessageElement(message, isSent) {
-            const messageDiv = document.createElement('div');
-            messageDiv.className = `message ${isSent ? 'sent' : 'received'}`;
-            messageDiv.innerHTML = `
-                <div class="message-content">${message.text}</div>
-                <div class="message-time">${formatTime(message.timestamp)}</div>
-            `;
-            return messageDiv;
-        }
-
-        function createContactElement(user) {
-            const contactDiv = document.createElement('div');
-            contactDiv.className = 'contact-item';
-            contactDiv.innerHTML = `
-                <div class="contact-info">
-                    <div class="contact-avatar" style="position: relative;">
+        function createUserElement(user) {
+            const userDiv = document.createElement('div');
+            userDiv.className = 'user-item';
+            userDiv.innerHTML = `
+                <div class="user-info-item">
+                    <div class="user-avatar-item" style="position: relative;">
                         ${getInitials(user.name)}
                         ${user.online ? '<div class="online-indicator"></div>' : ''}
                     </div>
-                    <div class="contact-details">
+                    <div class="user-details-item">
                         <h4>${user.name}</h4>
-                        <div class="contact-last-message">
-                            ${user.online ? 'Online' : 'Offline'}
-                        </div>
+                        <div class="user-email">${user.email}</div>
                     </div>
                 </div>
             `;
-            contactDiv.addEventListener('click', () => selectContact(user));
-            return contactDiv;
+            userDiv.addEventListener('click', () => selectUser(user));
+            return userDiv;
         }
 
-        function selectContact(user) {
+        function selectUser(user) {
             currentChat = user.id;
             elements.chatName.textContent = user.name;
             elements.chatAvatar.textContent = getInitials(user.name);
             elements.chatStatus.textContent = user.online ? 'Online' : 'Offline';
             elements.chatHeader.style.display = 'flex';
             elements.chatInputContainer.style.display = 'block';
-            elements.noChatSelected.style.display = 'none';
 
-            document.querySelectorAll('.contact-item').forEach(item => {
+            document.querySelectorAll('.user-item').forEach(item => {
                 item.classList.remove('active');
             });
             event.currentTarget.classList.add('active');
@@ -730,15 +738,20 @@
             elements.chatMessages.innerHTML = '';
             
             const chatId = [currentUser.uid, currentChat].sort().join('_');
-            const messagesRef = ref(database, `messages/${chatId}`);
+            const messagesRef = ref(database, `chats/${chatId}/messages`);
             
             messagesListener = onValue(messagesRef, (snapshot) => {
                 elements.chatMessages.innerHTML = '';
                 const messages = snapshot.val();
                 if (messages) {
                     Object.values(messages).forEach(message => {
-                        const messageElement = createMessageElement(message, message.senderId === currentUser.uid);
-                        elements.chatMessages.appendChild(messageElement);
+                        const messageDiv = document.createElement('div');
+                        messageDiv.className = `message ${message.senderId === currentUser.uid ? 'sent' : 'received'}`;
+                        messageDiv.innerHTML = `
+                            <div class="message-content">${message.text}</div>
+                            <div class="message-time">${formatTime(message.timestamp)}</div>
+                        `;
+                        elements.chatMessages.appendChild(messageDiv);
                     });
                     elements.chatMessages.scrollTop = elements.chatMessages.scrollHeight;
                 }
@@ -750,12 +763,12 @@
             if (!messageText || !currentChat) return;
 
             const chatId = [currentUser.uid, currentChat].sort().join('_');
-            const messagesRef = ref(database, `messages/${chatId}`);
+            const messagesRef = ref(database, `chats/${chatId}/messages`);
             
             push(messagesRef, {
                 text: messageText,
                 senderId: currentUser.uid,
-                timestamp: serverTimestamp()
+                timestamp: Date.now()
             });
 
             elements.messageInput.value = '';
@@ -767,16 +780,22 @@
             
             const usersRef = ref(database, 'users');
             usersListener = onValue(usersRef, (snapshot) => {
-                elements.contactsList.innerHTML = '';
                 const users = snapshot.val();
                 if (users) {
-                    Object.entries(users).forEach(([id, user]) => {
-                        if (id !== currentUser.uid) {
-                            const contactElement = createContactElement({ id, ...user });
-                            elements.contactsList.appendChild(contactElement);
-                        }
-                    });
+                    allUsers = Object.entries(users)
+                        .filter(([id, user]) => id !== currentUser.uid)
+                        .map(([id, user]) => ({ id, ...user }));
+                    
+                    renderUsers(allUsers);
                 }
+            });
+        }
+
+        function renderUsers(users) {
+            elements.usersList.innerHTML = '';
+            users.forEach(user => {
+                const userElement = createUserElement(user);
+                elements.usersList.appendChild(userElement);
             });
         }
 
@@ -787,13 +806,13 @@
                     name: currentUser.displayName || currentUser.email.split('@')[0],
                     email: currentUser.email,
                     online: online,
-                    lastSeen: serverTimestamp()
+                    lastSeen: Date.now()
                 });
 
                 if (online) {
                     onDisconnect(userRef).update({
                         online: false,
-                        lastSeen: serverTimestamp()
+                        lastSeen: Date.now()
                     });
                 }
             }
@@ -805,26 +824,43 @@
         }
 
         elements.loginButton.addEventListener('click', async () => {
-            const email = elements.emailInput.value;
-            const password = elements.passwordInput.value;
+            const email = elements.emailInput.value.trim();
+            const password = elements.passwordInput.value.trim();
             
+            if (!email || !password) {
+                alert('Por favor, preencha todos os campos');
+                return;
+            }
+
             try {
+                elements.loginButton.textContent = 'Entrando...';
                 await signInWithEmailAndPassword(auth, email, password);
-                hideModal();
             } catch (error) {
                 alert('Erro ao fazer login: ' + error.message);
+                elements.loginButton.textContent = 'Entrar';
             }
         });
 
         elements.registerButton.addEventListener('click', async () => {
-            const email = elements.emailInput.value;
-            const password = elements.passwordInput.value;
+            const email = elements.emailInput.value.trim();
+            const password = elements.passwordInput.value.trim();
             
+            if (!email || !password) {
+                alert('Por favor, preencha todos os campos');
+                return;
+            }
+
+            if (password.length < 6) {
+                alert('A senha deve ter pelo menos 6 caracteres');
+                return;
+            }
+
             try {
+                elements.registerButton.textContent = 'Criando...';
                 await createUserWithEmailAndPassword(auth, email, password);
-                hideModal();
             } catch (error) {
                 alert('Erro ao criar conta: ' + error.message);
+                elements.registerButton.textContent = 'Cadastrar';
             }
         });
 
@@ -841,22 +877,22 @@
 
         elements.searchInput.addEventListener('input', (e) => {
             const searchTerm = e.target.value.toLowerCase();
-            const contacts = document.querySelectorAll('.contact-item');
-            
-            contacts.forEach(contact => {
-                const name = contact.querySelector('h4').textContent.toLowerCase();
-                contact.style.display = name.includes(searchTerm) ? 'block' : 'none';
-            });
+            const filteredUsers = allUsers.filter(user => 
+                user.name.toLowerCase().includes(searchTerm) || 
+                user.email.toLowerCase().includes(searchTerm)
+            );
+            renderUsers(filteredUsers);
         });
 
         onAuthStateChanged(auth, (user) => {
             if (user) {
                 currentUser = user;
-                elements.userName.textContent = user.displayName || user.email.split('@')[0];
-                elements.userAvatar.textContent = getInitials(user.displayName || user.email.split('@')[0]);
+                const displayName = user.displayName || user.email.split('@')[0];
+                elements.userName.textContent = displayName;
+                elements.userAvatar.textContent = getInitials(displayName);
                 setUserOnline(true);
                 loadUsers();
-                hideModal();
+                showMain();
             } else {
                 currentUser = null;
                 showModal();
@@ -874,6 +910,12 @@
                 setUserOnline(!document.hidden);
             }
         });
+
+        setTimeout(() => {
+            if (elements.loadingScreen.style.display !== 'none') {
+                showModal();
+            }
+        }, 3000);
     </script>
 </body>
 </html>
