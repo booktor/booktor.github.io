@@ -496,6 +496,8 @@
         const auth = getAuth(app);
         const db = getFirestore(commentsApp);
 
+        console.log('Firebase inicializado:', { app, commentsApp, auth, db });
+
         let currentUser = null;
         let commentsData = [];
 
@@ -521,9 +523,13 @@
             const commentsRef = collection(db, 'comments');
             const q = query(commentsRef, orderBy('timestamp', 'desc'));
             
+            console.log('Configurando listener em tempo real...');
+            
             onSnapshot(q, (snapshot) => {
+                console.log('Snapshot recebido:', snapshot.size, 'documentos');
                 commentsData = [];
                 snapshot.forEach((doc) => {
+                    console.log('Comentário:', doc.id, doc.data());
                     commentsData.push({
                         id: doc.id,
                         ...doc.data()
@@ -532,6 +538,23 @@
                 
                 updateCommentsDisplay();
                 updateStats();
+            }, (error) => {
+                console.error('Erro no listener:', error);
+                
+                getDocs(q).then((snapshot) => {
+                    console.log('Fallback - carregando comentários:', snapshot.size);
+                    commentsData = [];
+                    snapshot.forEach((doc) => {
+                        commentsData.push({
+                            id: doc.id,
+                            ...doc.data()
+                        });
+                    });
+                    updateCommentsDisplay();
+                    updateStats();
+                }).catch((fallbackError) => {
+                    console.error('Erro no fallback:', fallbackError);
+                });
             });
         }
 
@@ -586,7 +609,10 @@
 
         window.submitComment = async function() {
             const commentText = document.getElementById('commentText').value.trim();
-            if (!commentText || !currentUser) return;
+            if (!commentText || !currentUser) {
+                console.log('Comentário vazio ou usuário não logado');
+                return;
+            }
 
             const submitBtn = document.querySelector('.submit-btn');
             const submitText = document.getElementById('submitText');
@@ -594,14 +620,22 @@
             submitBtn.disabled = true;
             submitText.innerHTML = '<div class="loading" style="margin: 0;"></div>';
 
+            console.log('Enviando comentário:', {
+                text: commentText,
+                author: currentUser.displayName || currentUser.email,
+                userId: currentUser.uid,
+                user: currentUser
+            });
+
             try {
-                await addDoc(collection(db, 'comments'), {
+                const docRef = await addDoc(collection(db, 'comments'), {
                     text: commentText,
                     author: currentUser.displayName || currentUser.email,
                     userId: currentUser.uid,
                     timestamp: serverTimestamp()
                 });
 
+                console.log('Comentário salvo com ID:', docRef.id);
                 document.getElementById('commentText').value = '';
                 
                 submitText.textContent = 'Comentário publicado!';
@@ -611,6 +645,7 @@
                 }, 2000);
             } catch (error) {
                 console.error('Erro ao enviar comentário:', error);
+                alert('Erro ao enviar comentário: ' + error.message);
                 submitText.textContent = 'Erro ao publicar';
                 setTimeout(() => {
                     submitText.textContent = 'Publicar Comentário';
@@ -657,4 +692,4 @@
         });
     </script>
 </body>
-  </html>
+</html>
