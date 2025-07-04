@@ -91,6 +91,28 @@
             color: #aaa;
         }
 
+        .logout-section {
+            padding: 15px 20px;
+            border-bottom: 1px solid #333;
+        }
+
+        .logout-button {
+            width: 100%;
+            padding: 10px;
+            background: rgba(255,0,0,0.2);
+            border: 1px solid #ff0000;
+            border-radius: 8px;
+            color: #fff;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .logout-button:hover {
+            background: rgba(255,0,0,0.3);
+            transform: translateY(-1px);
+        }
+
         .search-section {
             padding: 15px 20px;
             border-bottom: 1px solid #333;
@@ -466,29 +488,6 @@
             animation: pulse 2s infinite;
         }
 
-        .loading {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
-            flex-direction: column;
-            gap: 20px;
-        }
-
-        .spinner {
-            width: 50px;
-            height: 50px;
-            border: 3px solid #333;
-            border-top: 3px solid #ff0000;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
         @keyframes shimmer {
             0% { transform: translateX(-100%); }
             100% { transform: translateX(100%); }
@@ -552,12 +551,7 @@
     </style>
 </head>
 <body>
-    <div id="loadingScreen" class="loading">
-        <div class="spinner"></div>
-        <h3>Carregando Chat Privado...</h3>
-    </div>
-
-    <div id="authModal" class="modal" style="display: none;">
+    <div id="authModal" class="modal">
         <div class="modal-content">
             <h2>Bem-vindo ao Chat Privado</h2>
             <div class="form-group">
@@ -586,6 +580,9 @@
                     <h3 id="userName">Usuário</h3>
                     <div class="user-status">Online</div>
                 </div>
+            </div>
+            <div class="logout-section">
+                <button class="logout-button" id="logoutButton">Sair</button>
             </div>
             <div class="search-section">
                 <input type="text" class="search-input" placeholder="Buscar usuários..." id="searchInput">
@@ -620,7 +617,7 @@
 
     <script type="module">
         import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
-        import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
+        import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
         import { getDatabase, ref, push, onValue, set, serverTimestamp, onDisconnect, off, get } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js';
 
         const authConfig = {
@@ -655,13 +652,13 @@
         let allUsers = [];
 
         const elements = {
-            loadingScreen: document.getElementById('loadingScreen'),
             authModal: document.getElementById('authModal'),
             mainContainer: document.getElementById('mainContainer'),
             emailInput: document.getElementById('email'),
             passwordInput: document.getElementById('password'),
             loginButton: document.getElementById('loginButton'),
             registerButton: document.getElementById('registerButton'),
+            logoutButton: document.getElementById('logoutButton'),
             userName: document.getElementById('userName'),
             userAvatar: document.getElementById('userAvatar'),
             usersList: document.getElementById('usersList'),
@@ -677,13 +674,11 @@
         };
 
         function showModal() {
-            elements.loadingScreen.style.display = 'none';
             elements.authModal.style.display = 'flex';
             elements.mainContainer.style.display = 'none';
         }
 
         function showMain() {
-            elements.loadingScreen.style.display = 'none';
             elements.authModal.style.display = 'none';
             elements.mainContainer.style.display = 'flex';
         }
@@ -823,7 +818,7 @@
             elements.messageInput.style.height = elements.messageInput.scrollHeight + 'px';
         }
 
-        elements.loginButton.addEventListener('click', async () => {
+        async function handleLogin() {
             const email = elements.emailInput.value.trim();
             const password = elements.passwordInput.value.trim();
             
@@ -834,14 +829,32 @@
 
             try {
                 elements.loginButton.textContent = 'Entrando...';
-                await signInWithEmailAndPassword(auth, email, password);
+                elements.loginButton.disabled = true;
+                
+                const userCredential = await signInWithEmailAndPassword(auth, email, password);
+                currentUser = userCredential.user;
+                
+                const displayName = currentUser.displayName || currentUser.email.split('@')[0];
+                elements.userName.textContent = displayName;
+                elements.userAvatar.textContent = getInitials(displayName);
+                
+                setUserOnline(true);
+                loadUsers();
+                showMain();
+                
+                // Limpar campos
+                elements.emailInput.value = '';
+                elements.passwordInput.value = '';
+                
             } catch (error) {
                 alert('Erro ao fazer login: ' + error.message);
+            } finally {
                 elements.loginButton.textContent = 'Entrar';
+                elements.loginButton.disabled = false;
             }
-        });
+        }
 
-        elements.registerButton.addEventListener('click', async () => {
+        async function handleRegister() {
             const email = elements.emailInput.value.trim();
             const password = elements.passwordInput.value.trim();
             
@@ -857,65 +870,48 @@
 
             try {
                 elements.registerButton.textContent = 'Criando...';
-                await createUserWithEmailAndPassword(auth, email, password);
-            } catch (error) {
-                alert('Erro ao criar conta: ' + error.message);
-                elements.registerButton.textContent = 'Cadastrar';
-            }
-        });
-
-        elements.sendButton.addEventListener('click', sendMessage);
-
-        elements.messageInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter' && !e.shiftKey) {
-                e.preventDefault();
-                sendMessage();
-            }
-        });
-
-        elements.messageInput.addEventListener('input', autoResize);
-
-        elements.searchInput.addEventListener('input', (e) => {
-            const searchTerm = e.target.value.toLowerCase();
-            const filteredUsers = allUsers.filter(user => 
-                user.name.toLowerCase().includes(searchTerm) || 
-                user.email.toLowerCase().includes(searchTerm)
-            );
-            renderUsers(filteredUsers);
-        });
-
-        onAuthStateChanged(auth, (user) => {
-            if (user) {
-                currentUser = user;
-                const displayName = user.displayName || user.email.split('@')[0];
+                elements.registerButton.disabled = true;
+                
+                const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+                currentUser = userCredential.user;
+                
+                const displayName = currentUser.displayName || currentUser.email.split('@')[0];
                 elements.userName.textContent = displayName;
                 elements.userAvatar.textContent = getInitials(displayName);
+                
                 setUserOnline(true);
                 loadUsers();
                 showMain();
-            } else {
+                
+                // Limpar campos
+                elements.emailInput.value = '';
+                elements.passwordInput.value = '';
+                
+            } catch (error) {
+                alert('Erro ao criar conta: ' + error.message);
+            } finally {
+                elements.registerButton.textContent = 'Cadastrar';
+                elements.registerButton.disabled = false;
+            }
+        }
+
+        async function handleLogout() {
+            try {
+                if (currentUser) {
+                    setUserOnline(false);
+                    // Limpar listeners
+                    if (messagesListener) off(messagesListener);
+                    if (usersListener) off(usersListener);
+                }
+                
+                await signOut(auth);
                 currentUser = null;
-                showModal();
-            }
-        });
-
-        window.addEventListener('beforeunload', () => {
-            if (currentUser) {
-                setUserOnline(false);
-            }
-        });
-
-        document.addEventListener('visibilitychange', () => {
-            if (currentUser) {
-                setUserOnline(!document.hidden);
-            }
-        });
-
-        setTimeout(() => {
-            if (elements.loadingScreen.style.display !== 'none') {
-                showModal();
-            }
-        }, 3000);
-    </script>
-</body>
-</html>
+                currentChat = null;
+                allUsers = [];
+                
+                // Resetar interface
+                elements.chatHeader.style.display = 'none';
+                elements.chatInputContainer.style.display = 'none';
+                elements.chatMessages.innerHTML = `
+                    <div class="no-chat-selected">
+                        <h
