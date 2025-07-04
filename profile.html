@@ -58,14 +58,50 @@
             font-weight: 500;
         }
 
-        .nav-links a:hover {
+        .nav-links a:hover, .nav-links a.active {
             color: #dc2626;
         }
+
+
+
+
 
         .container {
             max-width: 1200px;
             margin: 0 auto;
             padding: 8rem 2rem 2rem;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .tab {
+            padding: 1rem 2rem;
+            background: transparent;
+            border: none;
+            color: #cccccc;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            border-bottom: 2px solid transparent;
+        }
+
+        .tab.active {
+            color: #dc2626;
+            border-bottom-color: #dc2626;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
         }
 
         .profile-header {
@@ -266,6 +302,109 @@
             margin-top: 0.5rem;
         }
 
+        .search-container {
+            margin-bottom: 2rem;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 1rem;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 25px;
+            background: rgba(255, 255, 255, 0.05);
+            color: #ffffff;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: #dc2626;
+            box-shadow: 0 0 20px rgba(220, 38, 38, 0.3);
+        }
+
+        .users-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .user-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(220, 38, 38, 0.3);
+            border-radius: 20px;
+            padding: 2rem;
+            text-align: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .user-card:hover {
+            border-color: #dc2626;
+            box-shadow: 0 10px 40px rgba(220, 38, 38, 0.2);
+            transform: translateY(-5px);
+        }
+
+        .user-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            border: 3px solid #dc2626;
+            margin: 0 auto 1rem;
+            overflow: hidden;
+        }
+
+        .user-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .user-avatar .placeholder {
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #dc2626, #ef4444);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            color: white;
+        }
+
+        .user-name {
+            font-size: 1.3rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+            color: #ffffff;
+        }
+
+        .user-bio {
+            font-size: 0.9rem;
+            color: #cccccc;
+            margin-bottom: 1rem;
+        }
+
+        .user-stats {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 1rem;
+        }
+
+        .user-stat {
+            text-align: center;
+        }
+
+        .user-stat-number {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #dc2626;
+        }
+
+        .user-stat-label {
+            font-size: 0.8rem;
+            color: #cccccc;
+        }
+
         .floating-particles {
             position: fixed;
             top: 0;
@@ -304,13 +443,69 @@
             to { transform: translateX(0); opacity: 1; }
         }
 
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+        }
+
+        .modal-content {
+            background: linear-gradient(135deg, #1a1a1a, #2a2a2a);
+            margin: 5% auto;
+            padding: 2rem;
+            border-radius: 20px;
+            width: 90%;
+            max-width: 600px;
+            border: 2px solid #dc2626;
+        }
+
+        .close {
+            color: #cccccc;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+
+        .close:hover {
+            color: #dc2626;
+        }
+
         @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+
+            .mobile-menu {
+                display: flex;
+            }
+
+            .tabs {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+
+            .tab {
+                padding: 0.75rem 1rem;
+            }
+
             .main-content {
                 grid-template-columns: 1fr;
                 gap: 2rem;
             }
 
             .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .users-grid {
                 grid-template-columns: 1fr;
             }
 
@@ -322,8 +517,43 @@
                 font-size: 2rem;
             }
 
-            .nav-links {
-                display: none;
+            .modal-content {
+                width: 95%;
+                margin: 10% auto;
+                padding: 1.5rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .navbar {
+                padding: 1rem;
+            }
+
+            .profile-avatar {
+                width: 120px;
+                height: 120px;
+            }
+
+            .profile-name {
+                font-size: 1.8rem;
+            }
+
+            .profile-bio {
+                font-size: 1rem;
+            }
+
+            .user-stats {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+                gap: 0.5rem;
+            }
+
+            .stat-card {
+                padding: 1rem;
             }
         }
     </style>
@@ -333,52 +563,183 @@
 
     <nav class="navbar">
         <div class="nav-content">
-            <a href="https://booktor.github.io/inicio.html" class="logo">
+            <a href="#" class="logo" onclick="showTab('meu-perfil')">
                 <i class="fas fa-book-open"></i> Booktor
             </a>
             <div class="nav-links">
                 <a href="https://booktor.github.io/inicio.html">
                     <i class="fas fa-home"></i> Início
                 </a>
-                <a href="#" class="active">
+                <a href="#" class="active" onclick="showTab('meu-perfil')">
                     <i class="fas fa-user"></i> Perfil
                 </a>
                 <a href="#" onclick="logout()">
                     <i class="fas fa-sign-out-alt"></i> Sair
                 </a>
             </div>
+            <div class="mobile-menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
         </div>
     </nav>
 
     <div class="container">
-        <div class="profile-header">
-            <div class="profile-avatar" onclick="document.getElementById('avatarInput').click()">
-                <div class="placeholder" id="avatarPlaceholder">
-                    <i class="fas fa-user"></i>
+        <div class="tabs">
+            <button class="tab active" onclick="showTab('meu-perfil')">
+                <i class="fas fa-user"></i> Meu Perfil
+            </button>
+            <button class="tab" onclick="showTab('outros-usuarios')">
+                <i class="fas fa-users"></i> Outros Usuários
+            </button>
+        </div>
+
+        <div id="meu-perfil" class="tab-content active">
+            <div class="profile-header">
+                <div class="profile-avatar" onclick="document.getElementById('avatarInput').click()">
+                    <div class="placeholder" id="avatarPlaceholder">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <img id="avatarImage" style="display: none;" alt="Avatar">
                 </div>
-                <img id="avatarImage" style="display: none;" alt="Avatar">
+                <input type="file" id="avatarInput" accept="image/*" style="display: none;">
+                <h1 class="profile-name" id="displayName">Carregando...</h1>
+                <p class="profile-bio" id="displayBio">Bem-vindo ao Booktor</p>
             </div>
-            <input type="file" id="avatarInput" accept="image/*" style="display: none;">
-            <h1 class="profile-name" id="displayName">Carregando...</h1>
-            <p class="profile-bio" id="displayBio">Bem-vindo ao Booktor</p>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <span class="stat-number" id="booksRead">0</span>
+                    <span class="stat-label">Livros Lidos</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-number" id="reviewsWritten">0</span>
+                    <span class="stat-label">Resenhas</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-number" id="daysMember">0</span>
+                    <span class="stat-label">Dias no Site</span>
+                </div>
+            </div>
+
+            <div class="main-content">
+                <div class="profile-view">
+                    <h2 class="section-title">
+                        <i class="fas fa-id-card"></i>
+                        Informações do Perfil
+                    </h2>
+                    <div class="info-item">
+                        <span class="info-label">Nome</span>
+                        <span class="info-value" id="viewFullName">-</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Email</span>
+                        <span class="info-value" id="viewEmail">-</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Data de Nascimento</span>
+                        <span class="info-value" id="viewBirthDate">-</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Localização</span>
+                        <span class="info-value" id="viewLocation">-</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Gênero Favorito</span>
+                        <span class="info-value" id="viewFavoriteGenre">-</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Autor Favorito</span>
+                        <span class="info-value" id="viewFavoriteAuthor">-</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Membro desde</span>
+                        <span class="info-value" id="viewMemberSince">-</span>
+                    </div>
+                </div>
+
+                <div class="profile-edit">
+                    <h2 class="section-title">
+                        <i class="fas fa-edit"></i>
+                        Editar Perfil
+                    </h2>
+                    <div class="success-message" id="successMessage">
+                        <i class="fas fa-check-circle"></i>
+                        Perfil atualizado com sucesso!
+                    </div>
+                    <form id="profileForm">
+                        <div class="form-group">
+                            <label class="form-label">Nome</label>
+                            <input type="text" class="form-input" id="fullName" placeholder="Seu nome">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Bio</label>
+                            <input type="text" class="form-input" id="bio" placeholder="Conte um pouco sobre você">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Data de Nascimento</label>
+                            <input type="date" class="form-input" id="birthDate">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Localização</label>
+                            <input type="text" class="form-input" id="location" placeholder="Cidade, País">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Gênero Favorito</label>
+                            <input type="text" class="form-input" id="favoriteGenre" placeholder="Ex: Ficção Científica">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Autor Favorito</label>
+                            <input type="text" class="form-input" id="favoriteAuthor" placeholder="Nome do autor">
+                        </div>
+                        <button type="submit" class="btn">
+                            <i class="fas fa-save"></i>
+                            Salvar Alterações
+                        </button>
+                    </form>
+                </div>
+            </div>
         </div>
 
-        <div class="stats-grid">
-            <div class="stat-card">
-                <span class="stat-number" id="booksRead">0</span>
-                <span class="stat-label">Livros Lidos</span>
+        <div id="outros-usuarios" class="tab-content">
+            <div class="search-container">
+                <input type="text" class="search-input" id="searchInput" placeholder="Pesquisar usuários...">
             </div>
-            <div class="stat-card">
-                <span class="stat-number" id="reviewsWritten">0</span>
-                <span class="stat-label">Resenhas</span>
-            </div>
-            <div class="stat-card">
-                <span class="stat-number" id="daysMember">0</span>
-                <span class="stat-label">Dias no Site</span>
+            <div class="users-grid" id="usersGrid">
             </div>
         </div>
+    </div>
 
-        <div class="main-content">
+    <div id="userModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <div class="profile-header">
+                <div class="profile-avatar">
+                    <div class="placeholder" id="modalAvatarPlaceholder">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <img id="modalAvatarImage" style="display: none;" alt="Avatar">
+                </div>
+                <h1 class="profile-name" id="modalDisplayName">Nome do Usuário</h1>
+                <p class="profile-bio" id="modalDisplayBio">Bio do usuário</p>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <span class="stat-number" id="modalBooksRead">0</span>
+                    <span class="stat-label">Livros Lidos</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-number" id="modalReviewsWritten">0</span>
+                    <span class="stat-label">Resenhas</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-number" id="modalDaysMember">0</span>
+                    <span class="stat-label">Dias no Site</span>
+                </div>
+            </div>
+
             <div class="profile-view">
                 <h2 class="section-title">
                     <i class="fas fa-id-card"></i>
@@ -386,73 +747,32 @@
                 </h2>
                 <div class="info-item">
                     <span class="info-label">Nome</span>
-                    <span class="info-value" id="viewFullName">-</span>
+                    <span class="info-value" id="modalViewFullName">-</span>
                 </div>
                 <div class="info-item">
                     <span class="info-label">Email</span>
-                    <span class="info-value" id="viewEmail">-</span>
+                    <span class="info-value" id="modalViewEmail">-</span>
                 </div>
                 <div class="info-item">
                     <span class="info-label">Data de Nascimento</span>
-                    <span class="info-value" id="viewBirthDate">-</span>
+                    <span class="info-value" id="modalViewBirthDate">-</span>
                 </div>
                 <div class="info-item">
                     <span class="info-label">Localização</span>
-                    <span class="info-value" id="viewLocation">-</span>
+                    <span class="info-value" id="modalViewLocation">-</span>
                 </div>
                 <div class="info-item">
                     <span class="info-label">Gênero Favorito</span>
-                    <span class="info-value" id="viewFavoriteGenre">-</span>
+                    <span class="info-value" id="modalViewFavoriteGenre">-</span>
                 </div>
                 <div class="info-item">
                     <span class="info-label">Autor Favorito</span>
-                    <span class="info-value" id="viewFavoriteAuthor">-</span>
+                    <span class="info-value" id="modalViewFavoriteAuthor">-</span>
                 </div>
                 <div class="info-item">
                     <span class="info-label">Membro desde</span>
-                    <span class="info-value" id="viewMemberSince">-</span>
+                    <span class="info-value" id="modalViewMemberSince">-</span>
                 </div>
-            </div>
-
-            <div class="profile-edit">
-                <h2 class="section-title">
-                    <i class="fas fa-edit"></i>
-                    Editar Perfil
-                </h2>
-                <div class="success-message" id="successMessage">
-                    <i class="fas fa-check-circle"></i>
-                    Perfil atualizado com sucesso!
-                </div>
-                <form id="profileForm">
-                    <div class="form-group">
-                        <label class="form-label">Nome</label>
-                        <input type="text" class="form-input" id="fullName" placeholder="Seu nome">
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">Bio</label>
-                        <input type="text" class="form-input" id="bio" placeholder="Conte um pouco sobre você">
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">Data de Nascimento</label>
-                        <input type="date" class="form-input" id="birthDate">
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">Localização</label>
-                        <input type="text" class="form-input" id="location" placeholder="Cidade, País">
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">Gênero Favorito</label>
-                        <input type="text" class="form-input" id="favoriteGenre" placeholder="Ex: Ficção Científica">
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">Autor Favorito</label>
-                        <input type="text" class="form-input" id="favoriteAuthor" placeholder="Nome do autor">
-                    </div>
-                    <button type="submit" class="btn">
-                        <i class="fas fa-save"></i>
-                        Salvar Alterações
-                    </button>
-                </form>
             </div>
         </div>
     </div>
@@ -479,6 +799,7 @@
         const storage = firebase.storage();
 
         let currentUser = null;
+        let allUsers = [];
 
         function createParticles() {
             const particlesContainer = document.getElementById('particles');
@@ -495,6 +816,21 @@
             }
         }
 
+        function showTab(tabName) {
+            const tabs = document.querySelectorAll('.tab');
+            const contents = document.querySelectorAll('.tab-content');
+            
+            tabs.forEach(tab => tab.classList.remove('active'));
+            contents.forEach(content => content.classList.remove('active'));
+            
+            document.getElementById(tabName).classList.add('active');
+            event.target.classList.add('active');
+            
+            if (tabName === 'outros-usuarios') {
+                loadAllUsers();
+            }
+        }
+
         function formatDate(dateString) {
             if (!dateString) return '-';
             const date = new Date(dateString);
@@ -507,6 +843,15 @@
             const currentDate = new Date();
             const timeDiff = currentDate.getTime() - startDate.getTime();
             return Math.floor(timeDiff / (1000 * 3600 * 24));
+        }
+
+        function maskEmail(email) {
+            if (!email) return '-';
+            const [username, domain] = email.split('@');
+            const maskedUsername = username.length > 2 ? 
+                username.substring(0, 2) + '*'.repeat(username.length - 2) : 
+                username;
+            return `${maskedUsername}@${domain}`;
         }
 
         function initializeUserData() {
@@ -575,6 +920,106 @@
             });
         }
 
+        function loadAllUsers() {
+            const usersRef = database.ref('users');
+            usersRef.on('value', (snapshot) => {
+                allUsers = [];
+                snapshot.forEach((childSnapshot) => {
+                    const userId = childSnapshot.key;
+                    const userData = childSnapshot.val();
+                    if (userId !== currentUser.uid) {
+                        allUsers.push({
+                            id: userId,
+                            ...userData
+                        });
+                    }
+                });
+                displayUsers(allUsers);
+            });
+        }
+
+        function displayUsers(users) {
+            const usersGrid = document.getElementById('usersGrid');
+            usersGrid.innerHTML = '';
+
+            users.forEach(user => {
+                const userCard = document.createElement('div');
+                userCard.className = 'user-card';
+                userCard.onclick = () => showUserModal(user);
+
+                const avatarHtml = user.avatarUrl ? 
+                    `<img src="${user.avatarUrl}" alt="Avatar">` : 
+                    `<div class="placeholder">${(user.fullName || user.email || 'U')[0].toUpperCase()}</div>`;
+
+                userCard.innerHTML = `
+                    <div class="user-avatar">
+                        ${avatarHtml}
+                    </div>
+                    <div class="user-name">${user.fullName || user.email || 'Usuário'}</div>
+                    <div class="user-bio">${user.bio || 'Sem bio'}</div>
+                    <div class="user-stats">
+                        <div class="user-stat">
+                            <div class="user-stat-number">${user.booksRead || 0}</div>
+                            <div class="user-stat-label">Livros</div>
+                        </div>
+                        <div class="user-stat">
+                            <div class="user-stat-number">${user.reviewsWritten || 0}</div>
+                            <div class="user-stat-label">Resenhas</div>
+                        </div>
+                        <div class="user-stat">
+                            <div class="user-stat-number">${calculateDaysSince(user.createdAt)}</div>
+                            <div class="user-stat-label">Dias</div>
+                        </div>
+                    </div>
+                `;
+
+                usersGrid.appendChild(userCard);
+            });
+        }
+
+        function showUserModal(user) {
+            document.getElementById('modalDisplayName').textContent = user.fullName || user.email || 'Usuário';
+            document.getElementById('modalDisplayBio').textContent = user.bio || 'Sem bio';
+            
+            document.getElementById('modalViewFullName').textContent = user.fullName || '-';
+            document.getElementById('modalViewEmail').textContent = maskEmail(user.email);
+            document.getElementById('modalViewBirthDate').textContent = formatDate(user.birthDate);
+            document.getElementById('modalViewLocation').textContent = user.location || '-';
+            document.getElementById('modalViewFavoriteGenre').textContent = user.favoriteGenre || '-';
+            document.getElementById('modalViewFavoriteAuthor').textContent = user.favoriteAuthor || '-';
+            document.getElementById('modalViewMemberSince').textContent = formatDate(user.createdAt);
+
+            document.getElementById('modalBooksRead').textContent = user.booksRead || 0;
+            document.getElementById('modalReviewsWritten').textContent = user.reviewsWritten || 0;
+            document.getElementById('modalDaysMember').textContent = calculateDaysSince(user.createdAt);
+
+            if (user.avatarUrl) {
+                document.getElementById('modalAvatarImage').src = user.avatarUrl;
+                document.getElementById('modalAvatarImage').style.display = 'block';
+                document.getElementById('modalAvatarPlaceholder').style.display = 'none';
+            } else {
+                const firstLetter = (user.fullName || user.email || 'U')[0].toUpperCase();
+                document.getElementById('modalAvatarPlaceholder').innerHTML = firstLetter;
+                document.getElementById('modalAvatarImage').style.display = 'none';
+                document.getElementById('modalAvatarPlaceholder').style.display = 'flex';
+            }
+
+            document.getElementById('userModal').style.display = 'block';
+        }
+
+        function filterUsers() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            const filteredUsers = allUsers.filter(user => 
+                (user.fullName && user.fullName.toLowerCase().includes(searchTerm)) ||
+                (user.email && user.email.toLowerCase().includes(searchTerm)) ||
+                (user.bio && user.bio.toLowerCase().includes(searchTerm)) ||
+                (user.location && user.location.toLowerCase().includes(searchTerm)) ||
+                (user.favoriteGenre && user.favoriteGenre.toLowerCase().includes(searchTerm)) ||
+                (user.favoriteAuthor && user.favoriteAuthor.toLowerCase().includes(searchTerm))
+            );
+            displayUsers(filteredUsers);
+        }
+
         function uploadAvatar(file) {
             if (!currentUser || !file) return;
 
@@ -620,9 +1065,11 @@
                 loadUserProfile();
                 initializeUserData();
             } else {
-                window.location.href = 'https://booktor.github.io/inicio.html';
+                window.location.href = '#link';
             }
         });
+
+        document.getElementById('searchInput').addEventListener('input', filterUsers);
 
         document.getElementById('avatarInput').addEventListener('change', (e) => {
             const file = e.target.files[0];
@@ -658,6 +1105,24 @@
                 showSuccessMessage();
             }).catch((error) => {
                 console.error('Erro ao atualizar perfil:', error);
+            });
+        });
+
+        document.querySelector('.close').addEventListener('click', () => {
+            document.getElementById('userModal').style.display = 'none';
+        });
+
+        window.addEventListener('click', (e) => {
+            if (e.target === document.getElementById('userModal')) {
+                document.getElementById('userModal').style.display = 'none';
+            }
+        });
+
+        document.querySelectorAll('.tab').forEach(tab => {
+            tab.addEventListener('click', (e) => {
+                e.preventDefault();
+                const tabName = e.target.textContent.includes('Meu Perfil') ? 'meu-perfil' : 'outros-usuarios';
+                showTab(tabName);
             });
         });
 
