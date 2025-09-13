@@ -48,11 +48,307 @@
   <!-- CSS Externo -->
   <link rel="stylesheet" href="styles/login.css">
   
-  <!-- Critical CSS Inline (apenas o essencial) -->
+  <!-- Critical CSS Inline -->
   <style>
     /* Critical CSS para evitar FOUC */
-    body { opacity: 0; transition: opacity 0.3s ease; }
-    .container { visibility: hidden; }
+    body { 
+      opacity: 0; 
+      transition: opacity 0.3s ease;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      margin: 0;
+      padding: 0;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .container { 
+      visibility: hidden;
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+      border-radius: 20px;
+      padding: 2rem;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+      width: 100%;
+      max-width: 400px;
+      margin: 1rem;
+    }
+    
+    .logo {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+    
+    .logo h1 {
+      font-size: 2rem;
+      font-weight: 700;
+      color: #333;
+      margin: 0 0 0.5rem 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+    }
+    
+    .logo p {
+      color: #666;
+      margin: 0;
+      font-size: 0.9rem;
+    }
+    
+    .tabs {
+      display: flex;
+      background: #f8f9fa;
+      border-radius: 12px;
+      padding: 4px;
+      margin-bottom: 2rem;
+    }
+    
+    .tab {
+      flex: 1;
+      padding: 0.75rem;
+      border: none;
+      background: transparent;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 500;
+      transition: all 0.3s ease;
+      color: #666;
+    }
+    
+    .tab.active {
+      background: white;
+      color: #333;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+    
+    .form-container {
+      transition: all 0.3s ease;
+    }
+    
+    .form-container.hidden {
+      display: none;
+    }
+    
+    .form-group {
+      margin-bottom: 1.5rem;
+    }
+    
+    .form-group label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: 500;
+      color: #333;
+    }
+    
+    .form-input {
+      width: 100%;
+      padding: 0.75rem;
+      border: 2px solid #e9ecef;
+      border-radius: 8px;
+      font-size: 1rem;
+      transition: border-color 0.3s ease;
+      box-sizing: border-box;
+    }
+    
+    .form-input:focus {
+      outline: none;
+      border-color: #667eea;
+    }
+    
+    .password-toggle {
+      position: absolute;
+      right: 0.75rem;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 0.25rem;
+      color: #666;
+    }
+    
+    .btn {
+      width: 100%;
+      padding: 0.875rem;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: transform 0.2s ease;
+    }
+    
+    .btn:hover {
+      transform: translateY(-2px);
+    }
+    
+    .google-btn {
+      width: 100%;
+      padding: 0.875rem;
+      background: white;
+      border: 2px solid #e9ecef;
+      border-radius: 8px;
+      font-size: 1rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      transition: all 0.3s ease;
+      margin-top: 1rem;
+    }
+    
+    .google-btn:hover {
+      border-color: #667eea;
+    }
+    
+    .divider {
+      text-align: center;
+      margin: 1.5rem 0;
+      position: relative;
+      color: #666;
+    }
+    
+    .divider::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: #e9ecef;
+    }
+    
+    .divider span {
+      background: rgba(255, 255, 255, 0.95);
+      padding: 0 1rem;
+    }
+    
+    .forgot-password {
+      text-align: center;
+      margin-top: 1rem;
+    }
+    
+    .forgot-password a {
+      color: #667eea;
+      text-decoration: none;
+      font-size: 0.9rem;
+    }
+    
+    .forgot-password a:hover {
+      text-decoration: underline;
+    }
+    
+    .error-message {
+      color: #dc3545;
+      font-size: 0.875rem;
+      margin-top: 0.25rem;
+    }
+    
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+    
+    .loading {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(255, 255, 255, 0.9);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.3s ease;
+    }
+    
+    .loading.show {
+      opacity: 1;
+      visibility: visible;
+    }
+    
+    .loading-spinner {
+      width: 40px;
+      height: 40px;
+      border: 4px solid #f3f3f3;
+      border-top: 4px solid #667eea;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+    
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    
+    .particles {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: -1;
+    }
+    
+    .particle {
+      position: absolute;
+      width: 4px;
+      height: 4px;
+      background: rgba(255, 255, 255, 0.3);
+      border-radius: 50%;
+      animation: float 6s ease-in-out infinite;
+    }
+    
+    @keyframes float {
+      0%, 100% { transform: translateY(0px) rotate(0deg); }
+      50% { transform: translateY(-20px) rotate(180deg); }
+    }
+    
+    .toast {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      padding: 1rem 1.5rem;
+      border-radius: 8px;
+      color: white;
+      font-weight: 500;
+      z-index: 10000;
+      transform: translateX(100%);
+      transition: transform 0.3s ease;
+    }
+    
+    .toast.show {
+      transform: translateX(0);
+    }
+    
+    .toast.success {
+      background: #28a745;
+    }
+    
+    .toast.error {
+      background: #dc3545;
+    }
+    
+    .toast.info {
+      background: #17a2b8;
+    }
   </style>
 
   <!-- Structured Data -->
@@ -93,15 +389,24 @@
   <main class="container" id="main-content">
     <!-- Logo Section -->
     <header class="logo">
-      <h1 aria-label="Booktor - Plataforma de eBooks">📖 Booktor</h1>
+      <h1 aria-label="Booktor - Plataforma de eBooks">
+        <!-- Substituído emoji 📖 por SVG de livro -->
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <path d="M4 19.5C4 18.837 4.263 18.201 4.732 17.732C5.201 17.263 5.837 17 6.5 17H20" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M6.5 2H20V22H6.5C5.837 22 5.201 21.737 4.732 21.268C4.263 20.799 4 20.163 4 19.5V4.5C4 3.837 4.263 3.201 4.732 2.732C5.201 2.263 5.837 2 6.5 2Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M9 7H16" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M9 11H16" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        Booktor
+      </h1>
       <p>Sistema de Gerenciamento de Usuários</p>
     </header>
 
     <!-- Tab Navigation -->
     <nav class="tabs" role="tablist" aria-label="Opções de autenticação">
       <button 
-        class="tab active" 
-        data-tab="login" 
+        class="tab active"
+        data-tab="login"
         role="tab"
         aria-selected="true"
         aria-controls="loginForm"
@@ -111,8 +416,8 @@
         Entrar
       </button>
       <button 
-        class="tab" 
-        data-tab="register" 
+        class="tab"
+        data-tab="register"
         role="tab"
         aria-selected="false"
         aria-controls="registerForm"
@@ -125,7 +430,7 @@
 
     <!-- Login Form -->
     <section 
-      id="loginForm" 
+      id="loginForm"
       class="form-container"
       role="tabpanel"
       aria-labelledby="tab-login"
@@ -135,11 +440,11 @@
         <div class="form-group">
           <label for="loginEmail">Email:</label>
           <input 
-            type="email" 
-            id="loginEmail" 
-            class="form-input" 
-            placeholder="seu@email.com" 
-            required 
+            type="email"
+            id="loginEmail"
+            class="form-input"
+            placeholder="seu@email.com"
+            required
             autocomplete="email"
             aria-describedby="email-error"
             aria-invalid="false"
@@ -150,23 +455,27 @@
         <div class="form-group" style="position: relative;">
           <label for="loginPassword">Senha:</label>
           <input 
-            type="password" 
-            id="loginPassword" 
-            class="form-input" 
-            placeholder="Sua senha" 
+            type="password"
+            id="loginPassword"
+            class="form-input"
+            placeholder="Sua senha"
             required
             autocomplete="current-password"
             aria-describedby="password-error password-help"
             aria-invalid="false"
           >
           <button 
-            type="button" 
-            class="password-toggle" 
+            type="button"
+            class="password-toggle"
             onclick="togglePassword('loginPassword')"
             aria-label="Mostrar/Ocultar senha"
             title="Clique para mostrar ou ocultar a senha"
           >
-            👁️
+            <!-- Substituído emoji 👁️ por SVG de olho -->
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M1 12C1 12 5 4 12 4C19 4 23 12 23 12C23 12 19 20 12 20C5 20 1 12 1 12Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              <circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
           </button>
           <div id="password-error" class="error-message sr-only" role="alert"></div>
           <div id="password-help" class="sr-only">Sua senha deve ter pelo menos 6 caracteres</div>
@@ -188,7 +497,7 @@
       </div>
       
       <button 
-        class="google-btn" 
+        class="google-btn"
         id="googleLoginBtn"
         aria-label="Entrar com conta do Google"
       >
@@ -203,7 +512,7 @@
       
       <div class="forgot-password">
         <a 
-          href="#" 
+          href="#"
           id="forgotPasswordLink"
           aria-label="Recuperar senha esquecida"
         >
@@ -214,7 +523,7 @@
 
     <!-- Register Form -->
     <section 
-      id="registerForm" 
+      id="registerForm"
       class="form-container hidden"
       role="tabpanel"
       aria-labelledby="tab-register"
@@ -224,10 +533,10 @@
         <div class="form-group">
           <label for="registerName">Nome completo:</label>
           <input 
-            type="text" 
-            id="registerName" 
-            class="form-input" 
-            placeholder="Seu nome completo" 
+            type="text"
+            id="registerName"
+            class="form-input"
+            placeholder="Seu nome completo"
             required
             autocomplete="name"
             aria-describedby="name-error"
@@ -240,10 +549,10 @@
         <div class="form-group">
           <label for="registerEmail">Email:</label>
           <input 
-            type="email" 
-            id="registerEmail" 
-            class="form-input" 
-            placeholder="seu@email.com" 
+            type="email"
+            id="registerEmail"
+            class="form-input"
+            placeholder="seu@email.com"
             required
             autocomplete="email"
             aria-describedby="register-email-error"
@@ -255,10 +564,10 @@
         <div class="form-group" style="position: relative;">
           <label for="registerPassword">Senha:</label>
           <input 
-            type="password" 
-            id="registerPassword" 
-            class="form-input" 
-            placeholder="Mínimo 6 caracteres" 
+            type="password"
+            id="registerPassword"
+            class="form-input"
+            placeholder="Mínimo 6 caracteres"
             required
             autocomplete="new-password"
             aria-describedby="register-password-error register-password-help"
@@ -266,13 +575,17 @@
             minlength="6"
           >
           <button 
-            type="button" 
-            class="password-toggle" 
+            type="button"
+            class="password-toggle"
             onclick="togglePassword('registerPassword')"
             aria-label="Mostrar/Ocultar senha"
             title="Clique para mostrar ou ocultar a senha"
           >
-            👁️
+            <!-- Substituído emoji 👁️ por SVG de olho -->
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M1 12C1 12 5 4 12 4C19 4 23 12 23 12C23 12 19 20 12 20C5 20 1 12 1 12Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              <circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
           </button>
           <div id="register-password-error" class="error-message sr-only" role="alert"></div>
           <div id="register-password-help" class="sr-only">A senha deve ter pelo menos 6 caracteres</div>
@@ -281,23 +594,27 @@
         <div class="form-group" style="position: relative;">
           <label for="confirmPassword">Confirmar Senha:</label>
           <input 
-            type="password" 
-            id="confirmPassword" 
-            class="form-input" 
-            placeholder="Confirme sua senha" 
+            type="password"
+            id="confirmPassword"
+            class="form-input"
+            placeholder="Confirme sua senha"
             required
             autocomplete="new-password"
             aria-describedby="confirm-password-error"
             aria-invalid="false"
           >
           <button 
-            type="button" 
-            class="password-toggle" 
+            type="button"
+            class="password-toggle"
             onclick="togglePassword('confirmPassword')"
             aria-label="Mostrar/Ocultar confirmação de senha"
             title="Clique para mostrar ou ocultar a confirmação da senha"
           >
-            👁️
+            <!-- Substituído emoji 👁️ por SVG de olho -->
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M1 12C1 12 5 4 12 4C19 4 23 12 23 12C23 12 19 20 12 20C5 20 1 12 1 12Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              <circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
           </button>
           <div id="confirm-password-error" class="error-message sr-only" role="alert"></div>
         </div>
@@ -318,7 +635,7 @@
       </div>
       
       <button 
-        class="google-btn" 
+        class="google-btn"
         id="googleRegisterBtn"
         aria-label="Registrar com conta do Google"
       >
@@ -334,7 +651,7 @@
 
     <!-- Reset Password Form -->
     <section 
-      id="resetPasswordForm" 
+      id="resetPasswordForm"
       class="form-container hidden"
       role="form"
       aria-label="Formulário de recuperação de senha"
@@ -343,10 +660,10 @@
         <div class="form-group">
           <label for="resetEmail">Email para recuperação:</label>
           <input 
-            type="email" 
-            id="resetEmail" 
-            class="form-input" 
-            placeholder="seu@email.com" 
+            type="email"
+            id="resetEmail"
+            class="form-input"
+            placeholder="seu@email.com"
             required
             autocomplete="email"
             aria-describedby="reset-email-error reset-email-help"
@@ -369,7 +686,7 @@
       
       <div class="forgot-password">
         <a 
-          href="#" 
+          href="#"
           id="backToLoginLink"
           aria-label="Voltar para a página de login"
         >
@@ -381,7 +698,7 @@
 
   <!-- JavaScript - Carregado de forma assíncrona -->
   <script type="module" defer>
-    // Firebase Configuration (usar variáveis de ambiente em produção)
+    // Firebase Configuration
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
     import {
       getAuth,
@@ -400,7 +717,7 @@
       serverTimestamp
     } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 
-    // Firebase Configuration (em produção, usar variáveis de ambiente)
+    // Firebase Configuration
     const firebaseConfig = {
       apiKey: "AIzaSyBauGgt1pm-sBas75N40ufWRsGD6c4BsgM",
       authDomain: "sistema-de-login-blog.firebaseapp.com",
@@ -508,11 +825,23 @@
       if (input.type === 'password') {
         input.type = 'text';
         button.setAttribute('aria-label', 'Ocultar senha');
-        button.textContent = '🙈';
+        button.innerHTML = `
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M17.94 17.94C16.2 19.57 14.21 20.5 12 20.5C5 20.5 1 12.5 1 12.5C2.24 10.39 4.07 8.67 6.26 7.55" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M9.9 4.24C10.59 4.07 11.3 4 12 4C19 4 23 12 23 12C22.393 13.055 21.68 14.025 20.88 14.88" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M1 1L23 23" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        `;
       } else {
         input.type = 'password';
         button.setAttribute('aria-label', 'Mostrar senha');
-        button.textContent = '👁️';
+        button.innerHTML = `
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M1 12C1 12 5 4 12 4C19 4 23 12 23 12C23 12 19 20 12 20C5 20 1 12 1 12Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        `;
       }
     };
 
@@ -725,7 +1054,6 @@
     // Password Reset
     elements.buttons.reset.addEventListener('click', async () => {
       const email = elements.inputs.resetEmail.value;
-
       clearError(elements.inputs.resetEmail);
 
       if (!email) {
