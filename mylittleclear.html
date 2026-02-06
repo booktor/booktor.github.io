@@ -1,0 +1,995 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>3 Meses de Nós</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;600;700&family=Nunito:wght@300;400;600;700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{
+--rosa:#e8a0bf;
+--rosa-claro:#f5d5e0;
+--lilas:#c4a0d9;
+--lilas-claro:#e8d5f5;
+--azul-claro:#a0c4e8;
+--azul-suave:#d0e4f5;
+--bege:#f5e6d3;
+--creme:#fdf6f0;
+--dourado:#d4a574;
+--dourado-claro:#e8c9a0;
+--branco:#ffffff;
+--texto:#5a4a5e;
+--texto-claro:#8a7a8e;
+--titulo:#6b4c6e;
+}
+html{scroll-behavior:smooth}
+body{
+font-family:'Nunito',sans-serif;
+background:var(--creme);
+color:var(--texto);
+overflow-x:hidden;
+line-height:1.6;
+}
+.secao-heroi{
+position:relative;
+min-height:100vh;
+display:flex;
+flex-direction:column;
+align-items:center;
+justify-content:center;
+text-align:center;
+overflow:hidden;
+background:linear-gradient(170deg,#1a1030 0%,#2d1b4e 30%,#3d2060 60%,#4a2570 100%);
+padding:2rem;
+}
+.tela-estrelas{
+position:absolute;
+top:0;left:0;
+width:100%;height:100%;
+z-index:1;
+}
+.conteudo-heroi{
+position:relative;
+z-index:2;
+max-width:700px;
+}
+.icone-coracao-topo{
+width:60px;height:60px;
+margin:0 auto 1.5rem;
+animation:flutuar 3s ease-in-out infinite;
+}
+.icone-coracao-topo svg{
+width:100%;height:100%;
+filter:drop-shadow(0 0 15px rgba(232,160,191,0.6));
+}
+.titulo-principal{
+font-family:'Poppins',sans-serif;
+font-size:clamp(2.2rem,6vw,4rem);
+font-weight:700;
+color:var(--branco);
+margin-bottom:0.5rem;
+text-shadow:0 0 40px rgba(232,160,191,0.4);
+opacity:0;
+transform:translateY(30px);
+animation:surgir 1.2s ease forwards 0.3s;
+}
+.subtitulo-heroi{
+font-family:'Dancing Script',cursive;
+font-size:clamp(1.2rem,3vw,1.8rem);
+color:var(--rosa-claro);
+margin-bottom:2.5rem;
+opacity:0;
+transform:translateY(20px);
+animation:surgir 1.2s ease forwards 0.6s;
+}
+.contador-container{
+display:flex;
+gap:1rem;
+justify-content:center;
+flex-wrap:wrap;
+margin-bottom:2rem;
+opacity:0;
+transform:translateY(20px);
+animation:surgir 1.2s ease forwards 0.9s;
+}
+.contador-item{
+background:rgba(255,255,255,0.08);
+backdrop-filter:blur(10px);
+border:1px solid rgba(255,255,255,0.15);
+border-radius:16px;
+padding:1rem 1.2rem;
+min-width:80px;
+transition:transform 0.3s ease,background 0.3s ease;
+}
+.contador-item:hover{
+transform:translateY(-4px);
+background:rgba(255,255,255,0.14);
+}
+.contador-numero{
+font-family:'Poppins',sans-serif;
+font-size:clamp(1.8rem,4vw,2.5rem);
+font-weight:700;
+color:var(--branco);
+display:block;
+line-height:1.2;
+}
+.contador-rotulo{
+font-size:0.75rem;
+color:var(--rosa-claro);
+text-transform:uppercase;
+letter-spacing:2px;
+font-weight:600;
+}
+.frase-heroi{
+font-size:1rem;
+color:rgba(255,255,255,0.7);
+font-style:italic;
+opacity:0;
+animation:surgir 1.2s ease forwards 1.2s;
+}
+.seta-scroll{
+position:absolute;
+bottom:2rem;
+left:50%;
+transform:translateX(-50%);
+z-index:2;
+animation:saltar 2s ease-in-out infinite;
+cursor:pointer;
+opacity:0;
+animation:surgir 1s ease forwards 1.5s,saltar 2s ease-in-out infinite 1.5s;
+}
+.seta-scroll svg{
+width:30px;height:30px;
+}
+.secao{
+padding:5rem 1.5rem;
+max-width:900px;
+margin:0 auto;
+}
+.titulo-secao{
+font-family:'Poppins',sans-serif;
+font-size:clamp(1.8rem,4vw,2.5rem);
+font-weight:700;
+color:var(--titulo);
+text-align:center;
+margin-bottom:0.5rem;
+}
+.subtitulo-secao{
+font-family:'Dancing Script',cursive;
+font-size:clamp(1.1rem,2.5vw,1.4rem);
+color:var(--rosa);
+text-align:center;
+margin-bottom:3rem;
+}
+.divisor-decorativo{
+width:80px;height:3px;
+background:linear-gradient(90deg,var(--rosa),var(--lilas),var(--azul-claro));
+margin:0 auto 3rem;
+border-radius:2px;
+}
+.secao-historia{
+background:var(--branco);
+padding:5rem 1.5rem;
+}
+.linha-tempo{
+position:relative;
+max-width:750px;
+margin:0 auto;
+}
+.linha-tempo::before{
+content:'';
+position:absolute;
+left:20px;
+top:0;bottom:0;
+width:2px;
+background:linear-gradient(180deg,var(--rosa),var(--lilas),var(--azul-claro),var(--dourado-claro));
+}
+.momento{
+position:relative;
+padding-left:60px;
+margin-bottom:3rem;
+opacity:0;
+transform:translateX(-30px);
+transition:opacity 0.8s ease,transform 0.8s ease;
+}
+.momento.visivel{
+opacity:1;
+transform:translateX(0);
+}
+.momento-ponto{
+position:absolute;
+left:11px;
+top:5px;
+width:20px;height:20px;
+border-radius:50%;
+background:var(--branco);
+border:3px solid var(--rosa);
+z-index:1;
+transition:transform 0.3s ease,background 0.3s ease,box-shadow 0.3s ease;
+}
+.momento:hover .momento-ponto{
+transform:scale(1.3);
+background:var(--rosa);
+box-shadow:0 0 15px rgba(232,160,191,0.5);
+}
+.momento-icone{
+position:absolute;
+left:2px;
+top:32px;
+width:38px;height:38px;
+display:flex;
+align-items:center;
+justify-content:center;
+}
+.momento-icone svg{
+width:24px;height:24px;
+}
+.momento-data{
+font-family:'Poppins',sans-serif;
+font-size:0.8rem;
+font-weight:600;
+color:var(--lilas);
+text-transform:uppercase;
+letter-spacing:1.5px;
+margin-bottom:0.3rem;
+}
+.momento-titulo{
+font-family:'Poppins',sans-serif;
+font-size:1.2rem;
+font-weight:600;
+color:var(--titulo);
+margin-bottom:0.5rem;
+}
+.momento-texto{
+font-size:0.95rem;
+color:var(--texto);
+line-height:1.7;
+}
+.momento-cartao{
+background:var(--creme);
+border-radius:16px;
+padding:1.5rem;
+border:1px solid rgba(232,160,191,0.15);
+transition:transform 0.3s ease,box-shadow 0.3s ease;
+}
+.momento-cartao:hover{
+transform:translateY(-3px);
+box-shadow:0 10px 30px rgba(107,76,110,0.08);
+}
+.secao-futuro{
+background:linear-gradient(170deg,var(--lilas-claro),var(--azul-suave),var(--bege));
+padding:5rem 1.5rem;
+text-align:center;
+}
+.cartoes-futuro{
+display:grid;
+grid-template-columns:1fr;
+gap:1.5rem;
+max-width:750px;
+margin:0 auto;
+}
+.cartao-futuro{
+background:rgba(255,255,255,0.75);
+backdrop-filter:blur(8px);
+border-radius:20px;
+padding:2rem;
+border:1px solid rgba(255,255,255,0.8);
+opacity:0;
+transform:translateY(30px);
+transition:opacity 0.8s ease,transform 0.8s ease,box-shadow 0.3s ease;
+}
+.cartao-futuro.visivel{
+opacity:1;
+transform:translateY(0);
+}
+.cartao-futuro:hover{
+box-shadow:0 15px 40px rgba(107,76,110,0.1);
+}
+.cartao-icone{
+width:50px;height:50px;
+margin:0 auto 1rem;
+background:linear-gradient(135deg,var(--rosa-claro),var(--lilas-claro));
+border-radius:50%;
+display:flex;
+align-items:center;
+justify-content:center;
+}
+.cartao-icone svg{
+width:24px;height:24px;
+}
+.cartao-titulo{
+font-family:'Poppins',sans-serif;
+font-size:1.15rem;
+font-weight:600;
+color:var(--titulo);
+margin-bottom:0.5rem;
+}
+.cartao-texto{
+font-size:0.95rem;
+color:var(--texto);
+line-height:1.7;
+}
+.nomes-filhos{
+display:flex;
+flex-direction:column;
+gap:0.8rem;
+margin-top:1rem;
+}
+.nome-filho{
+font-family:'Dancing Script',cursive;
+font-size:1.3rem;
+color:var(--titulo);
+padding:0.6rem 1.2rem;
+background:rgba(232,160,191,0.1);
+border-radius:30px;
+border:1px solid rgba(232,160,191,0.2);
+display:inline-block;
+}
+.secao-carta{
+background:var(--branco);
+padding:5rem 1.5rem;
+}
+.carta-container{
+max-width:650px;
+margin:0 auto;
+background:linear-gradient(145deg,#fefaf5,#fdf3ea);
+border-radius:20px;
+padding:clamp(2rem,5vw,3.5rem);
+border:1px solid rgba(212,165,116,0.2);
+box-shadow:0 20px 60px rgba(107,76,110,0.06);
+position:relative;
+overflow:hidden;
+opacity:0;
+transform:translateY(30px);
+transition:opacity 1s ease,transform 1s ease;
+}
+.carta-container.visivel{
+opacity:1;
+transform:translateY(0);
+}
+.carta-container::before{
+content:'';
+position:absolute;
+top:-40px;right:-40px;
+width:120px;height:120px;
+background:radial-gradient(circle,rgba(232,160,191,0.1),transparent);
+border-radius:50%;
+}
+.carta-saudacao{
+font-family:'Monster';
+font-size:1.5rem;
+color:var(--rosa);
+margin-bottom:1.5rem;
+}
+.carta-corpo{
+font-family:'Monster';
+font-size:clamp(1.05rem,2.5vw,1.2rem);
+color:var(--texto);
+line-height:2;
+}
+.carta-corpo p{
+margin-bottom:1.2rem;
+}
+.carta-assinatura{
+font-family:'Dancing Script',cursive;
+font-size:1.4rem;
+color:var(--titulo);
+text-align:right;
+margin-top:2rem;
+}
+.secao-rotina{
+background:linear-gradient(170deg,var(--rosa-claro),var(--bege));
+padding:5rem 1.5rem;
+text-align:center;
+}
+.rotina-conteudo{
+max-width:600px;
+margin:0 auto;
+opacity:0;
+transform:translateY(30px);
+transition:opacity 0.8s ease,transform 0.8s ease;
+}
+.rotina-conteudo.visivel{
+opacity:1;
+transform:translateY(0);
+}
+.rotina-destaque{
+font-family:'Poppins',sans-serif;
+font-size:clamp(2rem,5vw,3rem);
+font-weight:700;
+color:var(--titulo);
+margin-bottom:0.5rem;
+}
+.rotina-texto{
+font-size:1rem;
+color:var(--texto);
+line-height:1.8;
+max-width:500px;
+margin:0 auto;
+}
+.rodape{
+background:linear-gradient(170deg,#2d1b4e,#1a1030);
+padding:3rem 1.5rem;
+text-align:center;
+position:relative;
+overflow:hidden;
+}
+.rodape-texto{
+font-family:'Dancing Script';
+font-size:clamp(1.3rem,3vw,1.8rem);
+color:var(--branco);
+margin-bottom:0.5rem;
+position:relative;
+z-index:1;
+}
+.rodape-data{
+font-size:0.85rem;
+color:var(--rosa-claro);
+letter-spacing:2px;
+text-transform:uppercase;
+position:relative;
+z-index:1;
+}
+.rodape-coracao{
+width:30px;height:30px;
+margin:1.5rem auto 0;
+position:relative;
+z-index:1;
+animation:pulsarCoracao 1.5s ease-in-out infinite;
+}
+.rodape-coracao svg{width:100%;height:100%}
+.particulas-flutuantes{
+position:fixed;
+top:0;left:0;
+width:100%;height:100%;
+pointer-events:none;
+z-index:0;
+}
+.particula{
+position:absolute;
+border-radius:50%;
+opacity:0;
+animation:flutuarParticula linear infinite;
+}
+@keyframes surgir{
+to{opacity:1;transform:translateY(0)}
+}
+@keyframes flutuar{
+0%,100%{transform:translateY(0)}
+50%{transform:translateY(-10px)}
+}
+@keyframes saltar{
+0%,100%{transform:translate(-50%,0)}
+50%{transform:translate(-50%,-10px)}
+}
+@keyframes pulsarCoracao{
+0%,100%{transform:scale(1)}
+50%{transform:scale(1.15)}
+}
+@keyframes flutuarParticula{
+0%{transform:translateY(100vh) rotate(0deg);opacity:0}
+10%{opacity:0.6}
+90%{opacity:0.6}
+100%{transform:translateY(-10vh) rotate(360deg);opacity:0}
+}
+@keyframes cintilar{
+0%,100%{opacity:0.3;transform:scale(1)}
+50%{opacity:1;transform:scale(1.5)}
+}
+@media(min-width:600px){
+.linha-tempo::before{left:50%;transform:translateX(-50%)}
+.momento{
+padding-left:0;
+width:45%;
+}
+.momento:nth-child(odd){
+margin-left:0;
+text-align:right;
+}
+.momento:nth-child(even){
+margin-left:55%;
+text-align:left;
+}
+.momento:nth-child(odd) .momento-ponto{
+right:-34px;left:auto;
+}
+.momento:nth-child(even) .momento-ponto{
+left:-34px;
+}
+.momento:nth-child(odd) .momento-icone{
+right:-46px;left:auto;
+top:32px;
+}
+.momento:nth-child(even) .momento-icone{
+left:-46px;
+top:32px;
+}
+.momento:nth-child(odd){transform:translateX(-30px)}
+.momento:nth-child(even){transform:translateX(30px)}
+.momento.visivel{transform:translateX(0) !important}
+.cartoes-futuro{grid-template-columns:repeat(2,1fr)}
+}
+@media(min-width:900px){
+.cartoes-futuro{grid-template-columns:repeat(3,1fr)}
+}
+@media(max-width:400px){
+.contador-container{gap:0.6rem}
+.contador-item{min-width:65px;padding:0.7rem 0.8rem}
+.contador-numero{font-size:1.5rem}
+}
+</style>
+</head>
+<body>
+
+<section class="secao-heroi" id="topo">
+<canvas class="tela-estrelas" id="telaEstrelas"></canvas>
+<div class="conteudo-heroi">
+<div class="icone-coracao-topo">
+<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" fill="#e8a0bf"/>
+</svg>
+</div>
+<h1 class="titulo-principal">3 Meses de Nós</h1>
+<p class="subtitulo-heroi">Cada dia mais perto, mesmo estando longe</p>
+<div class="contador-container" id="contadorContainer">
+<div class="contador-item">
+<span class="contador-numero" id="contadorDias">0</span>
+<span class="contador-rotulo">Dias</span>
+</div>
+<div class="contador-item">
+<span class="contador-numero" id="contadorHoras">0</span>
+<span class="contador-rotulo">Horas</span>
+</div>
+<div class="contador-item">
+<span class="contador-numero" id="contadorMinutos">0</span>
+<span class="contador-rotulo">Minutos</span>
+</div>
+<div class="contador-item">
+<span class="contador-numero" id="contadorSegundos">0</span>
+<span class="contador-rotulo">Segundos</span>
+</div>
+</div>
+<p class="frase-heroi">Desde 6 de novembro de 2025, nenhum dia sem dizer "eu te amo"</p>
+</div>
+<a href="#historia" class="seta-scroll" aria-label="Rolar para baixo">
+<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M7 10l5 5 5-5" stroke="rgba(255,255,255,0.6)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
+</a>
+</section>
+
+<section class="secao-rotina" id="rotina">
+<div class="rotina-conteudo" id="rotinaConteudo">
+<div style="width:50px;height:50px;margin:0 auto 1.5rem;background:linear-gradient(135deg,var(--rosa-claro),var(--lilas-claro));border-radius:50%;display:flex;align-items:center;justify-content:center">
+<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2z" stroke="#6b4c6e" stroke-width="1.5" fill="none"/>
+<path d="M22 6l-10 7L2 6" stroke="#6b4c6e" stroke-width="1.5" stroke-linecap="round"/>
+</svg>
+</div>
+<p class="rotina-destaque">Todos os dias.</p>
+<p class="rotina-destaque" style="font-size:clamp(1.2rem,3vw,1.6rem);font-weight:400;color:var(--texto);margin-bottom:1.5rem">Sem exceção.</p>
+<p class="rotina-texto">Desde o dia 6 de novembro, não passamos um único dia sem nos falar. Mesmo quando a internet cai, eu encontro um jeito. Conversamos o dia inteiro &mdash; mesmo no trabalho, toda a minha atenção é dela. Porque quando se ama de verdade, distância é só um detalhe que o coração ignora.</p>
+</div>
+</section>
+
+<section class="secao-historia" id="historia">
+<div class="secao" style="padding-top:3rem;padding-bottom:3rem">
+<h2 class="titulo-secao">Nossa História</h2>
+<p class="subtitulo-secao">Cada momento que nos trouxe até aqui</p>
+<div class="divisor-decorativo"></div>
+<div class="linha-tempo" id="linhaTempo">
+
+<div class="momento">
+<div class="momento-ponto"></div>
+<div class="momento-icone">
+<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z" stroke="#e8a0bf" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
+</div>
+<div class="momento-cartao">
+<p class="momento-data">6 de novembro de 2025</p>
+<h3 class="momento-titulo">O começo de tudo</h3>
+<p class="momento-texto">Uma declaração por mensagem, um pedido de namoro que atravessou a distância. Nunca tínhamos nos visto pessoalmente, mas o coração já sabia: era ali que tudo começava. Às vezes, o amor não precisa de proximidade para ser real &mdash; ele só precisa de coragem.</p>
+</div>
+</div>
+
+<div class="momento">
+<div class="momento-ponto"></div>
+<div class="momento-icone">
+<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z" stroke="#c4a0d9" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<circle cx="12" cy="13" r="4" stroke="#c4a0d9" stroke-width="1.5"/>
+</svg>
+</div>
+<div class="momento-cartao">
+<p class="momento-data">23 de novembro de 2025</p>
+<h3 class="momento-titulo">O rosto que ilumina tudo</h3>
+<p class="momento-texto">Pedi várias fotos aleatórias &mdash; queria conhecer cada pedacinho do mundo dela. E então veio: a primeira foto do rosto completo. Tão delicada, tão linda, com aquele sorrisinho encantador e os olhinhos brilhantes que iluminam absolutamente tudo. Naquele momento, entendi o que é ter o coração parado e acelerado ao mesmo tempo.</p>
+</div>
+</div>
+
+<div class="momento">
+<div class="momento-ponto"></div>
+<div class="momento-icone">
+<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z" stroke="#a0c4e8" stroke-width="1.5"/>
+<path d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3" stroke="#a0c4e8" stroke-width="1.5" stroke-linecap="round"/>
+<circle cx="12" cy="17" r="0.5" fill="#a0c4e8" stroke="#a0c4e8" stroke-width="1"/>
+</svg>
+</div>
+<div class="momento-cartao">
+<p class="momento-data">24 de novembro de 2025</p>
+<h3 class="momento-titulo">Aprendendo a cuidar</h3>
+<p class="momento-texto">Ela me mandou uma foto especial, mas o sono me venceu e não vi de primeira. Ela ficou magoada &mdash; e com razão. Foi nesse dia que aprendi algo essencial: em um namoro à distância, cada gesto importa ainda mais. Desde então, nunca mais deixei nenhuma mensagem dela passar despercebida. Esse momento nos ensinou sobre cuidado mútuo e atenção.</p>
+</div>
+</div>
+
+<div class="momento">
+<div class="momento-ponto"></div>
+<div class="momento-icone">
+<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M12 1a3 3 0 00-3 3v8a3 3 0 006 0V4a3 3 0 00-3-3z" stroke="#e8a0bf" stroke-width="1.5"/>
+<path d="M19 10v2a7 7 0 01-14 0v-2" stroke="#e8a0bf" stroke-width="1.5" stroke-linecap="round"/>
+<path d="M12 19v4M8 23h8" stroke="#e8a0bf" stroke-width="1.5" stroke-linecap="round"/>
+</svg>
+</div>
+<div class="momento-cartao">
+<p class="momento-data">27 de novembro de 2025</p>
+<h3 class="momento-titulo">A voz que disse "eu te amo"</h3>
+<p class="momento-texto">O primeiro áudio. Três palavras. Uma voz que eu nunca tinha ouvido antes dizendo "eu te amo". Meu mundo inteiro tremeu. Nenhuma música, nenhuma melodia, nada se compara ao som daquelas palavras na voz dela. Um momento inesquecível que vou guardar para sempre.</p>
+</div>
+</div>
+
+<div class="momento">
+<div class="momento-ponto"></div>
+<div class="momento-icone">
+<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2" stroke="#c4a0d9" stroke-width="1.5" stroke-linecap="round"/>
+<circle cx="9" cy="7" r="4" stroke="#c4a0d9" stroke-width="1.5"/>
+<path d="M23 21v-2a4 4 0 00-3-3.87" stroke="#c4a0d9" stroke-width="1.5" stroke-linecap="round"/>
+<path d="M16 3.13a4 4 0 010 7.75" stroke="#c4a0d9" stroke-width="1.5" stroke-linecap="round"/>
+</svg>
+</div>
+<div class="momento-cartao">
+<p class="momento-data">29 de novembro de 2025</p>
+<h3 class="momento-titulo">Os nomes do nosso futuro</h3>
+<p class="momento-texto">Juntos, escolhemos os nomes dos nossos três filhos. Não foi brincadeira, foi promessa. Cada nome carrega um pedaço dos nossos sonhos: Lírio, Leon e Kiara. Azevedo Miranda da Silva. Naquele dia, o futuro deixou de ser abstrato e ganhou nome, sobrenome e todo o nosso amor.</p>
+</div>
+</div>
+
+<div class="momento">
+<div class="momento-ponto"></div>
+<div class="momento-icone">
+<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" stroke="#d4a574" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
+</div>
+<div class="momento-cartao">
+<p class="momento-data">6 de dezembro de 2025</p>
+<h3 class="momento-titulo">Um mês e mil presentes</h3>
+<p class="momento-texto">Nosso primeiro mês. Criei três presentes para ela: um livro, um site e uma edição de vídeo. Comecei também a escrever uma carta à mão &mdash; dessas que a gente entrega pessoalmente, olhando nos olhos, quando finalmente estivermos juntos. Nessa noite, nos entregamos um ao outro de um jeito mais profundo e especial pela primeira vez. Mesmo à distância, foi real, foi nosso, foi inesquecível.</p>
+</div>
+</div>
+
+<div class="momento">
+<div class="momento-ponto"></div>
+<div class="momento-icone">
+<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M12 2l1 3h3l-2.5 2 1 3L12 8l-2.5 2 1-3L8 5h3l1-3z" stroke="#d4a574" stroke-width="1.2" fill="none"/>
+<path d="M5 10l.7 2.1H8l-1.8 1.3.7 2.1L5 14.2l-1.9 1.3.7-2.1L2 12.1h2.3L5 10z" stroke="#d4a574" stroke-width="1" fill="none"/>
+<path d="M19 10l.7 2.1H22l-1.8 1.3.7 2.1-1.9-1.3-1.9 1.3.7-2.1-1.8-1.3h2.3L19 10z" stroke="#d4a574" stroke-width="1" fill="none"/>
+<path d="M3 20h18" stroke="#d4a574" stroke-width="1.5" stroke-linecap="round"/>
+</svg>
+</div>
+<div class="momento-cartao">
+<p class="momento-data">25 de dezembro de 2025</p>
+<h3 class="momento-titulo">Natal juntos, mesmo de longe</h3>
+<p class="momento-texto">Nosso primeiro Natal. Passamos juntos virtualmente, jogando, conversando, compartilhando cada momento. Não precisou de mesa grande nem de abraço presencial. A tela nos conectou e o amor fez o resto. Foi o Natal mais significativo que já tive.</p>
+</div>
+</div>
+
+<div class="momento">
+<div class="momento-ponto"></div>
+<div class="momento-icone">
+<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+<circle cx="12" cy="12" r="10" stroke="#a0c4e8" stroke-width="1.5"/>
+<path d="M2 12h20" stroke="#a0c4e8" stroke-width="1.5"/>
+<path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z" stroke="#a0c4e8" stroke-width="1.5"/>
+</svg>
+</div>
+<div class="momento-cartao">
+<p class="momento-data">31 de dezembro de 2025</p>
+<h3 class="momento-titulo">A virada foi nossa</h3>
+<p class="momento-texto">O último dia do ano terminou da forma mais bonita: juntos. Nos entregamos novamente a momentos de intimidade e conexão que só nós dois entendemos. Cada vez é diferente, cada vez é especial. Viramos o ano com o coração transbordando, sabendo que 2026 seria o ano de nos encontrarmos.</p>
+</div>
+</div>
+
+<div class="momento">
+<div class="momento-ponto"></div>
+<div class="momento-icone">
+<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+<rect x="3" y="4" width="18" height="18" rx="2" stroke="#c4a0d9" stroke-width="1.5"/>
+<path d="M16 2v4M8 2v4M3 10h18" stroke="#c4a0d9" stroke-width="1.5" stroke-linecap="round"/>
+<path d="M12 15l-1.5 1.5L12 18l1.5-1.5L12 15z" fill="#c4a0d9"/>
+</svg>
+</div>
+<div class="momento-cartao">
+<p class="momento-data">6 de janeiro de 2026</p>
+<h3 class="momento-titulo">Mais uma surpresa</h3>
+<p class="momento-texto">Dois meses juntos e mais uma surpresa preparada com todo carinho. Porque ela merece o mundo a cada mês, a cada semana, a cada dia. E enquanto não posso dar o mundo presencialmente, dou tudo que posso através de gestos que mostram: eu penso nela o tempo inteiro.</p>
+</div>
+</div>
+
+<div class="momento">
+<div class="momento-ponto"></div>
+<div class="momento-icone">
+<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z" fill="#e8a0bf" stroke="#e8a0bf" stroke-width="1"/>
+<path d="M12 21.23l7.78-7.78 1.06-1.06" stroke="rgba(255,255,255,0.3)" stroke-width="1"/>
+</svg>
+</div>
+<div class="momento-cartao">
+<p class="momento-data">6 de fevereiro de 2026</p>
+<h3 class="momento-titulo">3 meses. Hoje.</h3>
+<p class="momento-texto">Três meses de amor, de aprendizado, de saudade que aperta mas que também fortalece. Três meses de "bom dia" e "boa noite" todos os dias, sem falhar. Três meses que provam: quando o amor é verdadeiro, nem a distância consegue apagar. Isso aqui é só o começo.</p>
+</div>
+</div>
+
+</div>
+</div>
+</section>
+
+<section class="secao-futuro" id="futuro">
+<div class="secao" style="padding-top:3rem;padding-bottom:3rem">
+<h2 class="titulo-secao">O Futuro que Estamos Construindo</h2>
+<p class="subtitulo-secao">Sonhos que já têm endereço e nome</p>
+<div class="divisor-decorativo"></div>
+<div class="cartoes-futuro" id="cartoesFuturo">
+<div class="cartao-futuro">
+<div class="cartao-icone">
+<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" stroke="#6b4c6e" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M9 22V12h6v10" stroke="#6b4c6e" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
+</div>
+<h3 class="cartao-titulo">Manaus nos espera</h3>
+<p class="cartao-texto">O plano já está em movimento: me mudar para Manaus, trabalhar, juntar dinheiro e construir um futuro lado a lado. Cada dia que passa, estou mais perto de tornar isso realidade. A distância tem data de validade.</p>
+</div>
+<div class="cartao-futuro">
+<div class="cartao-icone">
+<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" stroke="#6b4c6e" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M9 12l2 2 4-4" stroke="#6b4c6e" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
+</div>
+<h3 class="cartao-titulo">Promessa diária</h3>
+<p class="cartao-texto">Não importa o que aconteça, eu estarei presente. Todos os dias, sem exceção. Porque amor não é só sentimento &mdash; é escolha, compromisso e ação. E eu escolho ela, sempre.</p>
+</div>
+<div class="cartao-futuro">
+<div class="cartao-icone">
+<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M6.5 6.5c0-1.38 1.12-2.5 2.5-2.5s2.5 1.12 2.5 2.5S10.38 9 9 9 6.5 7.88 6.5 6.5z" stroke="#6b4c6e" stroke-width="1.5"/>
+<path d="M12.5 8.5c0-1.1.9-2 2-2s2 .9 2 2-.9 2-2 2-2-.9-2-2z" stroke="#6b4c6e" stroke-width="1.5"/>
+<path d="M3 20c0-3 3-5.5 6-5.5 1.5 0 2.8.5 3.8 1.3" stroke="#6b4c6e" stroke-width="1.5" stroke-linecap="round"/>
+<path d="M21 20c0-2.5-2-4.5-5-4.5-.8 0-1.5.1-2.2.4" stroke="#6b4c6e" stroke-width="1.5" stroke-linecap="round"/>
+<path d="M18.5 14.5c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5" stroke="#6b4c6e" stroke-width="1"/>
+</svg>
+</div>
+<h3 class="cartao-titulo">Nossa família</h3>
+<p class="cartao-texto">Já escolhemos os nomes, já sonhamos com os detalhes. Três pequenos amores que um dia vão saber que nasceram de uma história que começou a quilômetros de distância.</p>
+<div class="nomes-filhos">
+<span class="nome-filho">Lírio Azevedo Miranda da Silva</span>
+<span class="nome-filho">Leon Azevedo Miranda da Silva</span>
+<span class="nome-filho">Kiara Azevedo Miranda da Silva</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+
+<section class="secao-carta" id="carta">
+<div class="secao" style="padding-top:3rem;padding-bottom:3rem">
+<h2 class="titulo-secao">Carta para Você</h2>
+<p class="subtitulo-secao">De quem te ama mais do que as palavras alcançam</p>
+<div class="divisor-decorativo"></div>
+<div class="carta-container" id="cartaContainer">
+<p class="carta-saudacao">Meu amor,</p>
+<div class="carta-corpo">
+<p>Quando eu te pedi em namoro naquele 6 de novembro, eu não sabia exatamente o que viria pela frente. Eu só sabia que precisava tentar, porque algo em você me fazia sentir que seria diferente de tudo.</p>
+<p>E foi. É.</p>
+<p>Três meses depois, eu olho para trás e vejo uma história que já é mais bonita do que qualquer coisa que eu poderia ter imaginado. Vi seu rosto pela primeira vez naquela foto e o mundo ficou mais bonito. Ouvi sua voz dizendo "eu te amo" num áudio e o mundo ficou mais musical &mdash; mais bonito do que qualquer canção da Laufey que você tanto ama.</p>
+<p>Aprendi a prestar mais atenção, a nunca deixar você se sentir esquecida. Escolhi os nomes dos nossos filhos com você como se estivéssemos montando o mapa da nossa vida juntos. E cada noite que dormimos ao telefone, cada mensagem no meio do trabalho, cada "estou aqui" quando a internet cai &mdash; tudo isso é amor feito de escolha.</p>
+<p>Você que ama biologia sabe: existem coisas na natureza que desafiam toda lógica. Flores que nascem no deserto. Sementes que atravessam oceanos. O nosso amor é assim &mdash; improvável, resiliente e lindo de um jeito que a ciência ainda não explicou.</p>
+<p>Eu vou me mudar para Manaus. Vou trabalhar duro. Vou juntar cada centavo. E no dia em que eu finalmente te abraçar pela primeira vez, vai ser o dia mais importante da minha vida.</p>
+<p>Obrigado por ser minha pessoa. Obrigado por cada dia desses três meses. Obrigado por existir.</p>
+</div>
+<p class="carta-assinatura">Com todo o meu amor, para sempre.</p>
+</div>
+</div>
+</section>
+
+<footer class="rodape" id="rodape">
+<p class="rodape-texto">3 meses juntos, uma vida inteira pela frente</p>
+<p class="rodape-data">6 de novembro de 2025 &mdash; para sempre</p>
+<div class="rodape-coracao">
+<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" fill="#e8a0bf"/>
+</svg>
+</div>
+</footer>
+
+<div class="particulas-flutuantes" id="particulasFlutuantes"></div>
+
+<script>
+(function(){
+var telaEstrelas=document.getElementById("telaEstrelas");
+var contexto=telaEstrelas.getContext("2d");
+var estrelas=[];
+var quantidadeEstrelas=200;
+var estrelasDisparo=[];
+
+function redimensionarTela(){
+telaEstrelas.width=window.innerWidth;
+telaEstrelas.height=window.innerHeight;
+}
+redimensionarTela();
+window.addEventListener("resize",redimensionarTela);
+
+function criarEstrela(){
+return{
+x:Math.random()*telaEstrelas.width,
+y:Math.random()*telaEstrelas.height,
+raio:Math.random()*1.8+0.3,
+opacidade:Math.random(),
+velocidadeOpacidade:Math.random()*0.02+0.005,
+direcao:Math.random()>0.5?1:-1
+};
+}
+
+for(var i=0;i<quantidadeEstrelas;i++){
+estrelas.push(criarEstrela());
+}
+
+function criarEstrelaDisparo(){
+return{
+x:Math.random()*telaEstrelas.width,
+y:0,
+comprimento:Math.random()*80+40,
+velocidade:Math.random()*4+3,
+opacidade:1,
+angulo:Math.PI/4+(Math.random()*0.3-0.15)
+};
+}
+
+function desenharEstrelas(){
+contexto.clearRect(0,0,telaEstrelas.width,telaEstrelas.height);
+for(var i=0;i<estrelas.length;i++){
+var e=estrelas[i];
+e.opacidade+=e.velocidadeOpacidade*e.direcao;
+if(e.opacidade>=1){e.direcao=-1;e.opacidade=1}
+if(e.opacidade<=0.1){e.direcao=1;e.opacidade=0.1}
+contexto.beginPath();
+contexto.arc(e.x,e.y,e.raio,0,Math.PI*2);
+contexto.fillStyle="rgba(255,255,255,"+e.opacidade+")";
+contexto.fill();
+}
+if(Math.random()<0.005){
+estrelasDisparo.push(criarEstrelaDisparo());
+}
+for(var j=estrelasDisparo.length-1;j>=0;j--){
+var ed=estrelasDisparo[j];
+contexto.beginPath();
+contexto.moveTo(ed.x,ed.y);
+contexto.lineTo(
+ed.x-Math.cos(ed.angulo)*ed.comprimento,
+ed.y-Math.sin(ed.angulo)*ed.comprimento
+);
+var gradiente=contexto.createLinearGradient(
+ed.x,ed.y,
+ed.x-Math.cos(ed.angulo)*ed.comprimento,
+ed.y-Math.sin(ed.angulo)*ed.comprimento
+);
+gradiente.addColorStop(0,"rgba(232,160,191,"+ed.opacidade+")");
+gradiente.addColorStop(1,"rgba(232,160,191,0)");
+contexto.strokeStyle=gradiente;
+contexto.lineWidth=1.5;
+contexto.stroke();
+ed.x+=Math.cos(ed.angulo)*ed.velocidade;
+ed.y+=Math.sin(ed.angulo)*ed.velocidade;
+ed.opacidade-=0.012;
+if(ed.opacidade<=0||ed.x>telaEstrelas.width||ed.y>telaEstrelas.height){
+estrelasDisparo.splice(j,1);
+}
+}
+requestAnimationFrame(desenharEstrelas);
+}
+desenharEstrelas();
+
+var dataInicio=new Date(2025,10,6,0,0,0);
+function atualizarContador(){
+var agora=new Date();
+var diferenca=agora-dataInicio;
+var dias=Math.floor(diferenca/(1000*60*60*24));
+var horas=Math.floor((diferenca%(1000*60*60*24))/(1000*60*60));
+var minutos=Math.floor((diferenca%(1000*60*60))/(1000*60));
+var segundos=Math.floor((diferenca%(1000*60))/1000);
+document.getElementById("contadorDias").textContent=dias;
+document.getElementById("contadorHoras").textContent=horas;
+document.getElementById("contadorMinutos").textContent=minutos;
+document.getElementById("contadorSegundos").textContent=segundos;
+}
+atualizarContador();
+setInterval(atualizarContador,1000);
+
+var observador=new IntersectionObserver(function(entradas){
+entradas.forEach(function(entrada){
+if(entrada.isIntersecting){
+entrada.target.classList.add("visivel");
+}
+});
+},{threshold:0.15,rootMargin:"0px 0px -50px 0px"});
+
+document.querySelectorAll(".momento").forEach(function(el){observador.observe(el)});
+document.querySelectorAll(".cartao-futuro").forEach(function(el){observador.observe(el)});
+var cartaContainer=document.getElementById("cartaContainer");
+if(cartaContainer)observador.observe(cartaContainer);
+var rotinaConteudo=document.getElementById("rotinaConteudo");
+if(rotinaConteudo)observador.observe(rotinaConteudo);
+
+var containerParticulas=document.getElementById("particulasFlutuantes");
+var coresPetalas=["rgba(232,160,191,0.4)","rgba(196,160,217,0.3)","rgba(160,196,232,0.3)","rgba(212,165,116,0.3)"];
+function criarPetala(){
+var petala=document.createElement("div");
+petala.className="particula";
+var tamanho=Math.random()*6+3;
+petala.style.width=tamanho+"px";
+petala.style.height=tamanho+"px";
+petala.style.left=Math.random()*100+"%";
+petala.style.background=coresPetalas[Math.floor(Math.random()*coresPetalas.length)];
+petala.style.animationDuration=(Math.random()*15+15)+"s";
+petala.style.animationDelay=(Math.random()*10)+"s";
+containerParticulas.appendChild(petala);
+setTimeout(function(){
+if(petala.parentNode)petala.parentNode.removeChild(petala);
+criarPetala();
+},(parseFloat(petala.style.animationDuration)+parseFloat(petala.style.animationDelay))*1000);
+}
+for(var p=0;p<15;p++){
+setTimeout(criarPetala,p*800);
+}
+
+var secaoHeroi=document.querySelector(".secao-heroi");
+window.addEventListener("scroll",function(){
+var scrollY=window.pageYOffset;
+if(scrollY<window.innerHeight){
+var conteudo=document.querySelector(".conteudo-heroi");
+if(conteudo){
+conteudo.style.transform="translateY("+scrollY*0.3+"px)";
+conteudo.style.opacity=1-scrollY/(window.innerHeight*0.8);
+}
+}
+});
+
+telaEstrelas.addEventListener("mousemove",function(evento){
+for(var m=0;m<3;m++){
+estrelas.push({
+x:evento.clientX+(Math.random()-0.5)*20,
+y:evento.clientY+(Math.random()-0.5)*20,
+raio:Math.random()*2+0.5,
+opacidade:1,
+velocidadeOpacidade:0.03,
+direcao:-1
+});
+}
+if(estrelas.length>quantidadeEstrelas+50){
+estrelas.splice(quantidadeEstrelas,estrelas.length-quantidadeEstrelas-50);
+}
+});
+
+})();
+</script>
+</body>
+</html>
