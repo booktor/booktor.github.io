@@ -413,7 +413,9 @@
     <header>
         <div class="container">
             <nav>
-                <a href="#" class="logo">Booktor Comentários</a>
+                <div class="logo">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: middle; margin-right: 5px;"><path d="M4 19.5V5C4 3.8 4.8 3 5.8 3H20L22 5V19.5C22 20.6 21.2 21.5 20.2 21.5H5.8C4.8 21.5 4 20.6 4 19.5Z"/><path d="M9 12V8"/><path d="M15 12V8"/><path d="M9 16V12"/><path d="M15 16V12"/></svg>Booktor Comentários
+        </div>
                 <div class="user-info">
                     <div class="user-avatar" id="userAvatar">?</div>
                     <button class="logout-btn" onclick="logout()">Sair</button>
@@ -548,8 +550,8 @@
             if (commentsData.length === 0) {
                 commentsContainer.innerHTML = `
                     <div class="empty-state">
-                        <div>Ainda não há comentários</div>
-                        <div style="margin-top: 0.5rem; font-size: 0.875rem;">Seja o primeiro a compartilhar sua opinião!</div>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display: block; margin: 0 auto 1rem; color: rgba(255,255,255,0.6);"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/><path d="M8 9l3 3-3 3"/><path d="M13 9h5"/></svg>
+                        <div style="margin-top: 0.5rem; font-size: 0.875rem;">Ainda não há comentários. Seja o primeiro a compartilhar sua opinião!</div>
                     </div>
                 `;
                 return;
@@ -558,8 +560,14 @@
             commentsContainer.innerHTML = commentsData.map(comment => `
                 <div class="comment">
                     <div class="comment-header">
-                        <div class="comment-author">${comment.author}</div>
-                        <div class="comment-date">${formatDate(comment.timestamp)}</div>
+                        <div class="comment-author">
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: middle; margin-right: 4px;"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            ${comment.author}
+        </div>
+                        <div class="comment-date">
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: middle; margin-right: 4px;"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            ${formatDate(comment.timestamp)}
+        </div>
                     </div>
                     <div class="comment-text">${comment.text}</div>
                 </div>
