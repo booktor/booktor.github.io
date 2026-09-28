@@ -1,51 +1,56 @@
 {
   "rules": {
-    ".read": false,
-    ".write": false,
     "books": {
-      ".read": true,
-      ".write": "root.child('admin/admins').child(auth.uid).exists()"
+      ".read": "auth != null",
+      ".write": "root.child('admin/admins').hasChild(auth.uid)"
     },
     "users": {
       "$uid": {
-        ".read": "auth.uid == $uid",
-        ".write": "auth.uid == $uid"
+        ".read": "$uid === auth.uid",
+        ".write": "$uid === auth.uid"
       }
     },
     "interactions": {
       "likes": {
-        "$book_id": {
+        "$bookId": {
+          ".read": "auth != null",
           "$uid": {
-            ".write": "auth.uid == $uid"
+            ".write": "$uid === auth.uid"
           }
         }
       },
       "dislikes": {
-        "$book_id": {
+        "$bookId": {
+          ".read": "auth != null",
           "$uid": {
-            ".write": "auth.uid == $uid"
+            ".write": "$uid === auth.uid"
           }
         }
       },
       "ratings": {
-        "$book_id": {
+        "$bookId": {
+          ".read": "auth != null",
           "$uid": {
-            ".write": "auth.uid == $uid"
+            ".write": "$uid === auth.uid"
           }
         }
       },
       "comments": {
-        "$book_id": {
-          "$comment_id": {
-            ".read": true,
-            ".write": "auth != null && (!data.exists() || data.child('uid').val() == auth.uid || root.child('admin/admins').child(auth.uid).exists())"
+        "$bookId": {
+          ".read": "auth != null",
+          "$childId": {
+            ".write": "auth != null && (!data.exists() ? newData.child('uid').val() === auth.uid : data.child('uid').val() === auth.uid)"
           }
         }
       }
     },
     "admin": {
-      ".read": false,
-      ".write": false
+      "admins": {
+        "$uid": {
+          ".read": "$uid === auth.uid",
+          ".write": false
+        }
+      }
     }
   }
 }
