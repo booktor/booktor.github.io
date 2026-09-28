@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Booktor - Painel Administrativo</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --vermelho: #FF0000;
+            --vermelho-escuro: #CC0000;
+            --preto: #000000;
+            --cinza-escuro: #121212;
+            --cinza-medio: #1A1A1A;
+            --cinza-claro: #333333;
+            --branco: #FFFFFF;
+            --texto-suave: #CCCCCC;
+            --sombra: rgba(0, 0, 0, 0.5);
+            --gradiente: linear-gradient(135deg, var(--vermelho), var(--vermelho-escuro));
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--preto);
+            color: var(--branco);
+            min-height: 100vh;
+        }
+
+        header {
+            background: var(--gradiente);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 15px var(--sombra);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+            color: var(--branco);
+        }
+
+        .logo img {
+            height: 30px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        .card-admin {
+            background: var(--cinza-medio);
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px var(--sombra);
+            margin-bottom: 2rem;
+        }
+
+        .card-admin h2 {
+            margin-bottom: 1.5rem;
+            color: var(--vermelho);
+        }
+
+        .form-grupo {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 1rem;
+        }
+
+        .campo {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .campo label {
+            font-size: 0.9rem;
+            color: var(--texto-suave);
+        }
+
+        .input-admin {
+            padding: 12px;
+            background: var(--preto);
+            border: 1px solid var(--cinza-claro);
+            color: var(--branco);
+            border-radius: 6px;
+            font-size: 1rem;
+        }
+
+        .input-area {
+            grid-column: span 2;
+        }
+
+        .btn-salvar {
+            background: var(--gradiente);
+            color: var(--branco);
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 700;
+            transition: 0.3s;
+            width: 100%;
+            font-size: 1rem;
+        }
+
+        .btn-salvar:hover { opacity: 0.9; }
+
+        .tabela-livros {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+
+        .tabela-livros th, .tabela-livros td {
+            text-align: left;
+            padding: 12px;
+            border-bottom: 1px solid var(--cinza-claro);
+        }
+
+        .tabela-livros th {
+            color: var(--vermelho);
+            font-weight: 600;
+        }
+
+        .btn-excluir {
+            background: #dc3545;
+            color: var(--branco);
+            border: none;
+            padding: 5px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.8rem;
+        }
+
+        .btn-excluir:hover { background: #a71d2a; }
+
+        .oculto { display: none !important; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <a href="index.html" class="logo">
+            <img src="https://i.imgur.com/OjWFPUx.png" alt="Booktor Logo">
+            <h1>Booktor Admin</h1>
+        </a>
+        <button id="btnSair" style="background:none; border:1px solid white; color:white; padding:5px 10px; cursor:pointer; border-radius:5px;">Sair</button>
+    </header>
+
+    <div class="container">
+        <div id="conteudoAdmin" class="oculto">
+            <div class="card-admin">
+                <h2>Cadastrar Novo Livro</h2>
+                <div class="form-grupo">
+                    <div class="campo">
+                        <label>Título</label>
+                        <input type="text" id="titulo" class="input-admin">
+                    </div>
+                    <div class="campo">
+                        <label>Autor</label>
+                        <input type="text" id="autor" class="input-admin">
+                    </div>
+                    <div class="campo">
+                        <label>URL da Capa</label>
+                        <input type="text" id="capa" class="input-admin">
+                    </div>
+                    <div class="campo">
+                        <label>Link do Google Drive</label>
+                        <input type="text" id="drive" class="input-admin">
+                    </div>
+                    <div class="campo input-area">
+                        <label>Descrição</label>
+                        <textarea id="descricao" class="input-admin" rows="3"></textarea>
+                    </div>
+                </div>
+                <button class="btn-salvar" id="btnSalvarLivro">Salvar Livro</button>
+            </div>
+
+            <div class="card-admin">
+                <h2>Livros Cadastrados</h2>
+                <table class="tabela-livros">
+                    <thead>
+                        <tr>
+                            <th>Capa</th>
+                            <th>Título</th>
+                            <th>Autor</th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody id="corpoTabela"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+        import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+        import { getDatabase, ref, set, push, onValue, remove } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyDjv9Q0eeQ_3fSA3YnCL24bPMTtgIcyZfU",
+            authDomain: "libomt-book.firebaseapp.com",
+            databaseURL: "https://libomt-book-default-rtdb.firebaseio.com",
+            projectId: "libomt-book",
+            storageBucket: "libomt-book.firebasestorage.app",
+            messagingSenderId: "206220601047",
+            appId: "1:206220601047:web:082e31f24cceaa554b3292"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getDatabase(app);
+
+        onAuthStateChanged(auth, async (user) => {
+            if (user) {
+                const snap = await new Promise((resolve) => {
+                    onValue(ref(db, `admin/admins/${user.uid}`), (s) => resolve(s));
+                });
+
+                if (snap.exists()) {
+                    document.getElementById('conteudoAdmin').classList.remove('oculto');
+                    carregarLivros();
+                } else {
+                    alert("Acesso negado: Você não é um administrador.");
+                    window.location.href = "index.html";
+                }
+            } else {
+                window.location.href = "index.html";
+            }
+        });
+
+        document.getElementById('btnSair').onclick = () => signOut(auth);
+
+        document.getElementById('btnSalvarLivro').onclick = async () => {
+            const titulo = document.getElementById('titulo').value;
+            const autor = document.getElementById('autor').value;
+            const capa = document.getElementById('capa').value;
+            const drive = document.getElementById('drive').value;
+            const descricao = document.getElementById('descricao').value;
+
+            if (!titulo || !autor || !capa || !drive) {
+                alert("Preencha todos os campos obrigatórios!");
+                return;
+            }
+
+            const novoLivro = {
+                title: titulo,
+                author: autor,
+                coverURL: capa,
+                driveURL: drive,
+                description: descricao,
+                stats: { likesCount: 0, dislikesCount: 0, ratingSum: 0, ratingCount: 0 }
+            };
+
+            try {
+                await push(ref(db, 'books'), novoLivro);
+                alert("Livro cadastrado com sucesso!");
+                document.querySelectorAll('.input-admin').forEach(i => i.value = "");
+            } catch (e) {
+                alert("Erro ao salvar: " + e.message);
+            }
+        };
+
+        function carregarLivros() {
+            onValue(ref(db, 'books'), (snapshot) => {
+                const livros = snapshot.val();
+                const corpo = document.getElementById('corpoTabela');
+                corpo.innerHTML = "";
+
+                if (!livros) return;
+
+                Object.entries(livros).forEach(([id, livro]) => {
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td><img src="${livro.coverURL}" width="40" height="60" style="object-fit:cover; border-radius:4px;"></td>
+                        <td>${livro.title}</td>
+                        <td>${livro.author}</td>
+                        <td><button class="btn-excluir" data-id="${id}">Excluir</button></td>
+                    `;
+                    tr.querySelector('.btn-excluir').onclick = () => excluirLivro(id);
+                    corpo.appendChild(tr);
+                });
+            });
+        }
+
+        async function excluirLivro(id) {
+            if (confirm("Tem certeza que deseja excluir este livro?")) {
+                try {
+                    await remove(ref(db, `books/${id}`));
+                } catch (e) {
+                    alert("Erro ao excluir: " + e.message);
+                }
+            }
+        }
+    </script>
+</body>
+</html>

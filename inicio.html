@@ -120,7 +120,7 @@
       font-size: 0.9em;
       font-weight: 600;
       cursor: pointer;
-      transition: all 0.3s ease;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
       text-transform: uppercase;
       letter-spacing: 0.5px;
     }
@@ -129,6 +129,10 @@
       background-color: var(--cinza-claro);
       transform: translateY(-2px);
       box-shadow: 0 4px 8px var(--sombra);
+    }
+
+    .btn-logout:active {
+      transform: scale(0.98);
     }
 
     /* Main Content */
@@ -190,7 +194,7 @@
       padding: 40px 30px;
       text-align: center;
       cursor: pointer;
-      transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
       position: relative;
       overflow: hidden;
       box-shadow: 0 10px 30px rgba(255, 0, 0, 0.1);
@@ -221,6 +225,10 @@
       transform: translateY(-10px) scale(1.03);
       border-color: var(--vermelho);
       box-shadow: 0 20px 50px rgba(255, 0, 0, 0.3);
+    }
+
+    .feature-card:active {
+      transform: scale(0.98);
     }
 
     .feature-card:hover::before {
@@ -257,7 +265,7 @@
       font-weight: 600;
       font-size: 1em;
       cursor: pointer;
-      transition: all 0.3s ease;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
       text-transform: uppercase;
       letter-spacing: 1px;
       position: relative;
@@ -281,8 +289,12 @@
     }
 
     .btn-feature:hover {
-      transform: translateY(-3px);
+      transform: translateY(-3px) scale(1.02);
       box-shadow: 0 8px 25px rgba(255, 0, 0, 0.4);
+    }
+
+    .btn-feature:active {
+      transform: scale(0.98);
     }
 
     /* Quick Actions */
@@ -303,7 +315,7 @@
       font-size: 1.1em;
       font-weight: 600;
       cursor: pointer;
-      transition: all 0.3s ease;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
       text-decoration: none;
       display: inline-flex;
       align-items: center;
@@ -314,10 +326,14 @@
 
     .quick-btn:hover {
       background: var(--gradiente-primario);
-      transform: translateY(-3px);
+      transform: translateY(-3px) scale(1.02);
       box-shadow: 0 8px 25px rgba(255, 0, 0, 0.4);
       color: var(--branco);
       text-decoration: none;
+    }
+
+    .quick-btn:active {
+      transform: scale(0.98);
     }
 
     /* Footer */
@@ -606,7 +622,9 @@
       <section class="features-grid">
         <!-- Catálogo de eBooks -->
         <article class="feature-card" onclick="window.location.href='catalogo.html'" tabindex="0" role="button" aria-label="Acessar catálogo de eBooks">
-          <span class="feature-icon">📖</span>
+          <span class="feature-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5V5C4 3.8 4.8 3 5.8 3H20L22 5V19.5C22 20.6 21.2 21.5 20.2 21.5H5.8C4.8 21.5 4 20.6 4 19.5Z"/><path d="M9 12V8"/><path d="M15 12V8"/><path d="M9 16V12"/><path d="M15 16V12"/></svg>
+          </span>
           <h3 class="feature-title">Catálogo de eBooks</h3>
           <p class="feature-description">
             Explore nossa coleção exclusiva de eBooks gratuitos, com histórias originais 
@@ -619,7 +637,9 @@
 
         <!-- Chat Global -->
         <article class="feature-card" onclick="window.location.href='https://booktor.github.io/chat.html'" tabindex="0" role="button" aria-label="Acessar chat global">
-          <span class="feature-icon">💬</span>
+          <span class="feature-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/><path d="M8 9l3 3-3 3"/><path d="M13 9h5"/></svg>
+          </span>
           <h3 class="feature-title">Chat Global</h3>
           <p class="feature-description">
             Conecte-se com leitores de todo o mundo! Discuta livros, compartilhe 
@@ -632,7 +652,9 @@
 
         <!-- Sistema de Comentários -->
         <article class="feature-card" onclick="window.location.href='https://booktor.github.io/comentarios.html'" tabindex="0" role="button" aria-label="Acessar sistema de comentários">
-          <span class="feature-icon">💭</span>
+          <span class="feature-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-5.2-7.2c-2.1-1.1-4.5-1.6-6.8-1.6C3.8 4.3 2 6.5 2 9c0 2.5 2 4.8 5 6.2V18a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2v-3.8z"/></svg>
+          </span>
           <h3 class="feature-title">Comentários</h3>
           <p class="feature-description">
             Deixe suas impressões sobre os livros, interaja com outros leitores 
@@ -645,7 +667,9 @@
 
         <!-- Perfil do Usuário -->
         <article class="feature-card" onclick="window.location.href='https://booktor.github.io/profile.html'" tabindex="0" role="button" aria-label="Ver perfil do usuário">
-          <span class="feature-icon">👤</span>
+          <span class="feature-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          </span>
           <h3 class="feature-title">Meu Perfil</h3>
           <p class="feature-description">
             Gerencie suas informações pessoais, visualize seu histórico de leitura 
@@ -660,13 +684,13 @@
       <!-- Quick Actions -->
       <section class="quick-actions">
         <a href="https://booktor.github.io/catalogo.html" class="quick-btn">
-          📚 Começar a Ler
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: middle;"><path d="M4 19.5V5C4 3.8 4.8 3 5.8 3H20L22 5V19.5C22 20.6 21.2 21.5 20.2 21.5H5.8C4.8 21.5 4 20.6 4 19.5Z"/><path d="M9 12V8"/><path d="M15 12V8"/><path d="M9 16V12"/><path d="M15 16V12"/></svg> Começar a Ler
         </a>
         <a href="https://booktor.github.io/chat.html" class="quick-btn">
-          🌐 Chat Global
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: middle;"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg> Chat Global
         </a>
         <a href="https://booktor.github.io/comentarios.html" class="quick-btn">
-          💬 Comentários
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: middle;"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/><path d="M8 9l3 3-3 3"/><path d="M13 9h5"/></svg> Comentários
         </a>
       </section>
     </div>

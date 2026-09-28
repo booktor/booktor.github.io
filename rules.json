@@ -1,0 +1,51 @@
+{
+  "rules": {
+    ".read": false,
+    ".write": false,
+    "books": {
+      ".read": true,
+      ".write": "root.child('admin/admins').child(auth.uid).exists()"
+    },
+    "users": {
+      "$uid": {
+        ".read": "auth.uid == $uid",
+        ".write": "auth.uid == $uid"
+      }
+    },
+    "interactions": {
+      "likes": {
+        "$book_id": {
+          "$uid": {
+            ".write": "auth.uid == $uid"
+          }
+        }
+      },
+      "dislikes": {
+        "$book_id": {
+          "$uid": {
+            ".write": "auth.uid == $uid"
+          }
+        }
+      },
+      "ratings": {
+        "$book_id": {
+          "$uid": {
+            ".write": "auth.uid == $uid"
+          }
+        }
+      },
+      "comments": {
+        "$book_id": {
+          "$comment_id": {
+            ".read": true,
+            ".write": "auth != null && (!data.exists() || data.child('uid').val() == auth.uid || root.child('admin/admins').child(auth.uid).exists())"
+          }
+        }
+      }
+    },
+    "admin": {
+      ".read": false,
+      ".write": false
+    }
+  }
+}
